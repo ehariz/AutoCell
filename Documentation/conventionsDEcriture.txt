@@ -1,0 +1,8 @@
+Variable : uneVariableQuelquonque
+Fonction : uneFonction
+Classe ou Structure: UneClasse
+Attribut de classe : m_attributDeClasse
+Espace de nom : EspaceDeNom
+Variables globales constantes : VARIABLE_GLOBALE
+Enumeration : uneEnumeration
+
