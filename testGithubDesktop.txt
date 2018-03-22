@@ -1,3 +1,0 @@
-Using GitHub Desktop with GitLab (original version)
-1. Create Local Repository
-1.1 Tap on the "+" button in the upper-left of the GitHub Desktop window
