@@ -6,3 +6,8 @@ Espace de nom : EspaceDeNom
 Variables globales constantes : VARIABLE_GLOBALE
 Enumeration : uneEnumeration
 
+Tout en anglais
+
+pointeur et références:
+type & a = b;
+type * a = &c;
