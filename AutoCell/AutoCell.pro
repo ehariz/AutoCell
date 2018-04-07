@@ -5,7 +5,9 @@ QMAKE_LFLAGS = -std=c++11
 
 SOURCES += \
     main.cpp \
-    cell.cpp
+    cell.cpp \
+    cellhandler.cpp
 
 HEADERS += \
-    cell.h
+    cell.h \
+    cellhandler.h
