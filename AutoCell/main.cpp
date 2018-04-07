@@ -1,4 +1,6 @@
 #include <QApplication>
+#include <QDebug>
+#include "cell.h"
 
 int main(int argc, char * argv[])
 {
