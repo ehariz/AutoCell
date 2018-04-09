@@ -47,6 +47,7 @@ CellHandler::CellHandler(QString filename)
 
     foundNeighbours();
 
+
 }
 
 /** \fn CellHandler::~CellHandler()
@@ -66,6 +67,36 @@ CellHandler::~CellHandler()
 Cell *CellHandler::getCell(const QVector<unsigned int> position) const
 {
     return m_cells.value(position);
+}
+
+/** \fn void CellHandler::nextStates()
+ * \brief Valid the state of all cells
+ *
+ */
+void CellHandler::nextStates()
+{
+    for (QMap<QVector<unsigned int>, Cell* >::iterator it = m_cells.begin(); it != m_cells.end(); ++it)
+    {
+        it.value()->validState();
+    }
+}
+
+/** \fn CellHandler::iterator CellHandler::begin()
+ * \brief Give the iterator which corresponds to the current CellHandler
+ */
+CellHandler::iterator CellHandler::begin()
+{
+    return iterator(this);
+}
+
+/** \fn bool CellHandler::end()
+ * \brief End condition of the iterator
+ *
+ * See iterator::operator!=(bool finished) for further information.
+ */
+bool CellHandler::end()
+{
+    return true;
 }
 
 /** \fn bool CellHandler::load(const QJsonObject &json)
@@ -232,7 +263,7 @@ QVector<QVector<unsigned int> >& CellHandler::getListNeighboursPositions(const Q
  *
  * Careful, the complexity is in O(3^dimension)<br>
  * Piece of the tree:
- *```
+ * \code
  *             x_d -1
  *           /
  * x_(d-1)-1/_ x_d
@@ -253,7 +284,7 @@ QVector<QVector<unsigned int> >& CellHandler::getListNeighboursPositions(const Q
  *          \
  *           \
  *             x_d +1
- *```
+ * \endcode
  * The path in the tree to reach the leaf give the position
  *
  * \param position Position of the cell
@@ -294,4 +325,75 @@ QVector<QVector<unsigned int> >* CellHandler::getListNeighboursPositionsRecursiv
 
     return listPositions;
 
+}
+
+/** \fn CellHandler::iterator::iterator(const CellHandler *handler):
+ * \brief Construct an initial iterator to browse the CellHandler
+ *
+ * \param handler CellHandler to browse
+ */
+CellHandler::iterator::iterator(const CellHandler *handler):
+        m_handler(handler), m_changedDimension(0)
+{
+    // Initialisation of m_position
+    for (unsigned short i = 0; i < handler->m_dimensions.size(); i++)
+    {
+        m_position.push_back(0);
+    }
+    m_zero = m_position;
+}
+
+/** \fn CellHandler::iterator &CellHandler::iterator::operator++()
+ * \brief Increment the current position and handle dimension changes
+ */
+CellHandler::iterator &CellHandler::iterator::operator++()
+{
+    m_position.replace(0, m_position.at(0) + 1); // adding the value to the first digit
+
+    m_changedDimension = 0;
+    // Carry management
+    for (unsigned short i = 0; i < m_handler->m_dimensions.size(); i++)
+    {
+        if (m_position.at(i) >= m_handler->m_dimensions.at(i))
+        {
+            m_position.replace(i, 0);
+            m_changedDimension++;
+            if (i + 1 != m_handler->m_dimensions.size())
+                m_position.replace(i+1, m_position.at(i+1)+1);
+        }
+
+    }
+    // If we return to zero, we have finished
+    if (m_position == m_zero)
+        m_finished = true;
+
+    return *this;
+
+}
+
+/** \fn Cell *CellHandler::iterator::operator->()
+ * \brief Get the current cell
+ */
+Cell *CellHandler::iterator::operator->() const
+{
+    return m_handler->m_cells.value(m_position);
+}
+
+/** \fn Cell *CellHandler::iterator::operator->()
+ * \brief Get the current cell
+ */
+Cell *CellHandler::iterator::operator*() const
+{
+    return m_handler->m_cells.value(m_position);
+}
+
+/** \fn unsigned int CellHandler::iterator::changedDimension() const
+ * \brief Return the number of dimensions we change
+ *
+ * For example, if we were at the (3,4,4) cell, and we incremented the position,
+ * we are now at (4,0,0), and changedDimension return 2 (because of the 2 zeros).
+ */
+unsigned int CellHandler::iterator::changedDimension() const
+{
+    return m_changedDimension;
 }

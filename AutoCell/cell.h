@@ -4,6 +4,9 @@
 #include <QVector>
 #include <QDebug>
 
+/** \class Cell
+ * \brief Contains the state, the next state and the neighbours
+ */
 class Cell
 {
 public:
