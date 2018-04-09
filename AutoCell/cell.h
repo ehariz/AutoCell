@@ -2,6 +2,7 @@
 #define CELL_H
 
 #include <QVector>
+#include <QDebug>
 
 class Cell
 {
