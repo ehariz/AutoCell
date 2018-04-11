@@ -61,6 +61,8 @@ public:
     Cell* getCell(const QVector<unsigned int> position) const;
     void nextStates();
 
+    bool save(QString filename);
+
     iterator begin();
     bool end();
 
