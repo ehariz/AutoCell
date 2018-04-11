@@ -52,8 +52,6 @@ CellHandler::CellHandler(const QString filename)
 
 
 }
-
-
 /** \fn CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes type, unsigned int stateMax, unsigned int density)
  * \brief Construct a CellHandler of the given dimension
  *
@@ -89,7 +87,6 @@ CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes
 
     if (type != empty)
         generate(type, stateMax, density);
-
 
 }
 
@@ -260,9 +257,30 @@ void CellHandler::print(std::ostream &stream)
 
 }
 
-void CellHandler::generate(CellHandler::generationTypes type, unsigned int density)
+void CellHandler::generate(CellHandler::generationTypes type, unsigned int stateMax, unsigned short density)
 {
+    if (type == random)
+    {
+        QVector<unsigned int> position;
+        for (unsigned short i = 0; i < m_dimensions.size(); i++)
+        {
+            position.push_back(0);
+        }
+        QRandomGenerator generator((float)qrand()*(float)time_t()/RAND_MAX);
+        for (unsigned int j = 0; j < m_cells.size(); j++)
+        {
+            unsigned int state = 0;
+            // 0 have (1-density)% of chance of being generate
+            if (generator.generateDouble()*100.0 < density)
+                 state = (float)generator.generateDouble()*(stateMax+1);
+            if (state > stateMax)
+                state = stateMax;
+            m_cells.value(position)->setState(state);
+            m_cells.value(position)->validState();
 
+            positionIncrement(position);
+        }
+    }
 }
 
 /** \fn CellHandler::iterator CellHandler::begin()
