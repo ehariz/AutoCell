@@ -50,7 +50,7 @@ CellHandler::CellHandler(const QString filename)
 
 }
 
-CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes type, unsigned int density)
+CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes type, unsigned int stateMax, unsigned int density)
 {
     m_dimensions = dimensions;
     QVector<unsigned int> position;
@@ -74,7 +74,7 @@ CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes
     }
 
     if (type != empty)
-        generate(type, density);
+        generate(type, stateMax, density);
 
 }
 
@@ -119,6 +119,7 @@ bool CellHandler::save(QString filename)
 
     QJsonObject json;
     QString stringDimension;
+    // Creation of the dimension string
     for (unsigned int i = 0; i < m_dimensions.size(); i++)
     {
         if (i != 0)
@@ -130,8 +131,7 @@ bool CellHandler::save(QString filename)
     QJsonArray cells;
     for (CellHandler::iterator it = begin(); it != end(); ++it)
     {
-        QJsonValue value((int)it->getState());
-        cells.append(value);
+        cells.append(QJsonValue((int)it->getState()));
     }
     json["cells"] = cells;
 
@@ -142,9 +142,30 @@ bool CellHandler::save(QString filename)
     saveFile.close();
 }
 
-void CellHandler::generate(CellHandler::generationTypes type, unsigned int density)
+void CellHandler::generate(CellHandler::generationTypes type, unsigned int stateMax, unsigned short density)
 {
+    if (type == random)
+    {
+        QVector<unsigned int> position;
+        for (unsigned short i = 0; i < m_dimensions.size(); i++)
+        {
+            position.push_back(0);
+        }
+        QRandomGenerator generator((float)qrand()*(float)time_t()/RAND_MAX);
+        for (unsigned int j = 0; j < m_cells.size(); j++)
+        {
+            unsigned int state = 0;
+            // 0 have (1-density)% of chance of being generate
+            if (generator.generateDouble()*100.0 < density)
+                 state = (float)generator.generateDouble()*(stateMax+1);
+            if (state > stateMax)
+                state = stateMax;
+            m_cells.value(position)->setState(state);
+            m_cells.value(position)->validState();
 
+            positionIncrement(position);
+        }
+    }
 }
 
 /** \fn CellHandler::iterator CellHandler::begin()
