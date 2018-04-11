@@ -55,13 +55,21 @@ public:
         unsigned int m_changedDimension; ///< Save the number of dimension change
     };
 
-    CellHandler(QString filename);
+    enum generationTypes {
+        empty,
+        random,
+        symetric
+    };
+
+    CellHandler(const QString filename);
+    CellHandler(const QVector<unsigned int> dimensions, generationTypes type = empty, unsigned int density = 50);
     virtual ~CellHandler();
 
     Cell* getCell(const QVector<unsigned int> position) const;
     void nextStates();
 
     bool save(QString filename);
+    void generate(generationTypes type, unsigned int density = 50);
 
     iterator begin();
     bool end();
