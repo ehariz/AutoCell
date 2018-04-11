@@ -20,7 +20,7 @@
  *
  * \param filename Json file which contains the description of all the cells
  */
-CellHandler::CellHandler(QString filename)
+CellHandler::CellHandler(const QString filename)
 {
     QFile loadFile(filename);
     if (!loadFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -47,6 +47,34 @@ CellHandler::CellHandler(QString filename)
 
     foundNeighbours();
 
+
+}
+
+CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes type, unsigned int density)
+{
+    m_dimensions = dimensions;
+    QVector<unsigned int> position;
+    unsigned int size = 1;
+
+    // Set position vector to 0
+
+    for (unsigned short i = 0; i < m_dimensions.size(); i++)
+    {
+        position.push_back(0);
+        size *= m_dimensions.at(i);
+    }
+
+
+    // Creation of cells
+    for (unsigned int j = 0; j < size; j++)
+    {
+        m_cells.insert(position, new Cell(0));
+
+        positionIncrement(position);
+    }
+
+    if (type != empty)
+        generate(type, density);
 
 }
 
@@ -97,7 +125,6 @@ bool CellHandler::save(QString filename)
             stringDimension.push_back("x");
         stringDimension.push_back(QString::number(m_dimensions.at(i)));
     }
-    qDebug() << stringDimension;
     json["dimensions"] = QJsonValue(stringDimension);
 
     QJsonArray cells;
@@ -113,6 +140,11 @@ bool CellHandler::save(QString filename)
     saveFile.write(saveDoc.toJson());
 
     saveFile.close();
+}
+
+void CellHandler::generate(CellHandler::generationTypes type, unsigned int density)
+{
+
 }
 
 /** \fn CellHandler::iterator CellHandler::begin()
