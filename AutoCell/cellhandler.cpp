@@ -53,6 +53,7 @@ CellHandler::CellHandler(const QString filename)
 
 }
 
+
 /** \fn CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes type, unsigned int stateMax, unsigned int density)
  * \brief Construct a CellHandler of the given dimension
  *
@@ -88,6 +89,7 @@ CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes
 
     if (type != empty)
         generate(type, stateMax, density);
+
 
 }
 
@@ -255,6 +257,11 @@ void CellHandler::print(std::ostream &stream)
         stream << it->getState() << " ";
     }
 
+
+}
+
+void CellHandler::generate(CellHandler::generationTypes type, unsigned int density)
+{
 
 }
 

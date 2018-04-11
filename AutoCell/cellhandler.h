@@ -69,6 +69,7 @@ public:
 
     CellHandler(const QString filename);
     CellHandler(const QVector<unsigned int> dimensions, generationTypes type = empty, unsigned int stateMax = 1, unsigned int density = 20);
+
     virtual ~CellHandler();
 
     Cell* getCell(const QVector<unsigned int> position) const;
@@ -76,6 +77,7 @@ public:
     void nextStates();
 
     bool save(QString filename);
+
     void generate(generationTypes type, unsigned int stateMax = 1, unsigned short density = 50);
     void print(std::ostream &stream);
 
