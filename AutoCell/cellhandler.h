@@ -65,6 +65,7 @@ public:
 
     CellHandler(const QString filename);
     CellHandler(const QVector<unsigned int> dimensions, generationTypes type = empty, unsigned int stateMax = 1, unsigned int density = 50);
+
     virtual ~CellHandler();
 
     Cell* getCell(const QVector<unsigned int> position) const;
