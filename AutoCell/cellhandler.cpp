@@ -81,6 +81,40 @@ void CellHandler::nextStates()
     }
 }
 
+bool CellHandler::save(QString filename)
+{
+    QFile saveFile(filename);
+    if (!saveFile.open(QIODevice::WriteOnly)) {
+        qWarning("Couldn't create or open given file.");
+        throw QString(QObject::tr("Couldn't create or open given file"));
+    }
+
+    QJsonObject json;
+    QString stringDimension;
+    for (unsigned int i = 0; i < m_dimensions.size(); i++)
+    {
+        if (i != 0)
+            stringDimension.push_back("x");
+        stringDimension.push_back(QString::number(m_dimensions.at(i)));
+    }
+    qDebug() << stringDimension;
+    json["dimensions"] = QJsonValue(stringDimension);
+
+    QJsonArray cells;
+    for (CellHandler::iterator it = begin(); it != end(); ++it)
+    {
+        QJsonValue value((int)it->getState());
+        cells.append(value);
+    }
+    json["cells"] = cells;
+
+
+    QJsonDocument saveDoc(json);
+    saveFile.write(saveDoc.toJson());
+
+    saveFile.close();
+}
+
 /** \fn CellHandler::iterator CellHandler::begin()
  * \brief Give the iterator which corresponds to the current CellHandler
  */
