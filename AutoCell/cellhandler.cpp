@@ -281,6 +281,70 @@ void CellHandler::generate(CellHandler::generationTypes type, unsigned int state
             positionIncrement(position);
         }
     }
+    else if (type == symetric)
+    {
+        QVector<unsigned int> position;
+        for (unsigned short i = 0; i < m_dimensions.size(); i++)
+        {
+            position.push_back(0);
+        }
+
+        QRandomGenerator generator((float)qrand()*(float)time_t()/RAND_MAX);
+        QVector<unsigned int> savedStates;
+        for (unsigned int j = 0; j < m_cells.size(); j++)
+        {
+            if (j % m_dimensions.at(0) == 0)
+                savedStates.clear();
+            if (j % m_dimensions.at(0) < (m_dimensions.at(0)+1) / 2)
+            {
+                unsigned int state = 0;
+                // 0 have (1-density)% of chance of being generate
+                if (generator.generateDouble()*100.0 < density)
+                    state = (float)generator.generateDouble()*(stateMax+1);
+                if (state > stateMax)
+                    state = stateMax;
+                savedStates.push_back(state);
+                m_cells.value(position)->setState(state);
+                m_cells.value(position)->validState();
+            }
+            else
+            {
+                unsigned int i = savedStates.size() - (j % m_dimensions.at(0) - (m_dimensions.at(0)-1)/2 + (m_dimensions.at(0) % 2 == 0 ? 0 : 1));
+                m_cells.value(position)->setState(savedStates.at(i));
+                m_cells.value(position)->validState();
+            }
+            positionIncrement(position);
+
+
+        }
+
+    }
+}
+
+
+void CellHandler::print(std::ostream &stream)
+{
+    QVector<unsigned int> position;
+    for (unsigned short i = 0; i < m_dimensions.size(); i++)
+    {
+        position.push_back(0);
+    }
+    for (unsigned int j = 0; j < m_cells.size(); j++)
+    {
+        stream << m_cells.value(position)->getState() << " ";
+        position.replace(0, position.at(0)+1);
+        for (unsigned short i = 0; i < m_dimensions.size(); i++)
+        {
+            if (position.at(i) >= m_dimensions.at(i))
+            {
+                position.replace(i, 0);
+                stream << std::endl;
+                if (i + 1 != m_dimensions.size())
+                    position.replace(i+1, position.at(i+1)+1);
+            }
+        }
+    }
+
 }
 
 /** \fn CellHandler::iterator CellHandler::begin()
