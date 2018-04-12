@@ -186,7 +186,7 @@ void CellHandler::generate(CellHandler::generationTypes type, unsigned int state
             unsigned int state = 0;
             // 0 have (1-density)% of chance of being generate
             if (generator.generateDouble()*100.0 < density)
-                 state = (float)generator.generateDouble()*(stateMax+1);
+                 state = (float)(generator.generateDouble()*stateMax) +1;
             if (state > stateMax)
                 state = stateMax;
             m_cells.value(position)->setState(state);
@@ -214,7 +214,7 @@ void CellHandler::generate(CellHandler::generationTypes type, unsigned int state
                 unsigned int state = 0;
                 // 0 have (1-density)% of chance of being generate
                 if (generator.generateDouble()*100.0 < density)
-                    state = (float)generator.generateDouble()*(stateMax+1);
+                    state = (float)(generator.generateDouble()*stateMax) +1;
                 if (state > stateMax)
                     state = stateMax;
                 savedStates.push_back(state);
@@ -248,6 +248,7 @@ void CellHandler::print(std::ostream &stream)
             stream << std::endl;
         stream << it->getState() << " ";
     }
+
 
 }
 
