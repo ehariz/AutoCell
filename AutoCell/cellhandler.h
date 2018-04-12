@@ -57,10 +57,13 @@ public:
         unsigned int m_changedDimension; ///< Save the number of dimension change
     };
 
+    /** \enum generationTypes
+     * \brief Type of random generation
+     */
     enum generationTypes {
-        empty,
-        random,
-        symetric
+        empty, ///< Only empty cells
+        random, ///< Random cells
+        symetric ///< Random cells but with vertical symetry (on the 1st dimension component)
     };
 
     CellHandler(const QString filename);
