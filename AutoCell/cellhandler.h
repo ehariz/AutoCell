@@ -64,10 +64,6 @@ public:
         empty, ///< Only empty cells
         random, ///< Random cells
         symetric ///< Random cells but with vertical symetry (on the 1st dimension component)
-<<<<<<< HEAD
-
-=======
->>>>>>> Documentation
     };
 
     CellHandler(const QString filename);
