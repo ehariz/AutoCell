@@ -229,6 +229,7 @@ void CellHandler::print(std::ostream &stream)
             }
         }
     }
+
 }
 
 /** \fn CellHandler::iterator CellHandler::begin()
