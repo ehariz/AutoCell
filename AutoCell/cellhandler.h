@@ -47,6 +47,8 @@ public:
         bool operator!=(bool finished) const { return (m_finished != finished); }
         unsigned int changedDimension() const;
 
+
+
     private:
         const CellHandler *m_handler; ///< CellHandler to go through
         QVector<unsigned int> m_position; ///< Current position of the iterator
@@ -70,6 +72,7 @@ public:
 
     bool save(QString filename);
     void generate(generationTypes type, unsigned int stateMax = 1, unsigned short density = 50);
+    void print(std::ostream &stream);
 
     iterator begin();
     bool end();
