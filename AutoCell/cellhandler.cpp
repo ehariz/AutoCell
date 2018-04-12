@@ -19,6 +19,9 @@
  * \endcode
  *
  * \param filename Json file which contains the description of all the cells
+ * \throw QString Unreadable file
+ * \throw QString Empty file
+ * \throw QString Not valid file
  */
 CellHandler::CellHandler(const QString filename)
 {
@@ -50,6 +53,16 @@ CellHandler::CellHandler(const QString filename)
 
 }
 
+/** \fn CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes type, unsigned int stateMax, unsigned int density)
+ * \brief Construct a CellHandler of the given dimension
+ *
+ * If generationTypes is given, the CellHandler won't be empty.
+ *
+ * \param dimensions Dimensions of the CellHandler
+ * \param type Generation type, empty by default
+ * \param stateMax Generate states between 0 and stateMax
+ * \param density Average (%) of non-zeros
+ */
 CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes type, unsigned int stateMax, unsigned int density)
 {
     m_dimensions = dimensions;
@@ -109,6 +122,14 @@ void CellHandler::nextStates()
     }
 }
 
+/** \fn bool CellHandler::save(QString filename)
+ * \brief Save the CellHandler current configuration in the file given
+ *
+ * \param filename Path to the file
+ * \return False if there was a problem
+ *
+ * \throw QString Impossible to open the file
+ */
 bool CellHandler::save(QString filename)
 {
     QFile saveFile(filename);
@@ -140,8 +161,16 @@ bool CellHandler::save(QString filename)
     saveFile.write(saveDoc.toJson());
 
     saveFile.close();
+    return true;
 }
 
+/** \fn void CellHandler::generate(CellHandler::generationTypes type, unsigned int stateMax, unsigned short density)
+ * \brief Replace Cell values by random values (symetric or not)
+ *
+ * \param type Type of random generation
+ * \param stateMax Generate states between 0 and stateMax
+ * \param density Average (%) of non-zeros
+ */
 void CellHandler::generate(CellHandler::generationTypes type, unsigned int stateMax, unsigned short density)
 {
     if (type == random)
@@ -206,7 +235,11 @@ void CellHandler::generate(CellHandler::generationTypes type, unsigned int state
     }
 }
 
-
+/** \fn void CellHandler::print(std::ostream &stream)
+ * \brief Print in the given stream the CellHandler
+ *
+ * \param stream Stream to print into
+ */
 void CellHandler::print(std::ostream &stream)
 {
     QVector<unsigned int> position;
