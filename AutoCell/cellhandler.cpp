@@ -52,6 +52,7 @@ CellHandler::CellHandler(const QString filename)
 
 
 }
+
 /** \fn CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes type, unsigned int stateMax, unsigned int density)
  * \brief Construct a CellHandler of the given dimension
  *
@@ -254,9 +255,15 @@ void CellHandler::print(std::ostream &stream)
         stream << it->getState() << " ";
     }
 
-
 }
 
+/** \fn void CellHandler::generate(CellHandler::generationTypes type, unsigned int stateMax, unsigned short density)
+ * \brief Replace Cell values by random values (symetric or not)
+ *
+ * \param type Type of random generation
+ * \param stateMax Generate states between 0 and stateMax
+ * \param density Average (%) of non-zeros
+ */
 void CellHandler::generate(CellHandler::generationTypes type, unsigned int stateMax, unsigned short density)
 {
     if (type == random)
@@ -321,7 +328,11 @@ void CellHandler::generate(CellHandler::generationTypes type, unsigned int state
     }
 }
 
-
+/** \fn void CellHandler::print(std::ostream &stream)
+ * \brief Print in the given stream the CellHandler
+ *
+ * \param stream Stream to print into
+ */
 void CellHandler::print(std::ostream &stream)
 {
     QVector<unsigned int> position;
