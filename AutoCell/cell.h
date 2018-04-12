@@ -14,6 +14,7 @@ public:
 
     void setState(unsigned int state);
     void validState();
+    void forceState(unsigned int state);
     unsigned int getState() const;
 
     bool addNeighbour(const Cell* neighbour);
