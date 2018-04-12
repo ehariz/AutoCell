@@ -190,8 +190,7 @@ void CellHandler::generate(CellHandler::generationTypes type, unsigned int state
                  state = (float)(generator.generateDouble()*stateMax) +1;
             if (state > stateMax)
                 state = stateMax;
-            m_cells.value(position)->setState(state);
-            m_cells.value(position)->validState();
+            m_cells.value(position)->forceState(state);
 
             positionIncrement(position);
         }
@@ -219,14 +218,12 @@ void CellHandler::generate(CellHandler::generationTypes type, unsigned int state
                 if (state > stateMax)
                     state = stateMax;
                 savedStates.push_back(state);
-                m_cells.value(position)->setState(state);
-                m_cells.value(position)->validState();
+                m_cells.value(position)->forceState(state);
             }
             else
             {
                 unsigned int i = savedStates.size() - (j % m_dimensions.at(0) - (m_dimensions.at(0)-1)/2 + (m_dimensions.at(0) % 2 == 0 ? 0 : 1));
-                m_cells.value(position)->setState(savedStates.at(i));
-                m_cells.value(position)->validState();
+                m_cells.value(position)->forceState(savedStates.at(i));
             }
             positionIncrement(position);
 

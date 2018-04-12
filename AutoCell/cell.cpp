@@ -35,6 +35,11 @@ void Cell::validState()
     m_state = m_nextState;
 }
 
+void Cell::forceState(unsigned int state)
+{
+    m_state = m_nextState = state;
+}
+
 /** \fn unsigned int Cell::getState() const
  * \brief Access current cell state
  */
