@@ -335,25 +335,11 @@ void CellHandler::generate(CellHandler::generationTypes type, unsigned int state
  */
 void CellHandler::print(std::ostream &stream)
 {
-    QVector<unsigned int> position;
-    for (unsigned short i = 0; i < m_dimensions.size(); i++)
+    for (iterator it = begin(); it != end(); ++it)
     {
-        position.push_back(0);
-    }
-    for (unsigned int j = 0; j < m_cells.size(); j++)
-    {
-        stream << m_cells.value(position)->getState() << " ";
-        position.replace(0, position.at(0)+1);
-        for (unsigned short i = 0; i < m_dimensions.size(); i++)
-        {
-            if (position.at(i) >= m_dimensions.at(i))
-            {
-                position.replace(i, 0);
-                stream << std::endl;
-                if (i + 1 != m_dimensions.size())
-                    position.replace(i+1, position.at(i+1)+1);
-            }
-        }
+        for (unsigned int d = 0; d < it.changedDimension(); d++)
+            stream << std::endl;
+        stream << it->getState() << " ";
     }
 
 }
