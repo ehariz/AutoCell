@@ -35,6 +35,13 @@ void Cell::validState()
     m_state = m_nextState;
 }
 
+/** \fn void Cell::forceState(unsigned int state)
+ * \brief Force the state change.
+ *
+ * Is equivalent to setState followed by validState
+ *
+ * \param state New state
+ */
 void Cell::forceState(unsigned int state)
 {
     m_state = m_nextState = state;

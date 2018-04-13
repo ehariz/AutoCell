@@ -72,6 +72,7 @@ public:
     virtual ~CellHandler();
 
     Cell* getCell(const QVector<unsigned int> position) const;
+    QVector<unsigned int> getDimensions();
     void nextStates();
 
     bool save(QString filename);

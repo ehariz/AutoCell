@@ -110,6 +110,14 @@ Cell *CellHandler::getCell(const QVector<unsigned int> position) const
     return m_cells.value(position);
 }
 
+/** \fn QVector<unsigned int> CellHandler::getDimensions()
+ * \brief Accessor of m_dimensions
+ */
+QVector<unsigned int> CellHandler::getDimensions()
+{
+    return m_dimensions;
+}
+
 /** \fn void CellHandler::nextStates()
  * \brief Valid the state of all cells
  *
