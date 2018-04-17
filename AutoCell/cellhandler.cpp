@@ -169,7 +169,6 @@ bool CellHandler::save(QString filename)
     saveFile.write(saveDoc.toJson());
 
     saveFile.close();
-
     return true;
 }
 
