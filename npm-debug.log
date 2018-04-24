@@ -1,0 +1,168 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   'cd',
+1 verbose cli   'FirstProject' ]
+2 info using npm@3.10.10
+3 info using node@v6.11.2
+4 verbose config Skipping project config: /Users/elias/.npmrc. (matches userconfig)
+5 silly loadCurrentTree Starting
+6 silly install loadCurrentTree
+7 silly install readLocalPackageData
+8 silly fetchPackageMetaData cd
+9 silly fetchPackageMetaData FirstProject
+10 silly fetchNamedPackageData cd
+11 silly mapToRegistry name cd
+12 silly mapToRegistry using default registry
+13 silly mapToRegistry registry https://registry.npmjs.org/
+14 silly mapToRegistry data Result {
+14 silly mapToRegistry   raw: 'cd',
+14 silly mapToRegistry   scope: null,
+14 silly mapToRegistry   escapedName: 'cd',
+14 silly mapToRegistry   name: 'cd',
+14 silly mapToRegistry   rawSpec: '',
+14 silly mapToRegistry   spec: 'latest',
+14 silly mapToRegistry   type: 'tag' }
+15 silly mapToRegistry uri https://registry.npmjs.org/cd
+16 silly fetchNamedPackageData FirstProject
+17 silly mapToRegistry name FirstProject
+18 silly mapToRegistry using default registry
+19 silly mapToRegistry registry https://registry.npmjs.org/
+20 silly mapToRegistry data Result {
+20 silly mapToRegistry   raw: 'FirstProject',
+20 silly mapToRegistry   scope: null,
+20 silly mapToRegistry   escapedName: 'FirstProject',
+20 silly mapToRegistry   name: 'FirstProject',
+20 silly mapToRegistry   rawSpec: '',
+20 silly mapToRegistry   spec: 'latest',
+20 silly mapToRegistry   type: 'tag' }
+21 silly mapToRegistry uri https://registry.npmjs.org/FirstProject
+22 verbose request uri https://registry.npmjs.org/FirstProject
+23 verbose request no auth needed
+24 info attempt registry request try #1 at 17:21:26
+25 verbose request id 8cbdfd8fa7d729d6
+26 http request GET https://registry.npmjs.org/FirstProject
+27 verbose request uri https://registry.npmjs.org/cd
+28 verbose request no auth needed
+29 info attempt registry request try #1 at 17:21:26
+30 http request GET https://registry.npmjs.org/cd
+31 http 200 https://registry.npmjs.org/cd
+32 verbose headers { 'content-type': 'application/json; charset=UTF-8',
+32 verbose headers   server: 'UploadServer',
+32 verbose headers   'cache-control': 'max-age=300',
+32 verbose headers   'last-modified': 'Thu, 19 Jan 2017 16:13:28 GMT',
+32 verbose headers   etag: '"5880e5a8-5449"',
+32 verbose headers   'x-npm-region': 'EU-West',
+32 verbose headers   'content-encoding': 'gzip',
+32 verbose headers   'content-length': '2152',
+32 verbose headers   'accept-ranges': 'bytes',
+32 verbose headers   date: 'Sat, 14 Apr 2018 15:21:26 GMT',
+32 verbose headers   via: '1.1 varnish',
+32 verbose headers   age: '0',
+32 verbose headers   connection: 'keep-alive',
+32 verbose headers   'x-served-by': 'cache-cdg8742-CDG',
+32 verbose headers   'x-cache': 'MISS',
+32 verbose headers   'x-cache-hits': '0',
+32 verbose headers   'x-timer': 'S1523719286.420245,VS0,VE218',
+32 verbose headers   vary: 'Accept-Encoding, Accept' }
+33 silly get cb [ 200,
+33 silly get   { 'content-type': 'application/json; charset=UTF-8',
+33 silly get     server: 'UploadServer',
+33 silly get     'cache-control': 'max-age=300',
+33 silly get     'last-modified': 'Thu, 19 Jan 2017 16:13:28 GMT',
+33 silly get     etag: '"5880e5a8-5449"',
+33 silly get     'x-npm-region': 'EU-West',
+33 silly get     'content-encoding': 'gzip',
+33 silly get     'content-length': '2152',
+33 silly get     'accept-ranges': 'bytes',
+33 silly get     date: 'Sat, 14 Apr 2018 15:21:26 GMT',
+33 silly get     via: '1.1 varnish',
+33 silly get     age: '0',
+33 silly get     connection: 'keep-alive',
+33 silly get     'x-served-by': 'cache-cdg8742-CDG',
+33 silly get     'x-cache': 'MISS',
+33 silly get     'x-cache-hits': '0',
+33 silly get     'x-timer': 'S1523719286.420245,VS0,VE218',
+33 silly get     vary: 'Accept-Encoding, Accept' } ]
+34 verbose get saving cd to /Users/elias/.npm/registry.npmjs.org/cd/.cache.json
+35 verbose correctMkdir /Users/elias/.npm correctMkdir not in flight; initializing
+36 http 404 https://registry.npmjs.org/FirstProject
+37 verbose headers { 'content-type': 'application/json',
+37 verbose headers   'cache-control': 'max-age=0',
+37 verbose headers   'content-length': '2',
+37 verbose headers   'accept-ranges': 'bytes',
+37 verbose headers   date: 'Sat, 14 Apr 2018 15:21:27 GMT',
+37 verbose headers   via: '1.1 varnish',
+37 verbose headers   connection: 'keep-alive',
+37 verbose headers   'x-served-by': 'cache-cdg8738-CDG',
+37 verbose headers   'x-cache': 'MISS',
+37 verbose headers   'x-cache-hits': '0',
+37 verbose headers   'x-timer': 'S1523719286.416729,VS0,VE1137',
+37 verbose headers   vary: 'Accept-Encoding' }
+38 silly get cb [ 404,
+38 silly get   { 'content-type': 'application/json',
+38 silly get     'cache-control': 'max-age=0',
+38 silly get     'content-length': '2',
+38 silly get     'accept-ranges': 'bytes',
+38 silly get     date: 'Sat, 14 Apr 2018 15:21:27 GMT',
+38 silly get     via: '1.1 varnish',
+38 silly get     connection: 'keep-alive',
+38 silly get     'x-served-by': 'cache-cdg8738-CDG',
+38 silly get     'x-cache': 'MISS',
+38 silly get     'x-cache-hits': '0',
+38 silly get     'x-timer': 'S1523719286.416729,VS0,VE1137',
+38 silly get     vary: 'Accept-Encoding' } ]
+39 silly fetchPackageMetaData Error: Registry returned 404 for GET on https://registry.npmjs.org/FirstProject
+39 silly fetchPackageMetaData     at makeError (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:302:12)
+39 silly fetchPackageMetaData     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:280:14)
+39 silly fetchPackageMetaData     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:210:14)
+39 silly fetchPackageMetaData     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:187:22)
+39 silly fetchPackageMetaData     at emitTwo (events.js:106:13)
+39 silly fetchPackageMetaData     at Request.emit (events.js:191:7)
+39 silly fetchPackageMetaData     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1048:10)
+39 silly fetchPackageMetaData     at emitOne (events.js:96:13)
+39 silly fetchPackageMetaData     at Request.emit (events.js:188:7)
+39 silly fetchPackageMetaData     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:969:12)
+39 silly fetchPackageMetaData  error for FirstProject { Error: Registry returned 404 for GET on https://registry.npmjs.org/FirstProject
+39 silly fetchPackageMetaData     at makeError (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:302:12)
+39 silly fetchPackageMetaData     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:280:14)
+39 silly fetchPackageMetaData     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:210:14)
+39 silly fetchPackageMetaData     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:187:22)
+39 silly fetchPackageMetaData     at emitTwo (events.js:106:13)
+39 silly fetchPackageMetaData     at Request.emit (events.js:191:7)
+39 silly fetchPackageMetaData     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1048:10)
+39 silly fetchPackageMetaData     at emitOne (events.js:96:13)
+39 silly fetchPackageMetaData     at Request.emit (events.js:188:7)
+39 silly fetchPackageMetaData     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:969:12) pkgid: 'FirstProject', statusCode: 404, code: 'E404' }
+40 silly rollbackFailedOptional Starting
+41 silly rollbackFailedOptional Finishing
+42 silly runTopLevelLifecycles Finishing
+43 silly install printInstalled
+44 verbose stack Error: Registry returned 404 for GET on https://registry.npmjs.org/FirstProject
+44 verbose stack     at makeError (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:302:12)
+44 verbose stack     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:280:14)
+44 verbose stack     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:210:14)
+44 verbose stack     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:187:22)
+44 verbose stack     at emitTwo (events.js:106:13)
+44 verbose stack     at Request.emit (events.js:191:7)
+44 verbose stack     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1048:10)
+44 verbose stack     at emitOne (events.js:96:13)
+44 verbose stack     at Request.emit (events.js:188:7)
+44 verbose stack     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:969:12)
+45 verbose statusCode 404
+46 verbose pkgid FirstProject
+47 verbose cwd /Users/elias/Documents/C++/LO21/Projet/projet_LO21
+48 error Darwin 17.5.0
+49 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "cd" "FirstProject"
+50 error node v6.11.2
+51 error npm  v3.10.10
+52 error code E404
+53 error 404 Registry returned 404 for GET on https://registry.npmjs.org/FirstProject
+54 error 404
+55 error 404 'FirstProject' is not in the npm registry.
+56 error 404 Your package name is not valid, because
+57 error 404 1. name can no longer contain capital letters
+58 error 404 Note that you can also install from a
+59 error 404 tarball, folder, http url, or git url.
+60 verbose exit [ 1, true ]

@@ -3,10 +3,14 @@
 
 #include <QMainWindow>
 #include <QtWidgets>
+#include "cellhandler.h"
+#include "creationdialog.h"
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
+    CellHandler *m_cellHandler;
 
     QIcon m_fastBackwardIcon;
     QIcon m_fastForwardIcon;
@@ -15,6 +19,7 @@ class MainWindow : public QMainWindow
     QIcon m_newIcon;
     QIcon m_saveIcon;
     QIcon m_openIcon;
+    QIcon m_resetIcon;
 
     QAction *m_playPause;
     QAction *m_nextState;
@@ -24,15 +29,28 @@ class MainWindow : public QMainWindow
     QAction *m_openAutomaton;
     QAction *m_saveAutomaton;
     QAction *m_newAutomaton;
+    QAction *m_resetAutomaton;
 
-    QLineEdit *m_jumpSpeed;
+    QToolButton *m_playPauseBt;
+    QToolButton *m_nextStateBt;
+    QToolButton *m_previousStateBt;
+    QToolButton *m_fastForwardBt;
+    QToolButton *m_fastBackwardBt;
+    QToolButton *m_openAutomatonBt;
+    QToolButton *m_saveAutomatonBt;
+    QToolButton *m_newAutomatonBt;
+    QToolButton *m_resetBt;
+
+
+    QSpinBox *m_jumpSpeed;
     QLabel *m_speedLabel;
 
     QToolBar *m_toolBar;
 
     QTableWidget *m_Board;
 
-    unsigned int m_boardSize = 25;
+    unsigned int m_boardHSize = 25;
+    unsigned int m_boardVSize = 25;
     unsigned int m_cellSize = 25;
 
     void createIcons();
@@ -40,13 +58,24 @@ class MainWindow : public QMainWindow
     void createToolBar();
     void createBoard();
 
+    void nextState();
+    void updateBoard();
+
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
 
+
 signals:
 
 public slots:
+    void openFile();
+    void saveToFile();
+    void openCreationWindow();
+    void setCellHandler(const QVector<unsigned int> dimensions,
+                        CellHandler::generationTypes type = CellHandler::generationTypes::empty,
+                        unsigned int stateMax = 1, unsigned int density = 20);
+
 };
 
 #endif // MAINWINDOW_H

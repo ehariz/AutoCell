@@ -47,6 +47,8 @@ public:
         bool operator!=(bool finished) const { return (m_finished != finished); }
         unsigned int changedDimension() const;
 
+
+
     private:
         const CellHandler *m_handler; ///< CellHandler to go through
         QVector<unsigned int> m_position; ///< Current position of the iterator
@@ -55,11 +57,27 @@ public:
         unsigned int m_changedDimension; ///< Save the number of dimension change
     };
 
-    CellHandler(QString filename);
+    /** \enum generationTypes
+     * \brief Type of random generation
+     */
+    enum generationTypes {
+        empty, ///< Only empty cells
+        random, ///< Random cells
+        symetric ///< Random cells but with vertical symetry (on the 1st dimension component)
+    };
+
+    CellHandler(const QString filename);
+    CellHandler(const QVector<unsigned int> dimensions, generationTypes type = empty, unsigned int stateMax = 1, unsigned int density = 20);
     virtual ~CellHandler();
 
     Cell* getCell(const QVector<unsigned int> position) const;
+    QVector<unsigned int> getDimensions();
     void nextStates();
+
+    bool save(QString filename);
+
+    void generate(generationTypes type, unsigned int stateMax = 1, unsigned short density = 50);
+    void print(std::ostream &stream);
 
     iterator begin();
     bool end();

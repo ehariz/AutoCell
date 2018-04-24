@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-
+#include <iostream>
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     createIcons();
@@ -7,9 +7,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createToolBar();
     createBoard();
 
-    setCentralWidget(m_Board);
+
     setMinimumSize(500,500);
     setWindowTitle("AutoCell");
+
+    m_cellHandler = NULL;
 }
 
 void MainWindow::createIcons(){
@@ -23,6 +25,7 @@ void MainWindow::createIcons(){
     QPixmap openPm(":/icons/icons/open.svg");
     QPixmap savePm(":/icons/icons/save.svg");
     QPixmap pausePm(":/icons/icons/pause.svg");
+    QPixmap resetPm(":/icons/icons/reset.svg");
 
     m_fastBackwardIcon.addPixmap(fastBackwardPm, QIcon::Normal, QIcon::Off);
     m_fastBackwardIcon.addPixmap(fastBackwardHoveredPm, QIcon::Active, QIcon::Off);
@@ -34,6 +37,7 @@ void MainWindow::createIcons(){
     m_newIcon.addPixmap(newPm, QIcon::Normal, QIcon::Off);
     m_saveIcon.addPixmap(savePm, QIcon::Normal, QIcon::Off);
     m_openIcon.addPixmap(openPm, QIcon::Normal, QIcon::Off);
+    m_resetIcon.addPixmap(resetPm, QIcon::Normal, QIcon::Off);
 }
 
 void MainWindow::createActions(){
@@ -43,48 +47,134 @@ void MainWindow::createActions(){
     m_saveAutomaton = new QAction(m_saveIcon, tr("Save automaton"), this);
     m_newAutomaton = new QAction(m_newIcon, tr("New automaton"), this);
     m_openAutomaton = new QAction(m_openIcon, tr("Open automaton"), this);
+    m_resetAutomaton = new QAction(m_resetIcon, tr("Reset automaton"), this);
+
+
+
+    m_fastBackwardBt = new QToolButton();
+    m_fastForwardBt = new QToolButton();
+    m_playPauseBt = new QToolButton();
+    m_saveAutomatonBt = new QToolButton();
+    m_newAutomatonBt = new QToolButton();
+    m_openAutomatonBt = new QToolButton();
+    m_resetBt = new QToolButton();
+
+    m_fastBackwardBt->setDefaultAction(m_fastBackward);
+    m_fastForwardBt->setDefaultAction(m_fastForward);
+    m_playPauseBt->setDefaultAction(m_playPause);
+    m_saveAutomatonBt->setDefaultAction(m_saveAutomaton);
+    m_newAutomatonBt->setDefaultAction(m_newAutomaton);
+    m_openAutomatonBt->setDefaultAction(m_openAutomaton);
+    m_resetBt->setDefaultAction(m_resetAutomaton);
+
+    m_fastBackwardBt->setIconSize(QSize(30,30));
+    m_fastForwardBt->setIconSize(QSize(30,30));
+    m_playPauseBt->setIconSize(QSize(30,30));
+    m_saveAutomatonBt->setIconSize(QSize(30,30));
+    m_newAutomatonBt->setIconSize(QSize(30,30));
+    m_openAutomatonBt->setIconSize(QSize(30,30));
+    m_resetBt->setIconSize(QSize(30,30));
+
+    connect(m_openAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(openFile()));
+    connect(m_newAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(openCreationWindow()));
+
 }
 
 void MainWindow::createToolBar(){
-    QToolBar *m_toolBar = addToolBar("toolbar");
-    QLabel *m_speedLabel = new QLabel(tr("  Speed :  "));
-    QLineEdit *m_jumpSpeed = new QLineEdit();
+    QToolBar *m_toolBar = new QToolBar(this);
+    QLabel *m_speedLabel = new QLabel(tr("Speed : "));
+    QSpinBox *m_jumpSpeed = new QSpinBox(this);
+    m_speedLabel->setFixedWidth(50);
     m_jumpSpeed->setFixedWidth(40);
     m_toolBar->setMovable(false);
 
-    m_toolBar->addWidget(new QLabel("   "));
-    m_toolBar->addAction(m_newAutomaton);
-    m_toolBar->addAction(m_openAutomaton);
-    m_toolBar->addAction(m_saveAutomaton);
-    m_toolBar->addWidget(new QLabel("   "));
-    m_toolBar->addSeparator();
-    m_toolBar->addAction(m_fastBackward);
-    m_toolBar->addAction(m_playPause);
-    m_toolBar->addAction(m_fastForward);
-    m_toolBar->addSeparator();
-    m_toolBar->addWidget(m_speedLabel);
-    m_toolBar->addWidget(m_jumpSpeed);
+    QHBoxLayout *tbLayout = new QHBoxLayout(this);
+    tbLayout->addWidget(m_newAutomatonBt, Qt::AlignCenter);
+    tbLayout->addWidget(m_openAutomatonBt, Qt::AlignCenter);
+    tbLayout->addWidget(m_saveAutomatonBt, Qt::AlignCenter);
+    tbLayout->addWidget(m_fastBackwardBt, Qt::AlignCenter);
+    tbLayout->addWidget(m_playPauseBt, Qt::AlignCenter);
+    tbLayout->addWidget(m_fastForwardBt, Qt::AlignCenter);
+    tbLayout->addWidget(m_speedLabel, Qt::AlignCenter);
+    tbLayout->addWidget(m_jumpSpeed, Qt::AlignCenter);
+    tbLayout->addWidget(m_resetBt, Qt::AlignCenter);
+
+
+    tbLayout->setAlignment(Qt::AlignCenter);
+    QWidget* wrapper = new QWidget();
+    wrapper->setLayout(tbLayout);
+    m_toolBar->addWidget(wrapper);
+    addToolBar(m_toolBar);
 
 
 }
 
 void MainWindow::createBoard(){
-    m_Board = new QTableWidget(m_boardSize, m_boardSize, this);
-        m_Board->setFixedSize(m_boardSize*m_cellSize, m_boardSize*m_cellSize);
+    m_Board = new QTableWidget(m_boardVSize, m_boardHSize, this);
+        m_Board->setFixedSize(m_boardVSize*m_cellSize, m_boardHSize*m_cellSize);
         m_Board->horizontalHeader()->setVisible(false);
         m_Board->verticalHeader()->setVisible(false);
         m_Board->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         m_Board->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        m_Board->setEditTriggers(QAbstractItemView::NoEditTriggers); // désactive la modification par l'utilisateur
-        // on va créer les items, on utilise 2 boucles car on parcourt un tableau 2 m_boardSizes
-        for(unsigned int row = 0; row < m_boardSize; ++row) {
-            // fixe les m_boardSizes des rows et des cols
+        m_Board->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        for(unsigned int row = 0; row < m_boardVSize; ++row) {
             m_Board->setColumnWidth(row, m_cellSize);
             m_Board->setRowHeight(row, m_cellSize);
-            for(unsigned int col = 0; col < m_boardSize; ++col) {
+            for(unsigned int col = 0; col < m_boardHSize; ++col) {
                 m_Board->setItem(row, col, new QTableWidgetItem(""));
                 m_Board->item(row, col)->setBackgroundColor("white");
                 m_Board->item(row, col)->setTextColor("white");
             }
         }
+     setCentralWidget(m_Board);
+}
+
+
+void MainWindow::openFile(){
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Cell file"), ".",
+                                                    tr("Automaton cell files (*.atc)"));
+    if(!fileName.isEmpty()){
+        m_cellHandler = new CellHandler(fileName);
+    }
+}
+
+void MainWindow::saveToFile(){
+    if(m_cellHandler != NULL){
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Save Automaton"),
+                                                        ".", tr("Automaton Cells file (*.atc"));
+
+    }
+}
+
+void MainWindow::openCreationWindow(){
+    CreationDialog *window = new CreationDialog(this);
+    connect(window, SIGNAL(settingsFilled(QVector<uint>,CellHandler::generationTypes,uint,uint)),
+            this, SLOT(setCellHandler(QVector<uint>,CellHandler::generationTypes,uint,uint)));
+    window->show();
+}
+
+void MainWindow::setCellHandler(const QVector<unsigned int> dimensions,
+                                CellHandler::generationTypes type,
+                                unsigned int stateMax, unsigned int density){
+    m_cellHandler = new CellHandler(dimensions, type, stateMax, density);
+    m_boardVSize = dimensions[0];
+    m_boardHSize = dimensions[1];
+    createBoard();
+    //if(m_cellHandler != NULL) std::cout << "New cellHandler for MainWindow ! \n";
+}
+
+void MainWindow::nextState(){
+    if(m_cellHandler == NULL){
+        QMessageBox msgBox;
+        msgBox.critical(0,"Error","Please create or import an Automaton first !");
+        msgBox.setFixedSize(500,200);
+    }
+    else{
+        m_cellHandler->nextStates();
+    }
+}
+
+void MainWindow::updateBoard(){
+    int i = 0;
+    int j = 0;
 }

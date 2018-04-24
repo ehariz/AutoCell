@@ -1,16 +1,19 @@
-QT += widgets
-
+QT += widgets core
 QMAKE_CXXFLAGS = -std=c++11
 QMAKE_LFLAGS = -std=c++11
 
 SOURCES += \
     main.cpp \
     cell.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    cellhandler.cpp \
+    creationdialog.cpp
 
 HEADERS += \
     cell.h \
-    mainwindow.h
+    mainwindow.h \
+    cellhandler.h \
+    creationdialog.h
 
 DISTFILES += \
     ../../../../../../Downloads/autoCell icons/fast-backward-full.svg \

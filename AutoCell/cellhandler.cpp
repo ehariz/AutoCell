@@ -1,6 +1,7 @@
 #include <iostream>
 #include "cellhandler.h"
 
+
 /** \fn CellHandler::CellHandler(QString filename)
  * \brief Construct all the cells from the json file given
  *
@@ -19,8 +20,11 @@
  * \endcode
  *
  * \param filename Json file which contains the description of all the cells
+ * \throw QString Unreadable file
+ * \throw QString Empty file
+ * \throw QString Not valid file
  */
-CellHandler::CellHandler(QString filename)
+CellHandler::CellHandler(const QString filename)
 {
     QFile loadFile(filename);
     if (!loadFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -50,6 +54,44 @@ CellHandler::CellHandler(QString filename)
 
 }
 
+/** \fn CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes type, unsigned int stateMax, unsigned int density)
+ * \brief Construct a CellHandler of the given dimension
+ *
+ * If generationTypes is given, the CellHandler won't be empty.
+ *
+ * \param dimensions Dimensions of the CellHandler
+ * \param type Generation type, empty by default
+ * \param stateMax Generate states between 0 and stateMax
+ * \param density Average (%) of non-zeros
+ */
+CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes type, unsigned int stateMax, unsigned int density)
+{
+    m_dimensions = dimensions;
+    QVector<unsigned int> position;
+    unsigned int size = 1;
+
+    // Set position vector to 0
+
+    for (unsigned short i = 0; i < m_dimensions.size(); i++)
+    {
+        position.push_back(0);
+        size *= m_dimensions.at(i);
+    }
+
+
+    // Creation of cells
+    for (unsigned int j = 0; j < size; j++)
+    {
+        m_cells.insert(position, new Cell(0));
+
+        positionIncrement(position);
+    }
+
+    if (type != empty)
+        generate(type, stateMax, density);
+
+}
+
 /** \fn CellHandler::~CellHandler()
  * \brief Destroys all cells in the CellHandler
  */
@@ -69,6 +111,14 @@ Cell *CellHandler::getCell(const QVector<unsigned int> position) const
     return m_cells.value(position);
 }
 
+/** \fn QVector<unsigned int> CellHandler::getDimensions()
+ * \brief Accessor of m_dimensions
+ */
+QVector<unsigned int> CellHandler::getDimensions()
+{
+    return m_dimensions;
+}
+
 /** \fn void CellHandler::nextStates()
  * \brief Valid the state of all cells
  *
@@ -79,6 +129,132 @@ void CellHandler::nextStates()
     {
         it.value()->validState();
     }
+}
+
+/** \fn bool CellHandler::save(QString filename)
+ * \brief Save the CellHandler current configuration in the file given
+ *
+ * \param filename Path to the file
+ * \return False if there was a problem
+ *
+ * \throw QString Impossible to open the file
+ */
+bool CellHandler::save(QString filename)
+{
+    QFile saveFile(filename);
+    if (!saveFile.open(QIODevice::WriteOnly)) {
+        qWarning("Couldn't create or open given file.");
+        throw QString(QObject::tr("Couldn't create or open given file"));
+    }
+
+    QJsonObject json;
+    QString stringDimension;
+    // Creation of the dimension string
+    for (unsigned int i = 0; i < m_dimensions.size(); i++)
+    {
+        if (i != 0)
+            stringDimension.push_back("x");
+        stringDimension.push_back(QString::number(m_dimensions.at(i)));
+    }
+    json["dimensions"] = QJsonValue(stringDimension);
+
+    QJsonArray cells;
+    for (CellHandler::iterator it = begin(); it != end(); ++it)
+    {
+        cells.append(QJsonValue((int)it->getState()));
+    }
+    json["cells"] = cells;
+
+
+    QJsonDocument saveDoc(json);
+    saveFile.write(saveDoc.toJson());
+
+    saveFile.close();
+    return true;
+}
+
+/** \fn void CellHandler::generate(CellHandler::generationTypes type, unsigned int stateMax, unsigned short density)
+ * \brief Replace Cell values by random values (symetric or not)
+ *
+ * \param type Type of random generation
+ * \param stateMax Generate states between 0 and stateMax
+ * \param density Average (%) of non-zeros
+ */
+void CellHandler::generate(CellHandler::generationTypes type, unsigned int stateMax, unsigned short density)
+{
+    if (type == random)
+    {
+        QVector<unsigned int> position;
+        for (unsigned short i = 0; i < m_dimensions.size(); i++)
+        {
+            position.push_back(0);
+        }
+        QRandomGenerator generator((float)qrand()*(float)time_t()/RAND_MAX);
+        for (unsigned int j = 0; j < m_cells.size(); j++)
+        {
+            unsigned int state = 0;
+            // 0 have (1-density)% of chance of being generate
+            if (generator.generateDouble()*100.0 < density)
+                 state = (float)(generator.generateDouble()*stateMax) +1;
+            if (state > stateMax)
+                state = stateMax;
+            m_cells.value(position)->forceState(state);
+
+            positionIncrement(position);
+        }
+    }
+    else if (type == symetric)
+    {
+        QVector<unsigned int> position;
+        for (unsigned short i = 0; i < m_dimensions.size(); i++)
+        {
+            position.push_back(0);
+        }
+
+        QRandomGenerator generator((float)qrand()*(float)time_t()/RAND_MAX);
+        QVector<unsigned int> savedStates;
+        for (unsigned int j = 0; j < m_cells.size(); j++)
+        {
+            if (j % m_dimensions.at(0) == 0)
+                savedStates.clear();
+            if (j % m_dimensions.at(0) < (m_dimensions.at(0)+1) / 2)
+            {
+                unsigned int state = 0;
+                // 0 have (1-density)% of chance of being generate
+                if (generator.generateDouble()*100.0 < density)
+                    state = (float)(generator.generateDouble()*stateMax) +1;
+                if (state > stateMax)
+                    state = stateMax;
+                savedStates.push_back(state);
+                m_cells.value(position)->forceState(state);
+            }
+            else
+            {
+                unsigned int i = savedStates.size() - (j % m_dimensions.at(0) - (m_dimensions.at(0)-1)/2 + (m_dimensions.at(0) % 2 == 0 ? 0 : 1));
+                m_cells.value(position)->forceState(savedStates.at(i));
+            }
+            positionIncrement(position);
+
+
+        }
+
+    }
+}
+
+/** \fn void CellHandler::print(std::ostream &stream)
+ * \brief Print in the given stream the CellHandler
+ *
+ * \param stream Stream to print into
+ */
+void CellHandler::print(std::ostream &stream)
+{
+    for (iterator it = begin(); it != end(); ++it)
+    {
+        for (unsigned int d = 0; d < it.changedDimension(); d++)
+            stream << std::endl;
+        stream << it->getState() << " ";
+    }
+
 }
 
 /** \fn CellHandler::iterator CellHandler::begin()
@@ -104,7 +280,7 @@ bool CellHandler::end()
  *
  * Exemple of a way to print cell states :
  * \code
- * position.clear();
+ * QVector<unsigned int> position;
  * for (unsigned short i = 0; i < m_dimensions.size(); i++)
  * {
  *      position.push_back(0);
@@ -397,3 +573,4 @@ unsigned int CellHandler::iterator::changedDimension() const
 {
     return m_changedDimension;
 }
+
