@@ -77,13 +77,15 @@ void MainWindow::createActions(){
 
     connect(m_openAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(openFile()));
     connect(m_newAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(openCreationWindow()));
+    connect(m_fastForwardBt, SIGNAL(clicked(bool)), this, SLOT(forward()));
 
 }
 
 void MainWindow::createToolBar(){
-    QToolBar *m_toolBar = new QToolBar(this);
+    m_toolBar = new QToolBar(this);
     QLabel *m_speedLabel = new QLabel(tr("Speed : "));
-    QSpinBox *m_jumpSpeed = new QSpinBox(this);
+    m_jumpSpeed = new QSpinBox(this);
+    m_jumpSpeed->setValue(1);
     m_speedLabel->setFixedWidth(50);
     m_jumpSpeed->setFixedWidth(40);
     m_toolBar->setMovable(false);
@@ -123,7 +125,7 @@ void MainWindow::createBoard(){
             for(unsigned int col = 0; col < m_boardHSize; ++col) {
                 m_Board->setItem(row, col, new QTableWidgetItem(""));
                 m_Board->item(row, col)->setBackgroundColor("white");
-                m_Board->item(row, col)->setTextColor("white");
+                m_Board->item(row, col)->setTextColor("black");
             }
         }
      setCentralWidget(m_Board);
@@ -160,21 +162,57 @@ void MainWindow::setCellHandler(const QVector<unsigned int> dimensions,
     m_boardVSize = dimensions[0];
     m_boardHSize = dimensions[1];
     createBoard();
+    updateBoard();
     //if(m_cellHandler != NULL) std::cout << "New cellHandler for MainWindow ! \n";
 }
 
-void MainWindow::nextState(){
+void MainWindow::nextState(int n){
     if(m_cellHandler == NULL){
         QMessageBox msgBox;
         msgBox.critical(0,"Error","Please create or import an Automaton first !");
         msgBox.setFixedSize(500,200);
     }
     else{
-        m_cellHandler->nextStates();
+        for(unsigned int i = 0; i < n; i++) m_cellHandler->nextStates();
+        updateBoard();
     }
 }
 
 void MainWindow::updateBoard(){
-    int i = 0;
-    int j = 0;
+    if(m_cellHandler == NULL){
+        QMessageBox msgBox;
+        msgBox.critical(0,"Error","Please create or import an Automaton first !");
+        msgBox.setFixedSize(500,200);
+    }
+    else{
+        int i = 0;
+        int j = 0;
+        for (CellHandler::iterator it = m_cellHandler->begin(); it != m_cellHandler->end(); ++it){
+                //std::cout << i <<"," << j <<std::endl;
+                if(it.changedDimension() > 0){
+                    j = 0;
+                    i++;
+                    std::cout << std::endl;
+                }
+                m_Board->item(i,j)->setText(QString::number(it->getState()));
+
+                j++;
+        }
+        /*for(unsigned int i = 0; i<m_boardVSize; i++){
+            for(unsigned int j = 0; j<m_boardVSize; j++)
+               std::cout << m_Board->item(i,j)->text().toStdString();
+            std::cout << std::endl;
+        }*/
+        std::cout << "Updated Board :" << std::endl;
+        for (CellHandler::iterator it = m_cellHandler->begin(); it != m_cellHandler->end(); ++it){
+            for (unsigned int i = 0; i < it.changedDimension(); i++)
+                std::cout << std::endl;
+            std::cout << it->getState() << " ";
+        }
+    }
+
+}
+
+void MainWindow::forward(){
+    nextState(m_jumpSpeed->value());
 }

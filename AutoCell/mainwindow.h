@@ -58,8 +58,9 @@ class MainWindow : public QMainWindow
     void createToolBar();
     void createBoard();
 
-    void nextState();
+
     void updateBoard();
+    void nextState(int n);
 
 
 public:
@@ -75,6 +76,7 @@ public slots:
     void setCellHandler(const QVector<unsigned int> dimensions,
                         CellHandler::generationTypes type = CellHandler::generationTypes::empty,
                         unsigned int stateMax = 1, unsigned int density = 20);
+    void forward();
 
 };
 
