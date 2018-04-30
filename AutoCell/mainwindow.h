@@ -51,7 +51,7 @@ class MainWindow : public QMainWindow
 
     unsigned int m_boardHSize = 25;
     unsigned int m_boardVSize = 25;
-    unsigned int m_cellSize = 25;
+    unsigned int m_cellSize = 30;
 
     void createIcons();
     void createActions();

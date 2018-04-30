@@ -113,7 +113,7 @@ void MainWindow::createToolBar(){
 
 void MainWindow::createBoard(){
     m_Board = new QTableWidget(m_boardVSize, m_boardHSize, this);
-        m_Board->setFixedSize(m_boardVSize*m_cellSize, m_boardHSize*m_cellSize);
+        m_Board->setFixedSize( m_boardHSize*m_cellSize,m_boardVSize*m_cellSize);
         m_Board->horizontalHeader()->setVisible(false);
         m_Board->verticalHeader()->setVisible(false);
         m_Board->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -159,11 +159,16 @@ void MainWindow::setCellHandler(const QVector<unsigned int> dimensions,
                                 CellHandler::generationTypes type,
                                 unsigned int stateMax, unsigned int density){
     m_cellHandler = new CellHandler(dimensions, type, stateMax, density);
-    m_boardVSize = dimensions[0];
-    m_boardHSize = dimensions[1];
+    if(dimensions.size() > 1){
+        m_boardVSize = dimensions[0];
+        m_boardHSize = dimensions[1];
+    }
+    else{
+        m_boardVSize = 1;
+        m_boardHSize = dimensions[0];
+    }
     createBoard();
     updateBoard();
-    //if(m_cellHandler != NULL) std::cout << "New cellHandler for MainWindow ! \n";
 }
 
 void MainWindow::nextState(int n){
@@ -187,27 +192,14 @@ void MainWindow::updateBoard(){
     else{
         int i = 0;
         int j = 0;
-        for (CellHandler::iterator it = m_cellHandler->begin(); it != m_cellHandler->end(); ++it){
-                //std::cout << i <<"," << j <<std::endl;
+        for (CellHandler::iterator it = m_cellHandler->begin(); it != m_cellHandler->end() && it.changedDimension() < 2; ++it){
                 if(it.changedDimension() > 0){
-                    j = 0;
-                    i++;
+                    i = 0;
+                    j++;
                     std::cout << std::endl;
                 }
                 m_Board->item(i,j)->setText(QString::number(it->getState()));
-
-                j++;
-        }
-        /*for(unsigned int i = 0; i<m_boardVSize; i++){
-            for(unsigned int j = 0; j<m_boardVSize; j++)
-               std::cout << m_Board->item(i,j)->text().toStdString();
-            std::cout << std::endl;
-        }*/
-        std::cout << "Updated Board :" << std::endl;
-        for (CellHandler::iterator it = m_cellHandler->begin(); it != m_cellHandler->end(); ++it){
-            for (unsigned int i = 0; i < it.changedDimension(); i++)
-                std::cout << std::endl;
-            std::cout << it->getState() << " ";
+                i++;
         }
     }
 
