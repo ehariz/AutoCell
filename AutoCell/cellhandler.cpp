@@ -86,6 +86,8 @@ CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes
         positionIncrement(position);
     }
 
+    foundNeighbours();
+
     if (type != empty)
         generate(type, stateMax, density);
 
