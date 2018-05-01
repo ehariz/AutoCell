@@ -115,13 +115,15 @@ void MainWindow::createToolBar(){
 void MainWindow::createBoard(){
     m_Board = new QTableWidget(m_boardVSize, m_boardHSize, this);
         m_Board->setFixedSize(m_boardHSize*m_cellSize,m_boardVSize*m_cellSize);
+        //setMinimumSize(m_boardHSize*m_cellSize,100+m_boardVSize*m_cellSize);
         m_Board->horizontalHeader()->setVisible(false);
         m_Board->verticalHeader()->setVisible(false);
         m_Board->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         m_Board->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         m_Board->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        for(unsigned int col = 0; col < m_boardHSize; ++col)
+            m_Board->setColumnWidth(col, m_cellSize);
         for(unsigned int row = 0; row < m_boardVSize; ++row) {
-            m_Board->setColumnWidth(row, m_cellSize);
             m_Board->setRowHeight(row, m_cellSize);
             for(unsigned int col = 0; col < m_boardHSize; ++col) {
                 m_Board->setItem(row, col, new QTableWidgetItem(""));
@@ -129,7 +131,9 @@ void MainWindow::createBoard(){
                 m_Board->item(row, col)->setTextColor("black");
             }
         }
-     setCentralWidget(m_Board);
+     QScrollArea *scrollArea = new QScrollArea(this);
+     scrollArea->setWidget(m_Board);
+     setCentralWidget(scrollArea);
 }
 
 
