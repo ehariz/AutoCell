@@ -77,6 +77,7 @@ void MainWindow::createActions(){
 
     connect(m_openAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(openFile()));
     connect(m_newAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(openCreationWindow()));
+    connect(m_saveAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(saveToFile()));
     connect(m_fastForwardBt, SIGNAL(clicked(bool)), this, SLOT(forward()));
 
 }
@@ -113,7 +114,7 @@ void MainWindow::createToolBar(){
 
 void MainWindow::createBoard(){
     m_Board = new QTableWidget(m_boardVSize, m_boardHSize, this);
-        m_Board->setFixedSize( m_boardHSize*m_cellSize,m_boardVSize*m_cellSize);
+        m_Board->setFixedSize(m_boardHSize*m_cellSize,m_boardVSize*m_cellSize);
         m_Board->horizontalHeader()->setVisible(false);
         m_Board->verticalHeader()->setVisible(false);
         m_Board->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -137,6 +138,17 @@ void MainWindow::openFile(){
                                                     tr("Automaton cell files (*.atc)"));
     if(!fileName.isEmpty()){
         m_cellHandler = new CellHandler(fileName);
+        QVector<unsigned int> dimensions = m_cellHandler->getDimensions();
+        if(dimensions.size() > 1){
+            m_boardVSize = dimensions[0];
+            m_boardHSize = dimensions[1];
+        }
+        else{
+            m_boardVSize = 1;
+            m_boardHSize = dimensions[0];
+        }
+        createBoard();
+        updateBoard();
     }
 }
 
@@ -144,7 +156,13 @@ void MainWindow::saveToFile(){
     if(m_cellHandler != NULL){
         QString fileName = QFileDialog::getSaveFileName(this, tr("Save Automaton"),
                                                         ".", tr("Automaton Cells file (*.atc"));
+        m_cellHandler->save(fileName);
 
+    }
+    else{
+        QMessageBox msgBox;
+        msgBox.critical(0,"Error","Please create or import an Automaton first !");
+        msgBox.setFixedSize(500,200);
     }
 }
 
