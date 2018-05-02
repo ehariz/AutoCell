@@ -61,18 +61,45 @@ unsigned int Cell::getState() const
  * \param neighbour New neighbour
  * \return False if the neighbour already exists
  */
-bool Cell::addNeighbour(const Cell* neighbour)
+bool Cell::addNeighbour(const Cell* neighbour, const QVector<short> relativePosition)
 {
-    if (m_neighbours.count(neighbour))
+    if (m_neighbours.count(relativePosition))
         return false;
-    m_neighbours.push_back(neighbour);
+
+    m_neighbours.insert(relativePosition, neighbour);
     return true;
 }
 
-/** \fn QVector<const Cell*> Cell::getNeighbours() const
+/** \fn QMap<QVector<short>, const Cell *> Cell::getNeighbours() const
  * \brief Access neighbours list
+ *
+ * The map key is the relative position of the neighbour (like -1,0 for the cell just above)
  */
-QVector<const Cell*> Cell::getNeighbours() const
+QMap<QVector<short>, const Cell *> Cell::getNeighbours() const
 {
     return m_neighbours;
+}
+
+/** \fn const Cell *Cell::getNeighbour(QVector<short> relativePosition) const
+ * \brief Get the neighbour asked. If not existent, return nullptr
+ */
+const Cell *Cell::getNeighbour(QVector<short> relativePosition) const
+{
+    return m_neighbours.value(relativePosition, nullptr);
+}
+
+/** \fn QVector<short> Cell::getRelativePosition(const QVector<unsigned int> cellPosition, const QVector<unsigned int> neighbourPosition)
+ * \brief Get the relative position, as neighbourPosition minus cellPosition
+ */
+QVector<short> Cell::getRelativePosition(const QVector<unsigned int> cellPosition, const QVector<unsigned int> neighbourPosition)
+{
+    if (cellPosition.size() != neighbourPosition.size())
+    {
+        throw QString(QObject::tr("Different size of position vectors"));
+    }
+    QVector<short> relativePosition;
+    for (short i = 0; i < cellPosition.size(); i++)
+        relativePosition.push_back(neighbourPosition.at(i) - cellPosition.at(i));
+
+    return relativePosition;
 }

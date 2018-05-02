@@ -383,10 +383,10 @@ void CellHandler::foundNeighbours()
 
         // Adding neighbours
         for (unsigned int i = 0; i < listPosition.size(); i++)
-            m_cells.value(currentPosition)->addNeighbour(m_cells.value(listPosition.at(i)));
-
+            m_cells.value(currentPosition)->addNeighbour(m_cells.value(listPosition.at(i)), Cell::getRelativePosition(currentPosition, listPosition.at(i)));
         positionIncrement(currentPosition);
     }
+
 }
 
 /** \fn void CellHandler::positionIncrement(QVector<unsigned int> &pos, unsigned int value) const

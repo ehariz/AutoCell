@@ -17,14 +17,17 @@ public:
     void forceState(unsigned int state);
     unsigned int getState() const;
 
-    bool addNeighbour(const Cell* neighbour);
-    QVector<const Cell*> getNeighbours() const;
+    bool addNeighbour(const Cell* neighbour, const QVector<short> relativePosition);
+    QMap<QVector<short>, const Cell*> getNeighbours() const;
+    const Cell* getNeighbour(QVector<short> relativePosition) const;
+
+    static QVector<short> getRelativePosition(const QVector<unsigned int> cellPosition, const QVector<unsigned int> neighbourPosition);
 
 private:
     unsigned int m_state; ///< Current state
     unsigned int m_nextState; ///< Temporary state, before validation
 
-    QVector<const Cell*> m_neighbours; ///< Cell's neighbours
+    QMap<QVector<short>, const Cell*> m_neighbours; ///< Cell's neighbours. Key is the relative position of the neighbour
 };
 
 #endif // CELL_H
