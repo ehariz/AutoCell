@@ -115,7 +115,7 @@ Cell *CellHandler::getCell(const QVector<unsigned int> position) const
 /** \fn QVector<unsigned int> CellHandler::getDimensions()
  * \brief Accessor of m_dimensions
  */
-QVector<unsigned int> CellHandler::getDimensions()
+QVector<unsigned int> CellHandler::getDimensions() const
 {
     return m_dimensions;
 }
@@ -124,9 +124,9 @@ QVector<unsigned int> CellHandler::getDimensions()
  * \brief Valid the state of all cells
  *
  */
-void CellHandler::nextStates()
+void CellHandler::nextStates() const
 {
-    for (QMap<QVector<unsigned int>, Cell* >::iterator it = m_cells.begin(); it != m_cells.end(); ++it)
+    for (QMap<QVector<unsigned int>, Cell* >::const_iterator it = m_cells.begin(); it != m_cells.end(); ++it)
     {
         it.value()->validState();
     }
@@ -140,7 +140,7 @@ void CellHandler::nextStates()
  *
  * \throw QString Impossible to open the file
  */
-bool CellHandler::save(QString filename)
+bool CellHandler::save(QString filename) const
 {
     QFile saveFile(filename);
     if (!saveFile.open(QIODevice::WriteOnly)) {
@@ -247,7 +247,7 @@ void CellHandler::generate(CellHandler::generationTypes type, unsigned int state
  *
  * \param stream Stream to print into
  */
-void CellHandler::print(std::ostream &stream)
+void CellHandler::print(std::ostream &stream) const
 {
     for (iterator it = begin(); it != end(); ++it)
     {
@@ -261,7 +261,7 @@ void CellHandler::print(std::ostream &stream)
 /** \fn CellHandler::iterator CellHandler::begin()
  * \brief Give the iterator which corresponds to the current CellHandler
  */
-CellHandler::iterator CellHandler::begin()
+CellHandler::iterator CellHandler::begin() const
 {
     return iterator(this);
 }
@@ -271,7 +271,7 @@ CellHandler::iterator CellHandler::begin()
  *
  * See iterator::operator!=(bool finished) for further information.
  */
-bool CellHandler::end()
+bool CellHandler::end() const
 {
     return true;
 }

@@ -72,16 +72,16 @@ public:
     virtual ~CellHandler();
 
     Cell* getCell(const QVector<unsigned int> position) const;
-    QVector<unsigned int> getDimensions();
-    void nextStates();
+    QVector<unsigned int> getDimensions() const;
+    void nextStates() const;
 
-    bool save(QString filename);
+    bool save(QString filename) const;
 
     void generate(generationTypes type, unsigned int stateMax = 1, unsigned short density = 50);
-    void print(std::ostream &stream);
+    void print(std::ostream &stream) const;
 
-    iterator begin();
-    bool end();
+    iterator begin() const;
+    bool end() const;
 
 private:
     bool load(const QJsonObject &json);
