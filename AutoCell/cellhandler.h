@@ -11,21 +11,26 @@
 
 #include "cell.h"
 
-/** \class CellHandler
- * \brief Cell container and cell generator
+
+
+/** \brief Cell container and cell generator
  *
  * Generate cells from a json file.
  */
 class CellHandler
 {
-public:
-    /** \class iterator
-     * \brief Implementation of iterator design pattern
+
+    /** \brief Implementation of iterator design pattern with a template to generate iterator and const_iterator
+     * at the same time.
+     *
+     *
+     * Everywhere, T will be nor CellHandler nor const CellHandler and
+     * R will be nor Cell nor const Cell.
      *
      * Example of use:
      * \code
      * CellHandler handler("file.atc");
-     * for (CellHandler::iterator it = handler.begin(); it != handler.end(); ++it)
+     * for (CellHandler::const_iterator it = handler.begin(); it != handler.end(); ++it)
      * {
      *      for (unsigned int i = 0; i < it.changedDimension(); i++)
      *          std::cout << std::endl;
@@ -35,15 +40,16 @@ public:
      * This code will print each cell states and go to a new line when there is a change of dimension.
      * So if there is 3 dimensions, there will be a empty line between 2D groups.
      */
-    class iterator
+    template <typename T, typename R>
+    class iteratorT
     {
         friend class CellHandler;
     public:
-        iterator(const CellHandler* handler);
+        iteratorT(T* handler);
 
-        iterator& operator++();
-        Cell* operator->() const;
-        Cell* operator*() const;
+        iteratorT& operator++();
+        R* operator->() const;
+        R* operator*() const;
 
         bool operator!=(bool finished) const { return (m_finished != finished); }
         unsigned int changedDimension() const;
@@ -51,15 +57,17 @@ public:
 
 
     private:
-        const CellHandler *m_handler; ///< CellHandler to go through
+        T *m_handler; ///< CellHandler to go through
         QVector<unsigned int> m_position; ///< Current position of the iterator
         bool m_finished = false; ///< If we reach the last position
         QVector<unsigned int> m_zero; ///< Nul vector of the good dimension (depend of m_handler)
         unsigned int m_changedDimension; ///< Save the number of dimension change
     };
+public:
+    typedef iteratorT<const CellHandler, const Cell> const_iterator;
+    typedef iteratorT<CellHandler, Cell> iterator;
 
-    /** \enum generationTypes
-     * \brief Type of random generation
+    /** \brief Type of random generation
      */
     enum generationTypes {
         empty, ///< Only empty cells
@@ -80,7 +88,8 @@ public:
     void generate(generationTypes type, unsigned int stateMax = 1, unsigned short density = 50);
     void print(std::ostream &stream) const;
 
-    iterator begin() const;
+    const_iterator begin() const;
+    iterator begin();
     bool end() const;
 
 private:
@@ -93,5 +102,8 @@ private:
     QVector<unsigned int> m_dimensions; ///< Vector of x dimensions
     QMap<QVector<unsigned int>, Cell* > m_cells; ///< Map of cells, with a x dimensions vector as key
 };
+
+template class CellHandler::iteratorT<CellHandler, Cell>;
+template class CellHandler::iteratorT<const CellHandler, const Cell>;
 
 #endif // CELLHANDLER_H
