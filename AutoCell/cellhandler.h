@@ -38,7 +38,7 @@ class CellHandler
      * }
      * \endcode
      * This code will print each cell states and go to a new line when there is a change of dimension.
-     * So if there is 3 dimensions, there will be a empty line between 2D groups.
+     * So if there are 3 dimensions, there will be a empty line between 2D groups.
      */
     template <typename T, typename R>
     class iteratorT
