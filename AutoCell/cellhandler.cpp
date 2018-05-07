@@ -144,7 +144,7 @@ bool CellHandler::save(QString filename) const
     QJsonObject json;
     QString stringDimension;
     // Creation of the dimension string
-    for (unsigned int i = 0; i < m_dimensions.size(); i++)
+    for (int i = 0; i < m_dimensions.size(); i++)
     {
         if (i != 0)
             stringDimension.push_back("x");
@@ -183,7 +183,7 @@ void CellHandler::generate(CellHandler::generationTypes type, unsigned int state
             position.push_back(0);
         }
         QRandomGenerator generator((float)qrand()*(float)time_t()/RAND_MAX);
-        for (unsigned int j = 0; j < m_cells.size(); j++)
+        for (int j = 0; j < m_cells.size(); j++)
         {
             unsigned int state = 0;
             // 0 have (1-density)% of chance of being generate
@@ -199,14 +199,14 @@ void CellHandler::generate(CellHandler::generationTypes type, unsigned int state
     else if (type == symetric)
     {
         QVector<unsigned int> position;
-        for (unsigned short i = 0; i < m_dimensions.size(); i++)
+        for (short i = 0; i < m_dimensions.size(); i++)
         {
             position.push_back(0);
         }
 
         QRandomGenerator generator((float)qrand()*(float)time_t()/RAND_MAX);
         QVector<unsigned int> savedStates;
-        for (unsigned int j = 0; j < m_cells.size(); j++)
+        for (int j = 0; j < m_cells.size(); j++)
         {
             if (j % m_dimensions.at(0) == 0)
                 savedStates.clear();
@@ -319,9 +319,9 @@ bool CellHandler::load(const QJsonObject &json)
     QRegExp rx("x");
     QStringList list = json["dimensions"].toString().split(rx, QString::SkipEmptyParts);
 
-    unsigned int product = 1;
+    int product = 1;
     // Dimensions construction
-    for (unsigned int i = 0; i < list.size(); i++)
+    for (int i = 0; i < list.size(); i++)
     {
         product = product * list.at(i).toInt();
         m_dimensions.push_back(list.at(i).toInt());
@@ -341,7 +341,7 @@ bool CellHandler::load(const QJsonObject &json)
     }
 
     // Creation of cells
-    for (unsigned int j = 0; j < cells.size(); j++)
+    for (int j = 0; j < cells.size(); j++)
     {
         if (!cells.at(j).isDouble())
             return false;
@@ -370,14 +370,14 @@ void CellHandler::foundNeighbours()
         currentPosition.push_back(0);
     }
     // Modification of all the cells
-    for (unsigned int j = 0; j < m_cells.size(); j++)
+    for (int j = 0; j < m_cells.size(); j++)
     {
         // Get the list of the neighbours positions
         // This function is recursive
         QVector<QVector<unsigned int> > listPosition(getListNeighboursPositions(currentPosition));
 
         // Adding neighbours
-        for (unsigned int i = 0; i < listPosition.size(); i++)
+        for (int i = 0; i < listPosition.size(); i++)
             m_cells.value(currentPosition)->addNeighbour(m_cells.value(listPosition.at(i)), Cell::getRelativePosition(currentPosition, listPosition.at(i)));
         positionIncrement(currentPosition);
     }
