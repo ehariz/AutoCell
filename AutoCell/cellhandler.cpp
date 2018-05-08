@@ -500,8 +500,8 @@ QVector<QVector<unsigned int> >* CellHandler::getListNeighboursPositionsRecursiv
  *
  * \param handler CellHandler to browse
  */
-template<typename T, typename R>
-CellHandler::iteratorT<T,R>::iteratorT(T *handler):
+template<typename CellHandler_T, typename Cell_T>
+CellHandler::iteratorT<CellHandler_T,Cell_T>::iteratorT(CellHandler_T *handler):
         m_handler(handler), m_changedDimension(0)
 {
     // Initialisation of m_position
@@ -514,8 +514,8 @@ CellHandler::iteratorT<T,R>::iteratorT(T *handler):
 
 /** \brief Increment the current position and handle dimension changes
  */
-template<typename T, typename R>
-CellHandler::iteratorT<T,R> &CellHandler::iteratorT<T, R>::operator++()
+template<typename CellHandler_T, typename Cell_T>
+CellHandler::iteratorT<CellHandler_T,Cell_T> &CellHandler::iteratorT<CellHandler_T,Cell_T>::operator++()
 {
     m_position.replace(0, m_position.at(0) + 1); // adding the value to the first digit
 
@@ -542,8 +542,8 @@ CellHandler::iteratorT<T,R> &CellHandler::iteratorT<T, R>::operator++()
 
 /** \brief Get the current cell
  */
-template<typename T, typename R>
-R* CellHandler::iteratorT<T,R>::operator->() const
+template<typename CellHandler_T, typename Cell_T>
+Cell_T* CellHandler::iteratorT<CellHandler_T,Cell_T>::operator->() const
 {
     return m_handler->m_cells.value(m_position);
 }
@@ -551,8 +551,8 @@ R* CellHandler::iteratorT<T,R>::operator->() const
 
 /** \brief Get the current cell
  */
-template<typename T, typename R>
-R *CellHandler::iteratorT<T, R>::operator*() const
+template<typename CellHandler_T, typename Cell_T>
+Cell_T *CellHandler::iteratorT<CellHandler_T,Cell_T>::operator*() const
 {
     return m_handler->m_cells.value(m_position);
 }
@@ -562,8 +562,8 @@ R *CellHandler::iteratorT<T, R>::operator*() const
  * For example, if we were at the (3,4,4) cell, and we incremented the position,
  * we are now at (4,0,0), and changedDimension return 2 (because of the 2 zeros).
  */
-template<typename T, typename R>
-unsigned int CellHandler::iteratorT<T,R>::changedDimension() const
+template<typename CellHandler_T, typename Cell_T>
+unsigned int CellHandler::iteratorT<CellHandler_T,Cell_T>::changedDimension() const
 {
     return m_changedDimension;
 }

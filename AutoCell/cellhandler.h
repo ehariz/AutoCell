@@ -24,9 +24,6 @@ class CellHandler
      * at the same time.
      *
      *
-     * Everywhere, T will be nor CellHandler nor const CellHandler and
-     * R will be nor Cell nor const Cell.
-     *
      * Example of use:
      * \code
      * CellHandler handler("file.atc");
@@ -40,16 +37,16 @@ class CellHandler
      * This code will print each cell states and go to a new line when there is a change of dimension.
      * So if there are 3 dimensions, there will be a empty line between 2D groups.
      */
-    template <typename T, typename R>
+    template <typename CellHandler_T, typename Cell_T>
     class iteratorT
     {
         friend class CellHandler;
     public:
-        iteratorT(T* handler);
+        iteratorT(CellHandler_T* handler);
 
         iteratorT& operator++();
-        R* operator->() const;
-        R* operator*() const;
+        Cell_T* operator->() const;
+        Cell_T* operator*() const;
 
         bool operator!=(bool finished) const { return (m_finished != finished); }
         unsigned int changedDimension() const;
@@ -57,7 +54,7 @@ class CellHandler
 
 
     private:
-        T *m_handler; ///< CellHandler to go through
+        CellHandler_T *m_handler; ///< CellHandler to go through
         QVector<unsigned int> m_position; ///< Current position of the iterator
         bool m_finished = false; ///< If we reach the last position
         QVector<unsigned int> m_zero; ///< Nul vector of the good dimension (depend of m_handler)
