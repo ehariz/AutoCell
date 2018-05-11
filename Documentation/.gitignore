@@ -1,0 +1,14 @@
+*.tex
+*.sty
+output/latex/Makefile
+*.aux
+*.idx
+*.ilg
+*.ind
+*.log
+*.out
+*.toc
+*.html
+*.js
+*.png
+*.css
