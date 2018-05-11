@@ -7,6 +7,7 @@
 #include <QtWidgets>
 #include <QMap>
 #include <QRegExpValidator>
+#include <QDebug>
 
 #include "cell.h"
 
