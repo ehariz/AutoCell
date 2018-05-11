@@ -4,6 +4,12 @@
 #include <QtWidgets>
 #include "cellhandler.h"
 
+/** \class CreationDialog
+ * \brief Automaton creation dialog box
+ *
+ * Allow the user to input settings to create an automaton
+ */
+
 class CreationDialog : public QDialog
 {
     Q_OBJECT

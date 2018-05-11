@@ -14,6 +14,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_cellHandler = NULL;
 }
 
+/** \fn MainWindow::createIcons()
+ * \brief Creates Icons for the MainWindow
+ */
+
+
 void MainWindow::createIcons(){
     QPixmap fastBackwardPm(":/icons/icons/fast-backward.svg");
     QPixmap fastBackwardHoveredPm(":/icons/icons/fast-backward-full.svg");
@@ -39,6 +44,10 @@ void MainWindow::createIcons(){
     m_openIcon.addPixmap(openPm, QIcon::Normal, QIcon::Off);
     m_resetIcon.addPixmap(resetPm, QIcon::Normal, QIcon::Off);
 }
+
+/** \fn MainWindow::createActions()
+ * \brief Creates and connects QActions and associated buttons for the MainWindow
+ */
 
 void MainWindow::createActions(){
     m_fastBackward = new QAction(m_fastBackwardIcon, tr("&fast backward"), this);
@@ -82,6 +91,10 @@ void MainWindow::createActions(){
 
 }
 
+/** \fn MainWindow::createToolBar()
+ * \brief Creates the toolBar for the MainWindow
+ */
+
 void MainWindow::createToolBar(){
     m_toolBar = new QToolBar(this);
     QLabel *m_speedLabel = new QLabel(tr("Speed : "));
@@ -112,6 +125,10 @@ void MainWindow::createToolBar(){
 
 }
 
+/** \fn MainWindow::createBoard()
+ * \brief Creates the Automaton board
+ */
+
 void MainWindow::createBoard(){
     m_Board = new QTableWidget(m_boardVSize, m_boardHSize, this);
         m_Board->setFixedSize(m_boardHSize*m_cellSize,m_boardVSize*m_cellSize);
@@ -137,6 +154,9 @@ void MainWindow::createBoard(){
 }
 
 
+/** \fn MainWindow::openFile()
+ * \brief Opens a file browser for the user to select automaton files and creates an automaton
+ */
 void MainWindow::openFile(){
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Cell file"), ".",
                                                     tr("Automaton cell files (*.atc)"));
@@ -156,6 +176,10 @@ void MainWindow::openFile(){
     }
 }
 
+
+/** \fn MainWindow::saveToFile()
+ * \brief Allows user to select a location and saves automaton's state and settings
+ */
 void MainWindow::saveToFile(){
     if(m_cellHandler != NULL){
         QString fileName = QFileDialog::getSaveFileName(this, tr("Save Automaton"),
@@ -170,12 +194,22 @@ void MainWindow::saveToFile(){
     }
 }
 
+/** \fn MainWindow::openCreationWindow()
+ * \brief Opens the automaton creation window
+ */
+
 void MainWindow::openCreationWindow(){
     CreationDialog *window = new CreationDialog(this);
     connect(window, SIGNAL(settingsFilled(QVector<uint>,CellHandler::generationTypes,uint,uint)),
             this, SLOT(setCellHandler(QVector<uint>,CellHandler::generationTypes,uint,uint)));
     window->show();
 }
+
+/** \fn MainWindow::setCellHandler(const QVector<unsigned int> dimensions,
+                                CellHandler::generationTypes type,
+                                unsigned int stateMax, unsigned int density)
+ * \brief Creates a new cellHandler with the provided arguments and updates the board with the created cellHandler
+ */
 
 void MainWindow::setCellHandler(const QVector<unsigned int> dimensions,
                                 CellHandler::generationTypes type,
@@ -193,6 +227,10 @@ void MainWindow::setCellHandler(const QVector<unsigned int> dimensions,
     updateBoard();
 }
 
+/** \fn MainWindow::nextState(int n)
+ * \brief Shows the nth next state of the automaton on the board
+ */
+
 void MainWindow::nextState(int n){
     if(m_cellHandler == NULL){
         QMessageBox msgBox;
@@ -204,6 +242,10 @@ void MainWindow::nextState(int n){
         updateBoard();
     }
 }
+
+/** \fn MainWindow::updateBoard()
+ * \brief Updates cells on the board with the cellHandler's cells states
+ */
 
 void MainWindow::updateBoard(){
     if(m_cellHandler == NULL){
@@ -226,6 +268,10 @@ void MainWindow::updateBoard(){
     }
 
 }
+
+/** \fn MainWindow::forward()
+ * \brief Skips the number of steps chosen by the user and sets the automaton on the last one
+ */
 
 void MainWindow::forward(){
     nextState(m_jumpSpeed->value());

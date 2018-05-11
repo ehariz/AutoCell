@@ -6,12 +6,20 @@
 #include "cellhandler.h"
 #include "creationdialog.h"
 
+
+/** \class MainWindow
+ * \brief Simulation window
+ *
+ * Displays the automaton's current state as a board and contains user interaction components.
+ */
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
     CellHandler *m_cellHandler;
 
+    ///Icons
     QIcon m_fastBackwardIcon;
     QIcon m_fastForwardIcon;
     QIcon m_playIcon;
@@ -21,6 +29,7 @@ class MainWindow : public QMainWindow
     QIcon m_openIcon;
     QIcon m_resetIcon;
 
+    ///Actions
     QAction *m_playPause;
     QAction *m_nextState;
     QAction *m_previousState;
@@ -31,6 +40,7 @@ class MainWindow : public QMainWindow
     QAction *m_newAutomaton;
     QAction *m_resetAutomaton;
 
+    ///Buttons
     QToolButton *m_playPauseBt;
     QToolButton *m_nextStateBt;
     QToolButton *m_previousStateBt;
@@ -42,13 +52,14 @@ class MainWindow : public QMainWindow
     QToolButton *m_resetBt;
 
 
-    QSpinBox *m_jumpSpeed;
+    QSpinBox *m_jumpSpeed; ///Simulation speed input
     QLabel *m_speedLabel;
 
-    QToolBar *m_toolBar;
+    QToolBar *m_toolBar; ///Toolbar containing the buttons
 
-    QTableWidget *m_Board;
+    QTableWidget *m_Board; ///Board showing the automaton's current state
 
+    ///Board size settings
     unsigned int m_boardHSize = 25;
     unsigned int m_boardVSize = 25;
     unsigned int m_cellSize = 30;

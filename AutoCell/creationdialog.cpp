@@ -1,5 +1,7 @@
 #include "creationdialog.h"
 #include <iostream>
+
+
 CreationDialog::CreationDialog(QWidget *parent)
 {
     QLabel *m_dimLabel= new QLabel(tr("Write your dimensions and their size, separated by a comma.\n"
@@ -39,6 +41,11 @@ CreationDialog::CreationDialog(QWidget *parent)
 
 }
 
+/** \fn CreationDialog::createGenButtons()
+ * \brief Creates radio buttons to select cell generation type
+ */
+
+
 QGroupBox *CreationDialog::createGenButtons(){
     m_groupBox = new QGroupBox(tr("Cell generation settings"));
     m_empGen = new QRadioButton(tr("&Empty Board"));
@@ -54,6 +61,10 @@ QGroupBox *CreationDialog::createGenButtons(){
 
     return m_groupBox;
 }
+
+/** \fn CreationDialog::createGenButtons()
+ * \brief Validates user settings and sends them to MainWindow
+ */
 
 
 void CreationDialog::processSettings(){
