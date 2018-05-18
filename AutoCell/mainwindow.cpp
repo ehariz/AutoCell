@@ -184,7 +184,7 @@ void MainWindow::saveToFile(){
     if(m_cellHandler != NULL){
         QString fileName = QFileDialog::getSaveFileName(this, tr("Save Automaton"),
                                                         ".", tr("Automaton Cells file (*.atc"));
-        m_cellHandler->save(fileName);
+        m_cellHandler->save(fileName+".atc");
 
     }
     else{

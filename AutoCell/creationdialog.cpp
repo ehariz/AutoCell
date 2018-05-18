@@ -9,7 +9,9 @@ CreationDialog::CreationDialog(QWidget *parent)
     QLabel *m_densityLabel = new QLabel(tr("Density :"));
     QLabel *m_stateMaxLabel = new QLabel(tr("Max state :"));
     m_densityBox = new QSpinBox();
+    m_densityBox->setValue(20);
     m_stateMaxBox = new QSpinBox();
+    m_stateMaxBox->setValue(1);
 
     QHBoxLayout *densityLayout = new QHBoxLayout();
     densityLayout->addWidget(m_densityLabel);
@@ -76,7 +78,6 @@ void CreationDialog::processSettings(){
     }
     else{
         CellHandler::generationTypes genType;
-        if(m_randGen == NULL)std::cout << "Radio button null line 68 \n" << std::flush;
         if(m_symGen->isChecked()) genType = CellHandler::generationTypes::symetric;
         else if(m_randGen->isChecked()) genType = CellHandler::generationTypes::random;
         else genType = CellHandler::generationTypes::empty;
