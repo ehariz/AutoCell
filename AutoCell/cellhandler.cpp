@@ -1,8 +1,7 @@
 #include <iostream>
 #include "cellhandler.h"
 
-/** \fn CellHandler::CellHandler(QString filename)
- * \brief Construct all the cells from the json file given
+/** \brief Construct all the cells from the json file given
  *
  * The size of "cells" array must be the product of all dimensions (60 in the following example).
  * Typical Json file:
@@ -39,6 +38,7 @@ CellHandler::CellHandler(const QString filename)
     if (loadDoc.isNull() || loadDoc.isEmpty()) {
         qWarning() << "Could not read data : ";
         qWarning() << parseErr.errorString();
+        throw QString(parseErr.errorString());
     }
 
     // Loadding of the json file
@@ -53,8 +53,7 @@ CellHandler::CellHandler(const QString filename)
 
 }
 
-/** \fn CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes type, unsigned int stateMax, unsigned int density)
- * \brief Construct a CellHandler of the given dimension
+/** \brief Construct a CellHandler of the given dimension
  *
  * If generationTypes is given, the CellHandler won't be empty.
  *
@@ -93,8 +92,7 @@ CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes
 
 }
 
-/** \fn CellHandler::~CellHandler()
- * \brief Destroys all cells in the CellHandler
+/** \brief Destroys all cells in the CellHandler
  */
 CellHandler::~CellHandler()
 {
@@ -104,43 +102,38 @@ CellHandler::~CellHandler()
     }
 }
 
-/** \fn Cell *CellHandler::getCell(const QVector<unsigned int> position) const
- * \brief Access the cell to the given position
+/** \brief Access the cell to the given position
  */
 Cell *CellHandler::getCell(const QVector<unsigned int> position) const
 {
     return m_cells.value(position);
 }
 
-/** \fn QVector<unsigned int> CellHandler::getDimensions()
- * \brief Accessor of m_dimensions
+/** \brief Accessor of m_dimensions
  */
-QVector<unsigned int> CellHandler::getDimensions()
+QVector<unsigned int> CellHandler::getDimensions() const
 {
     return m_dimensions;
 }
 
-/** \fn void CellHandler::nextStates()
- * \brief Valid the state of all cells
- *
+/** \brief Valid the state of all cells
  */
-void CellHandler::nextStates()
+void CellHandler::nextStates() const
 {
-    for (QMap<QVector<unsigned int>, Cell* >::iterator it = m_cells.begin(); it != m_cells.end(); ++it)
+    for (QMap<QVector<unsigned int>, Cell* >::const_iterator it = m_cells.begin(); it != m_cells.end(); ++it)
     {
         it.value()->validState();
     }
 }
 
-/** \fn bool CellHandler::save(QString filename)
- * \brief Save the CellHandler current configuration in the file given
+/** \brief Save the CellHandler current configuration in the file given
  *
  * \param filename Path to the file
  * \return False if there was a problem
  *
  * \throw QString Impossible to open the file
  */
-bool CellHandler::save(QString filename)
+bool CellHandler::save(QString filename) const
 {
     QFile saveFile(filename);
     if (!saveFile.open(QIODevice::WriteOnly)) {
@@ -151,7 +144,7 @@ bool CellHandler::save(QString filename)
     QJsonObject json;
     QString stringDimension;
     // Creation of the dimension string
-    for (unsigned int i = 0; i < m_dimensions.size(); i++)
+    for (int i = 0; i < m_dimensions.size(); i++)
     {
         if (i != 0)
             stringDimension.push_back("x");
@@ -160,7 +153,7 @@ bool CellHandler::save(QString filename)
     json["dimensions"] = QJsonValue(stringDimension);
 
     QJsonArray cells;
-    for (CellHandler::iterator it = begin(); it != end(); ++it)
+    for (CellHandler::const_iterator it = begin(); it != end(); ++it)
     {
         cells.append(QJsonValue((int)it->getState()));
     }
@@ -174,8 +167,7 @@ bool CellHandler::save(QString filename)
     return true;
 }
 
-/** \fn void CellHandler::generate(CellHandler::generationTypes type, unsigned int stateMax, unsigned short density)
- * \brief Replace Cell values by random values (symetric or not)
+/** \brief Replace Cell values by random values (symetric or not)
  *
  * \param type Type of random generation
  * \param stateMax Generate states between 0 and stateMax
@@ -191,7 +183,7 @@ void CellHandler::generate(CellHandler::generationTypes type, unsigned int state
             position.push_back(0);
         }
         QRandomGenerator generator((float)qrand()*(float)time_t()/RAND_MAX);
-        for (unsigned int j = 0; j < m_cells.size(); j++)
+        for (int j = 0; j < m_cells.size(); j++)
         {
             unsigned int state = 0;
             // 0 have (1-density)% of chance of being generate
@@ -207,14 +199,14 @@ void CellHandler::generate(CellHandler::generationTypes type, unsigned int state
     else if (type == symetric)
     {
         QVector<unsigned int> position;
-        for (unsigned short i = 0; i < m_dimensions.size(); i++)
+        for (short i = 0; i < m_dimensions.size(); i++)
         {
             position.push_back(0);
         }
 
         QRandomGenerator generator((float)qrand()*(float)time_t()/RAND_MAX);
         QVector<unsigned int> savedStates;
-        for (unsigned int j = 0; j < m_cells.size(); j++)
+        for (int j = 0; j < m_cells.size(); j++)
         {
             if (j % m_dimensions.at(0) == 0)
                 savedStates.clear();
@@ -242,42 +234,46 @@ void CellHandler::generate(CellHandler::generationTypes type, unsigned int state
     }
 }
 
-/** \fn void CellHandler::print(std::ostream &stream)
- * \brief Print in the given stream the CellHandler
+/** \brief Print in the given stream the CellHandler
  *
  * \param stream Stream to print into
  */
-void CellHandler::print(std::ostream &stream)
+void CellHandler::print(std::ostream &stream) const
 {
-    for (iterator it = begin(); it != end(); ++it)
+    for (const_iterator it = begin(); it != end(); ++it)
     {
         for (unsigned int d = 0; d < it.changedDimension(); d++)
             stream << std::endl;
         stream << it->getState() << " ";
+
     }
 
 }
 
-/** \fn CellHandler::iterator CellHandler::begin()
- * \brief Give the iterator which corresponds to the current CellHandler
+/** \brief Give the iterator which corresponds to the current CellHandler
  */
 CellHandler::iterator CellHandler::begin()
 {
     return iterator(this);
 }
 
-/** \fn bool CellHandler::end()
- * \brief End condition of the iterator
+/** \brief Give the iterator which corresponds to the current CellHandler
+ */
+CellHandler::const_iterator CellHandler::begin() const
+{
+    return const_iterator(this);
+}
+
+/** \brief End condition of the iterator
  *
  * See iterator::operator!=(bool finished) for further information.
  */
-bool CellHandler::end()
+bool CellHandler::end() const
 {
     return true;
 }
 
-/** \fn bool CellHandler::load(const QJsonObject &json)
- * \brief Load the config file in the CellHandler
+/** \brief Load the config file in the CellHandler
  *
  * Exemple of a way to print cell states :
  * \code
@@ -323,9 +319,9 @@ bool CellHandler::load(const QJsonObject &json)
     QRegExp rx("x");
     QStringList list = json["dimensions"].toString().split(rx, QString::SkipEmptyParts);
 
-    unsigned int product = 1;
+    int product = 1;
     // Dimensions construction
-    for (unsigned int i = 0; i < list.size(); i++)
+    for (int i = 0; i < list.size(); i++)
     {
         product = product * list.at(i).toInt();
         m_dimensions.push_back(list.at(i).toInt());
@@ -345,7 +341,7 @@ bool CellHandler::load(const QJsonObject &json)
     }
 
     // Creation of cells
-    for (unsigned int j = 0; j < cells.size(); j++)
+    for (int j = 0; j < cells.size(); j++)
     {
         if (!cells.at(j).isDouble())
             return false;
@@ -360,8 +356,7 @@ bool CellHandler::load(const QJsonObject &json)
 
 }
 
-/** \fn bool CellHandler::foundNeighbours()
- * \brief Set the neighbours of each cells
+/** \brief Set the neighbours of each cells
  *
  * Careful, this is in O(n*3^d), with n the number of cells and d the number of dimensions
  *
@@ -375,22 +370,21 @@ void CellHandler::foundNeighbours()
         currentPosition.push_back(0);
     }
     // Modification of all the cells
-    for (unsigned int j = 0; j < m_cells.size(); j++)
+    for (int j = 0; j < m_cells.size(); j++)
     {
         // Get the list of the neighbours positions
         // This function is recursive
         QVector<QVector<unsigned int> > listPosition(getListNeighboursPositions(currentPosition));
 
         // Adding neighbours
-        for (unsigned int i = 0; i < listPosition.size(); i++)
+        for (int i = 0; i < listPosition.size(); i++)
             m_cells.value(currentPosition)->addNeighbour(m_cells.value(listPosition.at(i)), Cell::getRelativePosition(currentPosition, listPosition.at(i)));
         positionIncrement(currentPosition);
     }
 
 }
 
-/** \fn void CellHandler::positionIncrement(QVector<unsigned int> &pos, unsigned int value) const
- * \brief Increment the QVector given by the value choosen
+/** \brief Increment the QVector given by the value choosen
  *
  * Careful, when the position reach the maximum, it goes to zero without leaving the function
  *
@@ -421,8 +415,7 @@ void CellHandler::positionIncrement(QVector<unsigned int> &pos, unsigned int val
     }
 }
 
-/** \fn QVector<QVector<unsigned int> >& CellHandler::getListNeighboursPositions(const QVector<unsigned int> position) const
- * \brief Prepare the call of the recursive version of itself
+/** \brief Prepare the call of the recursive version of itself
  *
  * \param position Position of the central cell (x1,x2,x3,..,xn)
  * \return List of positions
@@ -435,8 +428,7 @@ QVector<QVector<unsigned int> >& CellHandler::getListNeighboursPositions(const Q
     return *list;
 }
 
-/** \fn QVector<QVector<unsigned int> >* CellHandler::getListNeighboursPositionsRecursive(const QVector<unsigned int> position, unsigned int dimension, QVector<unsigned int> lastAdd) const
- * \brief Recursive function which browse the position possibilities tree
+/** \brief Recursive function which browse the position possibilities tree
  *
  * Careful, the complexity is in O(3^dimension)<br>
  * Piece of the tree:
@@ -504,12 +496,12 @@ QVector<QVector<unsigned int> >* CellHandler::getListNeighboursPositionsRecursiv
 
 }
 
-/** \fn CellHandler::iterator::iterator(const CellHandler *handler):
- * \brief Construct an initial iterator to browse the CellHandler
+/** \brief Construct an initial iterator to browse the CellHandler
  *
  * \param handler CellHandler to browse
  */
-CellHandler::iterator::iterator(const CellHandler *handler):
+template<typename CellHandler_T, typename Cell_T>
+CellHandler::iteratorT<CellHandler_T,Cell_T>::iteratorT(CellHandler_T *handler):
         m_handler(handler), m_changedDimension(0)
 {
     // Initialisation of m_position
@@ -520,10 +512,10 @@ CellHandler::iterator::iterator(const CellHandler *handler):
     m_zero = m_position;
 }
 
-/** \fn CellHandler::iterator &CellHandler::iterator::operator++()
- * \brief Increment the current position and handle dimension changes
+/** \brief Increment the current position and handle dimension changes
  */
-CellHandler::iterator &CellHandler::iterator::operator++()
+template<typename CellHandler_T, typename Cell_T>
+CellHandler::iteratorT<CellHandler_T,Cell_T> &CellHandler::iteratorT<CellHandler_T,Cell_T>::operator++()
 {
     m_position.replace(0, m_position.at(0) + 1); // adding the value to the first digit
 
@@ -548,29 +540,30 @@ CellHandler::iterator &CellHandler::iterator::operator++()
 
 }
 
-/** \fn Cell *CellHandler::iterator::operator->()
- * \brief Get the current cell
+/** \brief Get the current cell
  */
-Cell *CellHandler::iterator::operator->() const
+template<typename CellHandler_T, typename Cell_T>
+Cell_T* CellHandler::iteratorT<CellHandler_T,Cell_T>::operator->() const
 {
     return m_handler->m_cells.value(m_position);
 }
 
-/** \fn Cell *CellHandler::iterator::operator->()
- * \brief Get the current cell
+
+/** \brief Get the current cell
  */
-Cell *CellHandler::iterator::operator*() const
+template<typename CellHandler_T, typename Cell_T>
+Cell_T *CellHandler::iteratorT<CellHandler_T,Cell_T>::operator*() const
 {
     return m_handler->m_cells.value(m_position);
 }
 
-/** \fn unsigned int CellHandler::iterator::changedDimension() const
- * \brief Return the number of dimensions we change
+/** \brief Return the number of dimensions we change
  *
  * For example, if we were at the (3,4,4) cell, and we incremented the position,
  * we are now at (4,0,0), and changedDimension return 2 (because of the 2 zeros).
  */
-unsigned int CellHandler::iterator::changedDimension() const
+template<typename CellHandler_T, typename Cell_T>
+unsigned int CellHandler::iteratorT<CellHandler_T,Cell_T>::changedDimension() const
 {
     return m_changedDimension;
 }

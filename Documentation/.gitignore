@@ -12,3 +12,7 @@ output/latex/Makefile
 *.js
 *.png
 *.css
+*.svg
+*.pro
+output/**/*.*
+!output/latex/refman.pdf
