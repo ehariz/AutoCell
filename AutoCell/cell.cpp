@@ -82,32 +82,6 @@ const Cell *Cell::getNeighbour(QVector<short> relativePosition) const
     return m_neighbours.value(relativePosition, nullptr);
 }
 
-/** \brief Return the number of neighbour which have the given state
- */
-unsigned int Cell::countNeighbours(unsigned int filterState) const
-{
-    unsigned int count = 0;
-    for (QMap<QVector<short>, const Cell*>::const_iterator it = m_neighbours.begin(); it != m_neighbours.end(); ++it)
-    {
-        if (it->getState() == filterState)
-            count++;
-    }
-    return count;
-}
-
-/** \brief Return the number of neighbour which are not dead (=0)
- */
-unsigned int Cell::countNeighbours() const
-{
-    unsigned int count = 0;
-    for (QMap<QVector<short>, const Cell*>::const_iterator it = m_neighbours.begin(); it != m_neighbours.end(); ++it)
-    {
-        if (it->getState() != 0)
-            count++;
-    }
-    return count;
-}
-
 /** \brief Get the relative position, as neighbourPosition minus cellPosition
  *
  * \throw QString Different size of position vectors
