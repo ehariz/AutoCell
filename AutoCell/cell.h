@@ -21,6 +21,9 @@ public:
     QMap<QVector<short>, const Cell*> getNeighbours() const;
     const Cell* getNeighbour(QVector<short> relativePosition) const;
 
+    unsigned int countNeighbours(unsigned int filterState) const;
+    unsigned int countNeighbours() const;
+
     static QVector<short> getRelativePosition(const QVector<unsigned int> cellPosition, const QVector<unsigned int> neighbourPosition);
 
 private:
