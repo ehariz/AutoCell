@@ -1,6 +1,3 @@
 *.o
 *~
 build*
-AutoCell/AutoCell.pro
-AutoCell/AutoCell.pro
-AutoCell/rule.cpp
