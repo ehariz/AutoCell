@@ -1,5 +1,6 @@
 #include "rule.h"
 
+<<<<<<< HEAD
 /** \brief Checks if the number of neighbours matching the state condition belongs to the condition interval
  *
  * \param number of neighbours matching the rule condition regarding their values
@@ -20,10 +21,15 @@ bool Rule::inInterval(unsigned int matchingNeighbours)const
  */
 Rule::Rule(QVector<unsigned int> currentCellValues, QPair<unsigned int, unsigned int> intervalNumber, QSet<unsigned int> intervalValues, unsigned int outputState):
         m_currentCellPossibleValues(currentCellValues), m_neighbourInterval(intervalNumber), m_neighbourPossibleValues(intervalValues), m_cellOutputState(outputState)
+=======
+Rule::Rule(QVector<unsigned int> currentCellValues, unsigned int outputState):
+        m_currentCellPossibleValues(currentCellValues), m_cellOutputState(outputState)
+>>>>>>> alex
 {
 
 }
 
+<<<<<<< HEAD
 Rule::~Rule()
 {
 
@@ -54,11 +60,15 @@ bool Rule::matchCell(const Cell & c)const
 }
 
 /** \brief Get the rule output state that will be the next state if the cell matches the rule condition.
+=======
+/** \brief Get the rule output state that will be the next state if the cell matches the rule condition
+>>>>>>> alex
  */
 unsigned int Rule::getCellOutputState()const
 {
         return m_cellOutputState;
 }
+<<<<<<< HEAD
 
 //ATTENTION COPY & PASTE FROM CELLHANDLER.H
 /** \brief Save the CellHandler current configuration in the file given
@@ -103,3 +113,5 @@ bool CellHandler::save(QString filename) const
     return true;
 }
 */
+=======
+>>>>>>> alex

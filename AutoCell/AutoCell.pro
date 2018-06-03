@@ -11,7 +11,12 @@ SOURCES += \
     matrixrule.cpp \
     automate.cpp \
     automatehandler.cpp \
+<<<<<<< HEAD
     rule.cpp
+=======
+    rule.cpp \
+    neighbourrule.cpp
+>>>>>>> alex
 
 HEADERS += \
     cell.h \
@@ -21,7 +26,12 @@ HEADERS += \
     matrixrule.h \
     automate.h \
     automatehandler.h \
+<<<<<<< HEAD
     rule.h
+=======
+    rule.h \
+    neighbourrule.h
+>>>>>>> alex
 
 DISTFILES += \
     ../../../../../../Downloads/autoCell icons/fast-backward-full.svg \

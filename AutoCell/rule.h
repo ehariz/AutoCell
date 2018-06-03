@@ -1,6 +1,7 @@
 #ifndef RULE_H
 #define RULE_H
 
+<<<<<<< HEAD
 #include <QPair>
 #include <QVector>
 #include <QSet>
@@ -25,6 +26,22 @@ public:
     Rule(QVector<unsigned int> currentCellValues, QPair<unsigned int, unsigned int> intervalNumber, QSet<unsigned int> intervalValues, unsigned int outputState);
     ~Rule();
     bool matchCell(const Cell & c)const;
+=======
+#include <QVector>
+#include "cell.h"
+
+/** \class Rule
+ * \brief
+ */
+class Rule
+{
+protected:
+    QVector<unsigned int> m_currentCellPossibleValues; ///< Stores the possible values of the current cell as part of the rule condition
+    unsigned int m_cellOutputState; ///< Stores the output state of the cell if the condition is matched
+public:
+    Rule(QVector<unsigned int> currentCellValues, unsigned int outputState);
+    virtual bool matchCell(Cell * c)const = 0;
+>>>>>>> alex
     unsigned int getCellOutputState()const;
 };
 
