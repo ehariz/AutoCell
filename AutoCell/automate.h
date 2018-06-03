@@ -11,8 +11,7 @@ private:
     Rule::Rule & m_rule;
     friend class AutomateHandler;
 public:
-    Automate(const CellHandler::CellHandler & cellHandler, const Rule::Rule & rule):
-        m_cellHandler(cellHandler), m_rule(rule);
+    Automate(const CellHandler::CellHandler & cellHandler, const Rule::Rule & rule);
     bool run(unsigned int nbSteps = 1);
 };
 

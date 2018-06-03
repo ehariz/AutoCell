@@ -9,7 +9,7 @@ private:
     static AutomateHandler * m_activeAutomate;
     AutomateHandler(const AutomateHandler & a) = delete;
     AutomateHandler & operator=(const AutomateHandler & a) = delete;
-    ~AutomateManager();
+    ~AutomateHandler();
 public:
     static Automate & getActiveAutomate();
     static void deleteActiveAutomate();
