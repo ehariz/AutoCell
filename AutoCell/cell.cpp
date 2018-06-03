@@ -89,7 +89,7 @@ unsigned int Cell::countNeighbours(unsigned int filterState) const
     unsigned int count = 0;
     for (QMap<QVector<short>, const Cell*>::const_iterator it = m_neighbours.begin(); it != m_neighbours.end(); ++it)
     {
-        if (it->getState() == filterState)
+        if ((*it)->getState() == filterState)
             count++;
     }
     return count;
@@ -102,7 +102,7 @@ unsigned int Cell::countNeighbours() const
     unsigned int count = 0;
     for (QMap<QVector<short>, const Cell*>::const_iterator it = m_neighbours.begin(); it != m_neighbours.end(); ++it)
     {
-        if (it->getState() != 0)
+        if ((*it)->getState() != 0)
             count++;
     }
     return count;

@@ -8,18 +8,34 @@ SOURCES += \
     mainwindow.cpp \
     cellhandler.cpp \
     creationdialog.cpp \
+<<<<<<< HEAD \
+    automate.cpp \
+    automatehandler.cpp \
+    matrixrule.cpp \
+    rule.cpp
     rule.cpp \
     automate.cpp \
     automatehandler.cpp
+=======
+    matrixrule.cpp
+>>>>>>> master
 
 HEADERS += \
     cell.h \
     mainwindow.h \
     cellhandler.h \
     creationdialog.h \
+<<<<<<< HEAD \
+    automate.h \
+    automatehandler.h \
+    matrixrule.h \
+    rule.h
     rule.h \
     automate.h \
     automatehandler.h
+=======
+    matrixrule.h
+>>>>>>> master
 
 DISTFILES += \
     ../../../../../../Downloads/autoCell icons/fast-backward-full.svg \

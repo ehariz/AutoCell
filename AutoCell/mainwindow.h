@@ -17,7 +17,8 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    CellHandler *m_cellHandler;
+    QTabWidget *m_tabs; //Tabs for the main window
+    QVector<CellHandler *> m_cellHandlers; //QVector containing each tab's cellHandler
 
     ///Icons
     QIcon m_fastBackwardIcon;
@@ -57,8 +58,6 @@ class MainWindow : public QMainWindow
 
     QToolBar *m_toolBar; ///Toolbar containing the buttons
 
-    QTableWidget *m_Board; ///Board showing the automaton's current state
-
     ///Board size settings
     unsigned int m_boardHSize = 25;
     unsigned int m_boardVSize = 25;
@@ -68,10 +67,13 @@ class MainWindow : public QMainWindow
     void createActions();
     void createToolBar();
     void createBoard();
+    QWidget* createTab();
+    void createTabs();
 
 
-    void updateBoard();
+    void updateBoard(int index);
     void nextState(int n);
+    QTableWidget* getBoard(int n);
 
 
 public:
@@ -88,6 +90,7 @@ public slots:
                         CellHandler::generationTypes type = CellHandler::generationTypes::empty,
                         unsigned int stateMax = 1, unsigned int density = 20);
     void forward();
+    void closeTab(int n);
 
 };
 
