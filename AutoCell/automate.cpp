@@ -15,7 +15,7 @@ bool Automate::run(unsigned int nbSteps)
             {
                 it->setState(m_rule.getCellOutputState());
             }
-            m_cellHandler.nextStates(); //apply the changes to all the cells "simultaneously"
         }
+        m_cellHandler.nextStates(); //apply the changes to all the cells "simultaneously"
     }
 }
