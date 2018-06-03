@@ -7,13 +7,15 @@ SOURCES += \
     cell.cpp \
     mainwindow.cpp \
     cellhandler.cpp \
-    creationdialog.cpp
+    creationdialog.cpp \
+    matrixrule.cpp
 
 HEADERS += \
     cell.h \
     mainwindow.h \
     cellhandler.h \
-    creationdialog.h
+    creationdialog.h \
+    matrixrule.h
 
 DISTFILES += \
     ../../../../../../Downloads/autoCell icons/fast-backward-full.svg \
