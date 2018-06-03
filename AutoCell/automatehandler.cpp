@@ -1,13 +1,8 @@
 #include "automatehandler.h"
 
 /** \brief Initialization of the static value
-<<<<<<< HEAD
-AutomateHandler * m_activeAutomate = nullptr;
- */
-=======
 */
 AutomateHandler * m_activeAutomate = nullptr;
->>>>>>> alex
 
 AutomateHandler::~AutomateHandler()
 {
@@ -18,15 +13,6 @@ AutomateHandler::~AutomateHandler()
  *
  * \return the unique running automate instance
  */
-<<<<<<< HEAD
-Automate::Automate & AutomateHandler::getActiveAutomate()
-{
-    if(!m_activeAutomate)
-        //m_activeAutomate = new Automate(???);
-    return *m_activeAutomate;
-}
-
-=======
 Automate & AutomateHandler::getActiveAutomate()
 {
    /* if(!m_activeAutomate)
@@ -35,18 +21,10 @@ Automate & AutomateHandler::getActiveAutomate()
 }
 
 
->>>>>>> alex
 /** \brief Delete the unique running automate instance if it exists
  */
 void AutomateHandler::deleteActiveAutomate()
 {
-<<<<<<< HEAD
-    if(m_activeAutomate)
-        delete m_activeAutomate;
-    m_activeAutomate = nullptr;
-}
-
-=======
     /*if(m_activeAutomate)
         delete m_activeAutomate;
     m_activeAutomate = nullptr;*/
@@ -54,7 +32,6 @@ void AutomateHandler::deleteActiveAutomate()
 
 /** \brief Set the active automate
  */
->>>>>>> alex
 void AutomateHandler::setActiveAutomate(unsigned int activeAutomate)
 {
 
