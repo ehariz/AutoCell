@@ -19,9 +19,9 @@ private:
     bool inInterval(unsigned int matchingNeighbours)const;
     //bool load(const QJsonObject &json);
 public:
-    NeighbourRule(QVector<unsigned int> currentCellValues, QPair<unsigned int, unsigned int> intervalNumber, QSet<unsigned int> intervalValues, unsigned int outputState);
+    NeighbourRule(unsigned int outputState, QVector<unsigned int> currentCellValues, QPair<unsigned int, unsigned int> intervalNbrNeighbour, QSet<unsigned int> neighbourValues = QSet<unsigned int>());
     ~NeighbourRule();
-    bool matchCell(Cell * c)const;
+    bool matchCell(const Cell * c)const;
 };
 
 #endif // NEIGHBOURRULE_H

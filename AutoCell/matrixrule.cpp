@@ -19,7 +19,7 @@ QVector<unsigned int> fillInterval(unsigned int min, unsigned int max)
  * \param currentStates Possibles states of the cell. Nothing means all states
  */
 MatrixRule::MatrixRule(unsigned int finalState, QVector<unsigned int> currentStates) :
-    m_finalState(finalState), m_currentStates(currentStates)
+    Rule(currentStates, finalState)
 {
 }
 
@@ -27,10 +27,10 @@ MatrixRule::MatrixRule(unsigned int finalState, QVector<unsigned int> currentSta
  * \param cell Cell to test
  * \return True if the cell match the rule
  */
-bool MatrixRule::match(const Cell &cell)
+bool MatrixRule::matchCell(const Cell *cell) const
 {
     // Check cell state
-    if (!m_currentStates.contains(cell.getState()))
+    if (!m_currentCellPossibleValues.contains(cell->getState()))
         return false;
 
     // Check neighbours
@@ -38,8 +38,8 @@ bool MatrixRule::match(const Cell &cell)
     // Rappel : QMap<relativePosition, possibleStates>
     for (QMap<QVector<short>,  QVector<unsigned int> >::const_iterator it = m_matrix.begin() ; it != m_matrix.end(); ++it)
     {
-        qDebug() << "Test cell " << it.key() << " (" << cell.getNeighbour(it.key())->getState() << ") avec les états " << it.value();
-        if (! it.value().contains(cell.getNeighbour(it.key())->getState()))
+        qDebug() << "Test cell " << it.key() << " (" << cell->getNeighbour(it.key())->getState() << ") avec les états " << it.value();
+        if (! it.value().contains(cell->getNeighbour(it.key())->getState()))
             matched = false;
     }
 

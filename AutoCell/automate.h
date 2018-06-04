@@ -4,16 +4,7 @@
 #include "cellhandler.h"
 #include "rule.h"
 
-<<<<<<< HEAD
-class Automate
-{
-private:
-    CellHandler::CellHandler & m_cellHandler;
-    Rule::Rule & m_rule;
-    friend class AutomateHandler;
-public:
-    Automate(const CellHandler::CellHandler & cellHandler, const Rule::Rule & rule);
-=======
+
 /** \class Automate
  * \brief
  */
@@ -21,12 +12,12 @@ class Automate
 {
 private:
     CellHandler & m_cellHandler; ///< CellHandler to go through
-    Rule & m_rule; ///< Rule to use on the cells
+    const Rule & m_rule; ///< Rule to use on the cells
     friend class AutomateHandler;
-    Automate(CellHandler & cellHandler, Rule & rule);
+public:
+    Automate(CellHandler& cellHandler, const Rule & rule);
     //selectRule?
 public:
->>>>>>> alex
     bool run(unsigned int nbSteps = 1);
 };
 

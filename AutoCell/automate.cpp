@@ -1,18 +1,8 @@
 #include "automate.h"
 
-<<<<<<< HEAD
-Automate::Automate(const CellHandler::CellHandler & cellHandler, const Rule::Rule & rule):
+Automate::Automate(CellHandler & cellHandler, const Rule & rule):
         m_cellHandler(cellHandler), m_rule(rule)
 {
-}
-
-bool Automate::run(unsigned int nbSteps)
-{ //balayage de la grille nbSteps fois
-=======
-Automate::Automate(CellHandler & cellHandler, Rule & rule):
-        m_cellHandler(cellHandler), m_rule(rule)
-{
-
 }
 
 /** \brief Apply the rule on the cells grid nbSteps times
@@ -23,7 +13,6 @@ Automate::Automate(CellHandler & cellHandler, Rule & rule):
  */
 bool Automate::run(unsigned int nbSteps) //void instead ?
 {
->>>>>>> alex
     for(unsigned int i = 0; i<nbSteps; ++i)
     {
         for (CellHandler::iterator it = m_cellHandler.begin(); it != m_cellHandler.end(); ++it)
@@ -33,12 +22,8 @@ bool Automate::run(unsigned int nbSteps) //void instead ?
                 it->setState(m_rule.getCellOutputState());
             }
         }
-<<<<<<< HEAD
-        m_cellHandler.nextStates(); //apply the changes to all the cells "simultaneously"
-    }
-=======
         m_cellHandler.nextStates(); //apply the changes to all the cells simultaneously
     }
     return true;
->>>>>>> alex
+
 }
