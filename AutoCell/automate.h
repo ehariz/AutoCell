@@ -1,8 +1,11 @@
 #ifndef AUTOMATE_H
 #define AUTOMATE_H
+#include <QVector>
 
 #include "cellhandler.h"
 #include "rule.h"
+#include "neighbourrule.h"
+#include "matrixrule.h"
 
 
 /** \class Automate
@@ -11,14 +14,19 @@
 class Automate
 {
 private:
-    CellHandler & m_cellHandler; ///< CellHandler to go through
-    const Rule & m_rule; ///< Rule to use on the cells
+    CellHandler* m_cellHandler; ///< CellHandler to go through
+    QVector<const Rule*> m_rules; ///< Rules to use on the cells
     friend class AutomateHandler;
+
+    bool loadRules(const QJsonObject &json);
 public:
-    Automate(CellHandler& cellHandler, const Rule & rule);
-    //selectRule?
+    Automate(QString filename);
+    virtual ~Automate();
+
+
 public:
     bool run(unsigned int nbSteps = 1);
+    const CellHandler& getCellHandler() const;
 };
 
 #endif // AUTOMATE_H

@@ -33,6 +33,7 @@ CellHandler::CellHandler(const QString filename)
     QJsonParseError parseErr;
     QJsonDocument loadDoc(QJsonDocument::fromJson(loadFile.readAll(), &parseErr));
 
+    loadFile.close();
 
 
     if (loadDoc.isNull() || loadDoc.isEmpty()) {

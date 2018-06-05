@@ -31,16 +31,25 @@ bool MatrixRule::matchCell(const Cell *cell) const
 {
     // Check cell state
     if (!m_currentCellPossibleValues.contains(cell->getState()))
+    {
         return false;
+    }
 
     // Check neighbours
     bool matched = true;
     // Rappel : QMap<relativePosition, possibleStates>
     for (QMap<QVector<short>,  QVector<unsigned int> >::const_iterator it = m_matrix.begin() ; it != m_matrix.end(); ++it)
     {
-        qDebug() << "Test cell " << it.key() << " (" << cell->getNeighbour(it.key())->getState() << ") avec les états " << it.value();
-        if (! it.value().contains(cell->getNeighbour(it.key())->getState()))
+        if (cell->getNeighbour(it.key()) == nullptr) // Border management
+        {
             matched = false;
+            break;
+        }
+        if (! it.value().contains(cell->getNeighbour(it.key())->getState()))
+        {
+            matched = false;
+            break;
+        }
     }
 
     return matched;

@@ -1,4 +1,23 @@
 {
 	"dimensions":"3x3",
-	"cells":[0,0,1,0,0,1,0,0,1]
+	"cells":[0,0,1,0,1,1,0,0,1],
+	"rules":[
+	{
+		"type":"neighbour",
+		"finalState":0,
+		"currentStates":[1,2,3],
+		"neighbourNumberMin":3,
+		"neighbourNumberMax":3,
+		"neighbourStates":[1]	
+	},
+	{
+		"type":"matrix",
+		"finalState":2,
+		"currentStates":[0],
+		"neighbours":[
+		{
+			"relativePosition":[0,-1],
+			"neighbourStates":[1]
+		}]
+	}]
 }
