@@ -189,6 +189,24 @@ void Automate::addRule(const Rule *newRule)
     m_rules.push_back(newRule);
 }
 
+/** \brief Modify the place of the rule in the priority list.
+ *
+ * 2 rules can't have the same priority rank
+ * \param rule Rule to move
+ * \param newPlace New place of the rule
+ */
+void Automate::setRulePriority(const Rule *rule, unsigned int newPlace)
+{
+    m_rules.move(m_rules.indexOf(rule), newPlace);
+}
+
+/** \brief Return all the rules
+ */
+QList<const Rule *> &Automate::getRules()
+{
+   return m_rules;
+}
+
 /** \brief Apply the rule on the cells grid nbSteps times
  *
  * \param nbSteps number of iterations of the automate on the cell grid

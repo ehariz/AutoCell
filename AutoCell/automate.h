@@ -15,7 +15,7 @@
 class Automate
 {
 private:
-    CellHandler* m_cellHandler; ///< CellHandler to go through
+    CellHandler* m_cellHandler = nullptr; ///< CellHandler to go through
     QList<const Rule*> m_rules; ///< Rules to use on the cells
     friend class AutomateHandler;
 
@@ -27,6 +27,9 @@ public:
     virtual ~Automate();
 
     void addRule(const Rule* newRule);
+    void setRulePriority(const Rule* rule, unsigned int newPlace);
+    QList<const Rule*>& getRules();
+
 
 
 public:
