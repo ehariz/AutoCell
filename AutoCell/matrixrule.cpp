@@ -70,4 +70,35 @@ void MatrixRule::addNeighbourState(QVector<short> relativePosition, QVector<unsi
         m_matrix[relativePosition].push_back(*it);
 }
 
+/** \brief Return a QJsonObject to save the rule
+ */
+QJsonObject MatrixRule::toJson() const
+{
+    QJsonObject object(Rule::toJson());
 
+    object.insert("type", QJsonValue("matrix"));
+
+    QJsonArray neighbours;
+    for (QMap<QVector<short>,  QVector<unsigned int> >::const_iterator it = m_matrix.begin(); it != m_matrix.end(); ++it)
+    {
+        QJsonObject aNeighbour;
+        QJsonArray relativePosition;
+        for (unsigned int i = 0; i < it.key().size(); i++)
+        {
+            relativePosition.append(QJsonValue((int)it.key().at(i)));
+        }
+        aNeighbour.insert("relativePosition", relativePosition);
+
+        QJsonArray neighbourStates;
+        for (unsigned int i = 0; i < it.value().size(); i++)
+        {
+            neighbourStates.append(QJsonValue((int)it.value().at(i)));
+        }
+        aNeighbour.insert("neighbourStates", neighbourStates);
+
+        neighbours.append(aNeighbour);
+    }
+    object.insert("neighbours", neighbours);
+
+    return object;
+}

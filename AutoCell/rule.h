@@ -2,6 +2,8 @@
 #define RULE_H
 
 #include <QVector>
+#include <QJsonObject>
+#include <QJsonArray>
 #include "cell.h"
 
 /** \class Rule
@@ -14,6 +16,8 @@ protected:
     unsigned int m_cellOutputState; ///< Stores the output state of the cell if the condition is matched
 public:
     Rule(QVector<unsigned int> currentCellValues, unsigned int outputState);
+
+    virtual QJsonObject toJson() const = 0;
 
     /** \brief Verify if the cell match the rule
      *

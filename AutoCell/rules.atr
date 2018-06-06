@@ -1,21 +1,34 @@
 [
-	{
-		"type":"neighbour",
-		"finalState":0,
-		"currentStates":[1,2,3],
-		"neighbourNumberMin":3,
-		"neighbourNumberMax":3,
-		"neighbourStates":[1]	
-	},
-	{
-		"type":"matrix",
-		"finalState":2,
-		"currentStates":[0],
-		"neighbours":[
-		{
-			"relativePosition":[0,-1],
-			"neighbourStates":[1]
-		}]
-	}
+    {
+        "currentStates": [
+            1,
+            2,
+            3
+        ],
+        "finalState": 0,
+        "neighbourNumberMax": 3,
+        "neighbourNumberMin": 3,
+        "neighbourStates": [
+            1
+        ],
+        "type": "neighbour"
+    },
+    {
+        "currentStates": [
+            0
+        ],
+        "finalState": 2,
+        "neighbours": [
+            {
+                "neighbourStates": [
+                    1
+                ],
+                "relativePosition": [
+                    0,
+                    -1
+                ]
+            }
+        ],
+        "type": "matrix"
+    }
 ]
-

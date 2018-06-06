@@ -26,6 +26,8 @@ public:
     Automate(QString cellHandlerFilename, QString ruleFilename);
     virtual ~Automate();
 
+    bool saveRules(QString filename);
+
     void addRule(const Rule* newRule);
     void setRulePriority(const Rule* rule, unsigned int newPlace);
     QList<const Rule*>& getRules();
@@ -35,6 +37,7 @@ public:
 public:
     bool run(unsigned int nbSteps = 1);
     const CellHandler& getCellHandler() const;
+
 };
 
 #endif // AUTOMATE_H

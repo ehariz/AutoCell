@@ -141,3 +141,23 @@ bool NeighbourRule::matchCell(const Cell *c)const
     return true; //the rule can be applied to the cell
 
 }
+
+/** \brief Return a QJsonObject to save the rule
+ */
+QJsonObject NeighbourRule::toJson() const
+{
+    QJsonObject object(Rule::toJson());
+
+    object.insert("type", QJsonValue("neighbour"));
+    object.insert("neighbourNumberMin", QJsonValue((int)m_neighbourInterval.first));
+    object.insert("neighbourNumberMax", QJsonValue((int)m_neighbourInterval.second));
+
+    QJsonArray neighbourState;
+    for (QSet<unsigned int>::const_iterator it = m_neighbourPossibleValues.begin(); it != m_neighbourPossibleValues.end(); ++it)
+    {
+        neighbourState.append(QJsonValue((int)*it));
+    }
+    object.insert("neighbourStates", neighbourState);
+
+    return object;
+}

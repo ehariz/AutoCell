@@ -182,6 +182,29 @@ Automate::~Automate()
     }
 }
 
+/** \brief Save automate's rules in the file
+ * \return False if something went wrong
+ */
+bool Automate::saveRules(QString filename)
+{
+    QFile ruleFile(filename);
+    if (!ruleFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning("Couldn't open given file.");
+        throw QString(QObject::tr("Couldn't open given file"));
+    }
+
+    QJsonArray array;
+
+    for (QList<const Rule*>::const_iterator it = m_rules.cbegin(); it != m_rules.cend(); ++it)
+        array.append((*it)->toJson());
+
+    QJsonDocument doc(array);
+
+    ruleFile.write(doc.toJson());
+
+    return true;
+}
+
 /** \brief Add a new rule to the Automate. Careful, the rule will be destroyed with the Automate
  */
 void Automate::addRule(const Rule *newRule)

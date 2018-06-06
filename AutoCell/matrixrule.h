@@ -20,7 +20,8 @@ class MatrixRule : public Rule
         void addNeighbourState(QVector<short> relativePosition, unsigned int matchState);
         void addNeighbourState(QVector<short> relativePosition, QVector<unsigned int> matchStates);
 
-    private:
+        QJsonObject toJson() const;
+private:
 
         QMap<QVector<short>,  QVector<unsigned int> > m_matrix; ///< Key correspond to relative position and the value to matchable states
 };

@@ -22,6 +22,8 @@ public:
     NeighbourRule(unsigned int outputState, QVector<unsigned int> currentCellValues, QPair<unsigned int, unsigned int> intervalNbrNeighbour, QSet<unsigned int> neighbourValues = QSet<unsigned int>());
     ~NeighbourRule();
     bool matchCell(const Cell * c)const;
+
+    virtual QJsonObject toJson() const;
 };
 
 #endif // NEIGHBOURRULE_H
