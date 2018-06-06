@@ -26,11 +26,13 @@ public:
     Automate(QString cellHandlerFilename, QString ruleFilename);
     virtual ~Automate();
 
-    bool saveRules(QString filename);
+    bool saveRules(QString filename) const ;
+    bool saveCells(QString filename) const ;
+    bool saveAll(QString cellHandlerFilename, QString rulesFilename)const ;
 
     void addRule(const Rule* newRule);
     void setRulePriority(const Rule* rule, unsigned int newPlace);
-    QList<const Rule*>& getRules();
+    const QList<const Rule *> &getRules() const;
 
 
 

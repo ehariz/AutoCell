@@ -185,7 +185,7 @@ Automate::~Automate()
 /** \brief Save automate's rules in the file
  * \return False if something went wrong
  */
-bool Automate::saveRules(QString filename)
+bool Automate::saveRules(QString filename) const
 {
     QFile ruleFile(filename);
     if (!ruleFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -203,6 +203,22 @@ bool Automate::saveRules(QString filename)
     ruleFile.write(doc.toJson());
 
     return true;
+}
+
+/** \brief Save cellHandler
+ */
+bool Automate::saveCells(QString filename) const
+{
+    if (m_cellHandler != nullptr)
+        return m_cellHandler->save(filename);
+    return false;
+}
+
+/** \brief Save both rules and cellHandler in the differents files
+ */
+bool Automate::saveAll(QString cellHandlerFilename, QString rulesFilename) const
+{
+    return saveRules(rulesFilename) && saveCells(cellHandlerFilename);
 }
 
 /** \brief Add a new rule to the Automate. Careful, the rule will be destroyed with the Automate
@@ -225,7 +241,7 @@ void Automate::setRulePriority(const Rule *rule, unsigned int newPlace)
 
 /** \brief Return all the rules
  */
-QList<const Rule *> &Automate::getRules()
+const QList<const Rule *> &Automate::getRules() const
 {
    return m_rules;
 }
