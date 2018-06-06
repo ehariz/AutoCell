@@ -1,8 +1,17 @@
 #include "neighbourrule.h"
 
-/** \brief Recursive function which browse the position possibilities tree
+/** \brief
  *
- * The game of life by John Horton Conway:
+ * According to the requirements :
+ * a and b values are chosen by the user.
+ * No matter its current state, if the cell has between a and b neighbours living, it lives, else it dies/or stays dead.
+ * So the "current cell possible values" vector contains all the possible cell values (0 and 1)
+ * and the 2 pair  contains (a, b) with an output state set at 1.
+ * 2 other rules, respectively with an interval of (0,a-1) and (b+1, 8) and an output state of 0 are created.
+ *
+ *
+ *
+ * The game of life by John Horton Conway according to wikipedia:
  *
  * "At each step, the cell evolution is determined by the state of its 8 neighbours as following:
  * A dead cell which has exactly 3 living neighbours starts to live.
