@@ -1,7 +1,4 @@
-{
-	"dimensions":"3x3",
-	"cells":[0,0,1,0,1,1,0,0,1],
-	"rules":[
+[
 	{
 		"type":"neighbour",
 		"finalState":0,
@@ -19,5 +16,6 @@
 			"relativePosition":[0,-1],
 			"neighbourStates":[1]
 		}]
-	}]
-}
+	}
+]
+

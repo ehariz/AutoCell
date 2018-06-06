@@ -1,6 +1,7 @@
 #ifndef AUTOMATE_H
 #define AUTOMATE_H
 #include <QVector>
+#include <QList>
 
 #include "cellhandler.h"
 #include "rule.h"
@@ -15,13 +16,17 @@ class Automate
 {
 private:
     CellHandler* m_cellHandler; ///< CellHandler to go through
-    QVector<const Rule*> m_rules; ///< Rules to use on the cells
+    QList<const Rule*> m_rules; ///< Rules to use on the cells
     friend class AutomateHandler;
 
-    bool loadRules(const QJsonObject &json);
+    bool loadRules(const QJsonArray &json);
 public:
     Automate(QString filename);
+    Automate(const QVector<unsigned int> dimensions, CellHandler::generationTypes type = CellHandler::empty, unsigned int stateMax = 1, unsigned int density = 20);
+    Automate(QString cellHandlerFilename, QString ruleFilename);
     virtual ~Automate();
+
+    void addRule(const Rule* newRule);
 
 
 public:

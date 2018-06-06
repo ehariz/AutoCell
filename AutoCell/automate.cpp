@@ -4,13 +4,10 @@
  * \return Return false if something went wrong
  * \param json JsonObject wich contains the rules
  */
-bool Automate::loadRules(const QJsonObject &json)
+bool Automate::loadRules(const QJsonArray &json)
 {
-    if (!json.contains("rules") || !json["rules"].isArray())
-        return false;
-    QJsonArray ruleList = json["rules"].toArray();
 
-    for (QJsonArray::iterator it = ruleList.begin(); it != ruleList.end(); ++it)
+    for (QJsonArray::const_iterator it = json.begin(); it != json.end(); ++it)
     {
         if (!it->isObject())
             return false;
@@ -116,38 +113,61 @@ bool Automate::loadRules(const QJsonObject &json)
     return true;
 }
 
-/** \brief Automate constructor from file
+/** \brief Create an automate with only a cellHandler from file
  *
- * \todo Use 2 files for the departState and the rules
- *
- * \param filename File to load
+ * \param cellHandlerFilename File to load
  */
-Automate::Automate(QString filename)
+Automate::Automate(QString cellHandlerFilename)
 {
-    QFile loadFile(filename);
-    if (!loadFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    m_cellHandler = new CellHandler(cellHandlerFilename);
+
+}
+
+/** \brief Create an automate with only a cellHandler with parameters
+ *
+ * \param cellHandlerFilename File to load
+ */
+Automate::Automate(const QVector<unsigned int> dimensions, CellHandler::generationTypes type, unsigned int stateMax, unsigned int density)
+{
+    m_cellHandler = new CellHandler(dimensions, type, stateMax, density);
+
+}
+
+/** \brief Create an automate from files
+ *
+ * \param cellHandlerFilename File of the cellHandler
+ * \param ruleFilename File of the rules
+ */
+Automate::Automate(QString cellHandlerFilename, QString ruleFilename)
+{
+    m_cellHandler = new CellHandler(cellHandlerFilename);
+
+    QFile ruleFile(ruleFilename);
+    if (!ruleFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning("Couldn't open given file.");
         throw QString(QObject::tr("Couldn't open given file"));
     }
 
     QJsonParseError parseErr;
-    QJsonDocument loadDoc(QJsonDocument::fromJson(loadFile.readAll(), &parseErr));
+    QJsonDocument loadDoc(QJsonDocument::fromJson(ruleFile.readAll(), &parseErr));
+
+    ruleFile.close();
 
 
-
-    if (loadDoc.isNull() || loadDoc.isEmpty()) {
+    if (loadDoc.isNull() || loadDoc.isEmpty())
+    {
         qWarning() << "Could not read data : ";
         qWarning() << parseErr.errorString();
         throw QString(parseErr.errorString());
     }
 
-    m_cellHandler = new CellHandler(filename);
-
-    if (!loadRules(loadDoc.object()))
+    if (!loadDoc.isArray())
     {
-        qWarning("File not valid");
-        throw QString(QObject::tr("File not valid"));
+        qWarning() << "We need an array of rules !";
+        throw QString(QObject::tr("We need an array of rules!"));
     }
+
+    loadRules(loadDoc.array());
 
 }
 
@@ -156,10 +176,17 @@ Automate::Automate(QString filename)
 Automate::~Automate()
 {
     delete m_cellHandler;
-    for (QVector<const Rule*>::iterator it = m_rules.begin(); it != m_rules.end(); ++it)
+    for (QList<const Rule*>::iterator it = m_rules.begin(); it != m_rules.end(); ++it)
     {
         delete *it;
     }
+}
+
+/** \brief Add a new rule to the Automate. Careful, the rule will be destroyed with the Automate
+ */
+void Automate::addRule(const Rule *newRule)
+{
+    m_rules.push_back(newRule);
 }
 
 /** \brief Apply the rule on the cells grid nbSteps times
@@ -174,7 +201,7 @@ bool Automate::run(unsigned int nbSteps) //void instead ?
     {
         for (CellHandler::iterator it = m_cellHandler->begin(); it != m_cellHandler->end(); ++it)
         {
-            for (QVector<const Rule*>::iterator rule = m_rules.begin(); rule != m_rules.end() ; ++rule)
+            for (QList<const Rule*>::iterator rule = m_rules.begin(); rule != m_rules.end() ; ++rule)
             {
                 if((*rule)->matchCell(*it)) //if the cell matches with the rule, its state is changed
                 {

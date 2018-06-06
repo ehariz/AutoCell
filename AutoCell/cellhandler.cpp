@@ -54,6 +54,38 @@ CellHandler::CellHandler(const QString filename)
 
 }
 
+/** \brief Construct all the cells from the json object given
+ *
+ * The size of "cells" array must be the product of all dimensions (60 in the following example).
+ * Typical Json object:
+ * \code
+ * {
+ * "dimensions":"3x4x5",
+ * "cells":[0,1,4,4,2,5,3,4,2,4,
+ *          4,2,5,0,0,0,0,0,0,0,
+ *          2,4,1,1,1,1,1,2,1,1,
+ *          0,0,0,0,0,0,2,2,2,2,
+ *          3,4,5,1,2,0,9,0,0,0,
+ *          1,2,0,0,0,0,1,2,3,2]
+ * }
+ * \endcode
+ *
+ * \param json Json object which contains the description of all the cells
+ * \throw QString Not valid file
+ */
+CellHandler::CellHandler(const QJsonObject& json)
+{
+    if (!load(json))
+    {
+        qWarning("Json not valid");
+        throw QString(QObject::tr("Json not valid"));
+    }
+
+    foundNeighbours();
+
+}
+
+
 /** \brief Construct a CellHandler of the given dimension
  *
  * If generationTypes is given, the CellHandler won't be empty.
