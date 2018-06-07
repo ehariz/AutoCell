@@ -78,7 +78,7 @@
 
 /** \brief Checks if the number of neighbours matching the state condition belongs to the condition interval
  *
- * \param number of neighbours matching the rule condition regarding their values
+ * \param matchingNeighbours Number of neighbours matching the rule condition regarding their values
  * \return True if the number of neighbours matches with the interval condition
  */
 bool NeighbourRule::inInterval(unsigned int matchingNeighbours)const

@@ -125,7 +125,10 @@ Automate::Automate(QString cellHandlerFilename)
 
 /** \brief Create an automate with only a cellHandler with parameters
  *
- * \param cellHandlerFilename File to load
+ * \param dimensions Dimensions of the CellHandler
+ * \param type Generation type, empty by default
+ * \param stateMax Generate states between 0 and stateMax
+ * \param density Average (%) of non-zeros
  */
 Automate::Automate(const QVector<unsigned int> dimensions, CellHandler::generationTypes type, unsigned int stateMax, unsigned int density)
 {
@@ -249,8 +252,6 @@ const QList<const Rule *> &Automate::getRules() const
 /** \brief Apply the rule on the cells grid nbSteps times
  *
  * \param nbSteps number of iterations of the automate on the cell grid
- * \param neighbour New neighbour
- * \return False if the neighbour already exists
  */
 bool Automate::run(unsigned int nbSteps) //void instead ?
 {
