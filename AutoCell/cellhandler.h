@@ -44,12 +44,40 @@ class CellHandler
     public:
         iteratorT(CellHandler_T* handler);
 
-        iteratorT& operator++();
-        Cell_T* operator->() const;
-        Cell_T* operator*() const;
+        iteratorT& operator++(){
+            m_position.replace(0, m_position.at(0) + 1); // adding the value to the first digit
+
+            m_changedDimension = 0;
+            // Carry management
+            for (unsigned short i = 0; i < m_handler->m_dimensions.size(); i++)
+            {
+                if (m_position.at(i) >= m_handler->m_dimensions.at(i))
+                {
+                    m_position.replace(i, 0);
+                    m_changedDimension++;
+                    if (i + 1 != m_handler->m_dimensions.size())
+                        m_position.replace(i+1, m_position.at(i+1)+1);
+                }
+
+            }
+            // If we return to zero, we have finished
+            if (m_position == m_zero)
+                m_finished = true;
+
+            return *this;
+
+        }
+        Cell_T* operator->() const{
+            return m_handler->m_cells.value(m_position);
+        }
+        Cell_T* operator*() const{
+            return m_handler->m_cells.value(m_position);
+        }
 
         bool operator!=(bool finished) const { return (m_finished != finished); }
-        unsigned int changedDimension() const;
+        unsigned int changedDimension() const{
+            return m_changedDimension;
+        }
 
 
 

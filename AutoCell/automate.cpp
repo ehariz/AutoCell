@@ -282,3 +282,32 @@ const CellHandler &Automate::getCellHandler() const
 {
     return *m_cellHandler;
 }
+
+void Automate::addRuleFile(QString filename){
+    QFile ruleFile(filename);
+    if (!ruleFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning("Couldn't open given file.");
+        throw QString(QObject::tr("Couldn't open given file"));
+    }
+
+    QJsonParseError parseErr;
+    QJsonDocument loadDoc(QJsonDocument::fromJson(ruleFile.readAll(), &parseErr));
+
+    ruleFile.close();
+
+
+    if (loadDoc.isNull() || loadDoc.isEmpty())
+    {
+        qWarning() << "Could not read data : ";
+        qWarning() << parseErr.errorString();
+        throw QString(parseErr.errorString());
+    }
+
+    if (!loadDoc.isArray())
+    {
+        qWarning() << "We need an array of rules !";
+        throw QString(QObject::tr("We need an array of rules!"));
+    }
+
+    loadRules(loadDoc.array());
+}

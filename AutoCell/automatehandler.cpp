@@ -2,37 +2,68 @@
 
 /** \brief Initialization of the static value
 */
-AutomateHandler * m_activeAutomate = nullptr;
+AutomateHandler * AutomateHandler::m_activeAutomateHandler = nullptr;
 
-AutomateHandler::~AutomateHandler()
+AutomateHandler::AutomateHandler()
 {
 
 }
 
-/** \brief Get the unique running automate instance or create one if there is no instance running
- *
- * \return the unique running automate instance
- */
-Automate & AutomateHandler::getActiveAutomate()
+AutomateHandler::~AutomateHandler()
 {
-   /* if(!m_activeAutomate)
-        m_activeAutomate = new Automate();
-    return *m_activeAutomate;*/
+    while(!m_ActiveAutomates.empty())
+        delete(m_ActiveAutomates.first());
+}
+
+/** \brief Get the unique running automate handler instance or create one if there is no instance running
+ *
+ * \return the unique running automate handler instance
+ */
+AutomateHandler & AutomateHandler::getAutomateHandler()
+{
+    if (!m_activeAutomateHandler)
+        m_activeAutomateHandler = new AutomateHandler;
+    return *m_activeAutomateHandler;
 }
 
 
 /** \brief Delete the unique running automate instance if it exists
  */
-void AutomateHandler::deleteActiveAutomate()
+void AutomateHandler::deleteAutomateHandler()
 {
-    /*if(m_activeAutomate)
-        delete m_activeAutomate;
-    m_activeAutomate = nullptr;*/
+    if(m_activeAutomateHandler)
+    {
+        delete m_activeAutomateHandler;
+        m_activeAutomateHandler = nullptr;
+    }
 }
 
 /** \brief Set the active automate
  */
-void AutomateHandler::setActiveAutomate(unsigned int activeAutomate)
-{
 
+Automate * AutomateHandler::getAutomate(unsigned int indexAutomate){ //easier than throw catch
+    if(indexAutomate > m_ActiveAutomates.size())
+        return nullptr;
+    return m_ActiveAutomates.at(indexAutomate);
 }
+
+unsigned int AutomateHandler::getNumberAutomates()const
+{
+    return m_ActiveAutomates.size();
+}
+
+void AutomateHandler::addAutomate(Automate * automate)
+{
+    m_ActiveAutomates.append(automate);
+}
+
+
+void AutomateHandler::deleteAutomate(Automate * automate)
+{
+    if(m_ActiveAutomates.contains(automate))
+    {
+        delete automate;
+        m_ActiveAutomates.removeOne(automate);
+    }
+}
+

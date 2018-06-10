@@ -30,6 +30,7 @@ public:
     bool saveCells(QString filename) const ;
     bool saveAll(QString cellHandlerFilename, QString rulesFilename)const ;
 
+    void addRuleFile(QString filename);
     void addRule(const Rule* newRule);
     void setRulePriority(const Rule* rule, unsigned int newPlace);
     const QList<const Rule *> &getRules() const;

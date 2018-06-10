@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setWindowTitle("AutoCell");
 
     m_tabs = NULL;
+    running = false;
 }
 
 /** \fn MainWindow::createIcons()
@@ -115,6 +116,7 @@ void MainWindow::createToolBar(){
     tbLayout->addWidget(m_resetBt, Qt::AlignCenter);
 
 
+
     tbLayout->setAlignment(Qt::AlignCenter);
     QWidget* wrapper = new QWidget(this);
     wrapper->setLayout(tbLayout);
@@ -131,8 +133,7 @@ void MainWindow::createToolBar(){
 QWidget* MainWindow::createTab(){
     QWidget *tab = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(this);
-
-    QVector<unsigned int> dimensions = m_cellHandlers.last()->getDimensions();
+    QVector<unsigned int> dimensions = AutomateHandler::getAutomateHandler().getAutomate(AutomateHandler::getAutomateHandler().getNumberAutomates()-1)->getCellHandler().getDimensions();
     int boardVSize = 0;
     int boardHSize = 0;
     if(dimensions.size() > 1){
@@ -177,11 +178,15 @@ void MainWindow::openFile(){
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Cell file"), ".",
                                                     tr("Automaton cell files (*.atc)"));
     if(!fileName.isEmpty()){
-        m_cellHandlers.append(new CellHandler(fileName));
-        std::cout << "m_cellHandlers size :" <<m_cellHandlers.size() << std::endl<<std::flush;
+        AutomateHandler::getAutomateHandler().addAutomate(new Automate(fileName));
         if(m_tabs == NULL) createTabs();
-        m_tabs->addTab(createTab(), "Automaton "+ QString::number(m_cellHandlers.size()));
-        updateBoard(m_cellHandlers.size()-1);
+        m_tabs->addTab(createTab(), "Automaton "+ QString::number(AutomateHandler::getAutomateHandler().getNumberAutomates()+1));
+        updateBoard(AutomateHandler::getAutomateHandler().getNumberAutomates()-1);
+
+        RuleEditor* ruleEditor = new RuleEditor();
+        connect(ruleEditor, SIGNAL(fileImported(QString)),this,SLOT(addAutomatonRuleFile(QString)));
+        connect(ruleEditor, SIGNAL(rulesFilled(QList<const NeighbourRule*>)), this, SLOT(addAutomatonRules(QList<const Rule*>)));
+
     }
 }
 
@@ -190,10 +195,10 @@ void MainWindow::openFile(){
  * \brief Allows user to select a location and saves automaton's state and settings
  */
 void MainWindow::saveToFile(){
-    if(m_cellHandlers.size() > 0){
+    if(AutomateHandler::getAutomateHandler().getNumberAutomates() > 0){
         QString fileName = QFileDialog::getSaveFileName(this, tr("Save Automaton"),
                                                         ".", tr("Automaton Cells file (*.atc"));
-        m_cellHandlers[m_tabs->currentIndex()]->save(fileName+".atc");
+        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().save(fileName+".atc");
 
     }
     else{
@@ -210,29 +215,31 @@ void MainWindow::saveToFile(){
 void MainWindow::openCreationWindow(){
     CreationDialog *window = new CreationDialog(this);
     connect(window, SIGNAL(settingsFilled(QVector<uint>,CellHandler::generationTypes,uint,uint)),
-            this, SLOT(setCellHandler(QVector<uint>,CellHandler::generationTypes,uint,uint)));
+            this, SLOT(receiveCellHandler(QVector<uint>,CellHandler::generationTypes,uint,uint)));
     window->show();
 }
 
-/** \fn MainWindow::setCellHandler(const QVector<unsigned int> dimensions,
+/** \fn MainWindow::receiveCellHandler(const QVector<unsigned int> dimensions,
                                 CellHandler::generationTypes type,
                                 unsigned int stateMax, unsigned int density)
  * \brief Creates a new cellHandler with the provided arguments and updates the board with the created cellHandler
  */
 
-void MainWindow::setCellHandler(const QVector<unsigned int> dimensions,
+void MainWindow::receiveCellHandler(const QVector<unsigned int> dimensions,
                                 CellHandler::generationTypes type,
                                 unsigned int stateMax, unsigned int density){
-    CellHandler* newCellHandler = new CellHandler(dimensions, type, stateMax, density);
+    AutomateHandler::getAutomateHandler().addAutomate(new Automate(dimensions, type, stateMax, density));
 
     if(m_tabs == NULL) createTabs();
-
-    m_cellHandlers.append(newCellHandler);
-    std::cout << "m_cellHandlers size :" <<m_cellHandlers.size() << std::endl<<std::flush;
     QWidget* newTab = createTab();
-    m_tabs->addTab(newTab, "Automaton "+ QString::number(m_cellHandlers.size()));
+    m_tabs->addTab(newTab, "Automaton "+ QString::number(AutomateHandler::getAutomateHandler().getNumberAutomates()));
     m_tabs->setCurrentWidget(newTab);
-    updateBoard(m_cellHandlers.size()-1);
+    updateBoard(AutomateHandler::getAutomateHandler().getNumberAutomates()-1);
+
+    RuleEditor* ruleEditor = new RuleEditor();
+    connect(ruleEditor, SIGNAL(fileImported(QString)),this,SLOT(addAutomatonRuleFile(QString)));
+    connect(ruleEditor, SIGNAL(rulesFilled(QList<const NeighbourRule*>)), this, SLOT(addAutomatonRules(QList<const Rule*>)));
+    ruleEditor->show();
 
 }
 
@@ -240,50 +247,51 @@ void MainWindow::setCellHandler(const QVector<unsigned int> dimensions,
  * \brief Shows the nth next state of the automaton on the board
  */
 
-void MainWindow::nextState(int n){
-    if(m_cellHandlers.size() == 0){
+void MainWindow::nextState(unsigned int n){
+    if(AutomateHandler::getAutomateHandler().getNumberAutomates()== 0){
         QMessageBox msgBox;
         msgBox.critical(0,"Error","Please create or import an Automaton first !");
         msgBox.setFixedSize(500,200);
     }
     else{
-        for(unsigned int i = 0; i < n; i++) m_cellHandlers[m_tabs->currentIndex()]->nextStates();
+        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->run(n);
         updateBoard(m_tabs->currentIndex());
     }
 }
 
 /** \fn MainWindow::updateBoard()
- * \brief Updates cells on the board on the tab at the give index with the cellHandler's cells states
+ * \brief Updates cells on the board on the tab at the given index with the cellHandler's cells states
  */
 
 void MainWindow::updateBoard(int index){
-    if(m_cellHandlers.size()==0){
+    if(AutomateHandler::getAutomateHandler().getNumberAutomates()== 0){
         QMessageBox msgBox;
         msgBox.critical(0,"Error","Please create or import an Automaton first !");
         msgBox.setFixedSize(500,200);
     }
     else{
 
-        CellHandler* cellHandler = m_cellHandlers[index];
+        const CellHandler* cellHandler = &(AutomateHandler::getAutomateHandler().getAutomate(index)->getCellHandler());
         QVector<unsigned int> dimensions = cellHandler->getDimensions();
         QTableWidget* board = getBoard(index);
         if(dimensions.size() > 1){
             int i = 0;
             int j = 0;
-            for (CellHandler::const_iterator it = CellHandler::const_iterator(cellHandler); it != cellHandler->end() && it.changedDimension() < 2; ++it){
+            for (CellHandler::const_iterator it = cellHandler->begin(); it != cellHandler->end() && it.changedDimension() < 2; ++it){
                     if(it.changedDimension() > 0){
                         i = 0;
                         j++;
                         std::cout << std::endl;
                     }
                     board->item(i,j)->setText(QString::number(it->getState()));
+                    std::cout <<it->getState() <<" ";
                     i++;
             }
         }
         else{
             int i = 0;
             int j = 0;
-            for (CellHandler::const_iterator it = CellHandler::const_iterator(cellHandler); it != cellHandler->end() && it.changedDimension() < 1; ++it){
+            for (CellHandler::const_iterator it = cellHandler->begin(); it != cellHandler->end() && it.changedDimension() < 1; ++it){
                     board->item(i,j)->setText(QString::number(it->getState()));
                     j++;
             }
@@ -325,4 +333,13 @@ void MainWindow::closeTab(int n){
     m_tabs->setCurrentIndex(n);
     saveToFile();
     m_tabs->removeTab(n);
+}
+
+void MainWindow::addAutomatonRules(QList<const Rule *> rules){
+    for(int i =0 ; i < rules.size();i++)
+        AutomateHandler::getAutomateHandler().getAutomate(AutomateHandler::getAutomateHandler().getNumberAutomates()-1)->addRule(rules.at(i));
+}
+
+void MainWindow::addAutomatonRuleFile(QString path){
+    AutomateHandler::getAutomateHandler().getAutomate(AutomateHandler::getAutomateHandler().getNumberAutomates()-1)->addRuleFile(path);
 }
