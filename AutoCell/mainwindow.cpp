@@ -185,7 +185,7 @@ void MainWindow::openFile(){
 
         RuleEditor* ruleEditor = new RuleEditor();
         connect(ruleEditor, SIGNAL(fileImported(QString)),this,SLOT(addAutomatonRuleFile(QString)));
-        connect(ruleEditor, SIGNAL(rulesFilled(QList<const NeighbourRule*>)), this, SLOT(addAutomatonRules(QList<const Rule*>)));
+        connect(ruleEditor, SIGNAL(rulesFilled(QList<const NeighbourRule*>)), this, SLOT(addAutomatonRules(QList<const NeighbourRule*>)));
 
     }
 }
@@ -238,7 +238,7 @@ void MainWindow::receiveCellHandler(const QVector<unsigned int> dimensions,
 
     RuleEditor* ruleEditor = new RuleEditor();
     connect(ruleEditor, SIGNAL(fileImported(QString)),this,SLOT(addAutomatonRuleFile(QString)));
-    connect(ruleEditor, SIGNAL(rulesFilled(QList<const NeighbourRule*>)), this, SLOT(addAutomatonRules(QList<const Rule*>)));
+    connect(ruleEditor, SIGNAL(rulesFilled(QList<const Rule*>)), this, SLOT(addAutomatonRules(QList<const Rule*>)));
     ruleEditor->show();
 
 }
@@ -336,8 +336,12 @@ void MainWindow::closeTab(int n){
 }
 
 void MainWindow::addAutomatonRules(QList<const Rule *> rules){
+    qDebug() << "Ajout de règles : " << rules;
     for(int i =0 ; i < rules.size();i++)
+    {
+        qDebug() << rules.at(i)->toJson();
         AutomateHandler::getAutomateHandler().getAutomate(AutomateHandler::getAutomateHandler().getNumberAutomates()-1)->addRule(rules.at(i));
+    }
 }
 
 void MainWindow::addAutomatonRuleFile(QString path){

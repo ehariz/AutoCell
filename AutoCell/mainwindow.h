@@ -93,7 +93,7 @@ public slots:
     void receiveCellHandler(const QVector<unsigned int> dimensions,
                         CellHandler::generationTypes type = CellHandler::generationTypes::empty,
                         unsigned int stateMax = 1, unsigned int density = 20);
-    void addAutomatonRules(QList<const Rule*> rules);
+    void addAutomatonRules(QList<const Rule *> rules);
     void addAutomatonRuleFile(QString path);
     void forward();
     void closeTab(int n);
