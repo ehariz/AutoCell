@@ -10,13 +10,14 @@
 class AutomateHandler
 {
 private:
-    QList<Automate*> m_ActiveAutomates; //better than QVector if we want to delete in the middle
-    static AutomateHandler * m_activeAutomateHandler; ///< active automate if existing, nullptr else
+    QList<Automate*> m_ActiveAutomates; ///< list of existing automates
+    static AutomateHandler * m_activeAutomateHandler; ///< active automate handler if existing, nullptr else
 
     AutomateHandler();
     AutomateHandler(const AutomateHandler & a) = delete;
     AutomateHandler & operator=(const AutomateHandler & a) = delete;
     ~AutomateHandler();
+
 public:
     static AutomateHandler & getAutomateHandler();
     static void deleteAutomateHandler();
