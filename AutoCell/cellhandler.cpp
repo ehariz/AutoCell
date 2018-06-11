@@ -545,8 +545,9 @@ CellHandler::iteratorT<CellHandler_T,Cell_T>::iteratorT(CellHandler_T *handler):
     m_zero = m_position;
 }
 
+/*
 /** \brief Increment the current position and handle dimension changes
- */
+
 template<typename CellHandler_T, typename Cell_T>
 CellHandler::iteratorT<CellHandler_T,Cell_T> &CellHandler::iteratorT<CellHandler_T,Cell_T>::operator++()
 {
@@ -574,7 +575,7 @@ CellHandler::iteratorT<CellHandler_T,Cell_T> &CellHandler::iteratorT<CellHandler
 }
 
 /** \brief Get the current cell
- */
+
 template<typename CellHandler_T, typename Cell_T>
 Cell_T* CellHandler::iteratorT<CellHandler_T,Cell_T>::operator->() const
 {
@@ -583,21 +584,12 @@ Cell_T* CellHandler::iteratorT<CellHandler_T,Cell_T>::operator->() const
 
 
 /** \brief Get the current cell
- */
+
 template<typename CellHandler_T, typename Cell_T>
 Cell_T *CellHandler::iteratorT<CellHandler_T,Cell_T>::operator*() const
 {
     return m_handler->m_cells.value(m_position);
 }
+*/
 
-/** \brief Return the number of dimensions we change
- *
- * For example, if we were at the (3,4,4) cell, and we incremented the position,
- * we are now at (4,0,0), and changedDimension return 2 (because of the 2 zeros).
- */
-template<typename CellHandler_T, typename Cell_T>
-unsigned int CellHandler::iteratorT<CellHandler_T,Cell_T>::changedDimension() const
-{
-    return m_changedDimension;
-}
 

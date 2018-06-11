@@ -33,7 +33,11 @@ void AutomateHandler::deleteAutomateHandler()
 {
     if(m_activeAutomateHandler)
     {
+<<<<<<< HEAD
         delete m_activeAutomate;
+=======
+        delete m_activeAutomateHandler;
+>>>>>>> master
         m_activeAutomateHandler = nullptr;
     }
 }
@@ -51,6 +55,7 @@ unsigned int AutomateHandler::getNumberAutomates()const
 {
     return m_ActiveAutomates.size();
 }
+<<<<<<< HEAD
 
 void AutomateHandler::addAutomate(Automate * automate)
 {
@@ -68,3 +73,21 @@ void AutomateHandler::deleteAutomate(Automate * automate)
 }
 
 
+=======
+
+void AutomateHandler::addAutomate(Automate * automate)
+{
+    m_ActiveAutomates.append(automate);
+}
+
+
+void AutomateHandler::deleteAutomate(Automate * automate)
+{
+    if(m_ActiveAutomates.contains(automate))
+    {
+        delete automate;
+        m_ActiveAutomates.removeOne(automate);
+    }
+}
+
+>>>>>>> master

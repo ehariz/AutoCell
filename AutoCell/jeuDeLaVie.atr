@@ -1,0 +1,39 @@
+[
+    {
+        "currentStates": [
+            0,
+            1
+        ],
+        "finalState": 1,
+        "neighbourNumberMax": 3,
+        "neighbourNumberMin": 3,
+        "neighbourStates": [
+            1
+        ],
+        "type": "neighbour"
+    },
+    {
+        "currentStates": [
+            1
+        ],
+        "finalState": 0,
+        "neighbourNumberMax": 1,
+        "neighbourNumberMin": 0,
+        "neighbourStates": [
+            1
+        ],
+        "type": "neighbour"
+    },
+    {
+        "currentStates": [
+            1
+        ],
+        "finalState": 0,
+        "neighbourNumberMax": 12,
+        "neighbourNumberMin": 4,
+        "neighbourStates": [
+            1
+        ],
+        "type": "neighbour"
+    }
+]

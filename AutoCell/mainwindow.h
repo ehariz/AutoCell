@@ -4,8 +4,10 @@
 #include <QMainWindow>
 #include <QtWidgets>
 #include "cellhandler.h"
+#include "automate.h"
 #include "creationdialog.h"
-
+#include "automatehandler.h"
+#include "ruleeditor.h"
 
 /** \class MainWindow
  * \brief Simulation window
@@ -18,7 +20,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
     QTabWidget *m_tabs; //Tabs for the main window
-    QVector<CellHandler *> m_cellHandlers; //QVector containing each tab's cellHandler
+    //QVector<Automate *> m_automatons; //QVector containing a pointer to each tab's Automaton
 
     ///Icons
     QIcon m_fastBackwardIcon;
@@ -56,6 +58,8 @@ class MainWindow : public QMainWindow
     QSpinBox *m_jumpSpeed; ///Simulation speed input
     QLabel *m_speedLabel;
 
+    Automate* m_newAutomate;
+    bool running;
     QToolBar *m_toolBar; ///Toolbar containing the buttons
 
     ///Board size settings
@@ -72,7 +76,7 @@ class MainWindow : public QMainWindow
 
 
     void updateBoard(int index);
-    void nextState(int n);
+    void nextState(unsigned int n);
     QTableWidget* getBoard(int n);
 
 
@@ -86,11 +90,14 @@ public slots:
     void openFile();
     void saveToFile();
     void openCreationWindow();
-    void setCellHandler(const QVector<unsigned int> dimensions,
+    void receiveCellHandler(const QVector<unsigned int> dimensions,
                         CellHandler::generationTypes type = CellHandler::generationTypes::empty,
                         unsigned int stateMax = 1, unsigned int density = 20);
+    void addAutomatonRules(QList<const Rule *> rules);
+    void addAutomatonRuleFile(QString path);
     void forward();
     void closeTab(int n);
+    //void runAutomaton();
 
 };
 

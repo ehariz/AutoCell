@@ -12,7 +12,8 @@ SOURCES += \
     automate.cpp \
     automatehandler.cpp \
     rule.cpp \
-    neighbourrule.cpp
+    neighbourrule.cpp \
+    ruleeditor.cpp
 
 HEADERS += \
     cell.h \
@@ -23,7 +24,8 @@ HEADERS += \
     automate.h \
     automatehandler.h \
     rule.h \
-    neighbourrule.h
+    neighbourrule.h \
+    ruleeditor.h
 
 DISTFILES += \
     ../../../../../../Downloads/autoCell icons/fast-backward-full.svg \
