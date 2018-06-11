@@ -2,7 +2,7 @@
 #include <QDebug>
 #include "cell.h"
 #include "mainwindow.h"
-#include <iostream>
+//#include <iostream>
 int main(int argc, char * argv[])
 {
     QApplication app(argc, argv);
@@ -10,10 +10,10 @@ int main(int argc, char * argv[])
     MainWindow w;
     w.show();
 
-    std::string *s = new std::string;
+    /*std::string *s = new std::string;
     delete s;
     std::cout<<s;
-    return 0;
-    //return app.exec();
+    return 0;*/
+    return app.exec();
 
 }

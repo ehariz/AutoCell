@@ -44,7 +44,7 @@ void AutomateHandler::deleteAutomateHandler()
 Automate * AutomateHandler::getAutomate(unsigned int indexAutomate){ //easier than throw catch
     if(indexAutomate > m_ActiveAutomates.size())
         return nullptr;
-    return m_ActiveAutomates.at(i);
+    return m_ActiveAutomates.at(indexAutomate);
 }
 
 unsigned int AutomateHandler::getNumberAutomates()const
@@ -54,7 +54,7 @@ unsigned int AutomateHandler::getNumberAutomates()const
 
 void AutomateHandler::addAutomate(Automate * automate)
 {
-    m_ActiveAutomates.insert(automate);
+    m_ActiveAutomates.insert(automate); //pushback
 }
 
 
