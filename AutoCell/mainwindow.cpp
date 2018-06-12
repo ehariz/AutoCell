@@ -84,6 +84,13 @@ void MainWindow::createActions(){
     m_resetBt->setIconSize(QSize(30,30));
 
 
+    m_zoom = new QSlider(Qt::Horizontal);
+    m_zoom->setValue(m_cellSize);
+    m_zoom->setMinimum(4);
+    m_zoom->setMaximum(100);
+    m_zoom->setFixedWidth(100);
+
+
     connect(m_openAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(openFile()));
     connect(m_newAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(openCreationWindow()));
     connect(m_saveAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(saveToFile()));
@@ -91,6 +98,7 @@ void MainWindow::createActions(){
     connect(m_fastBackwardBt, SIGNAL(clicked(bool)), this, SLOT(backward()));
     connect(m_playPauseBt, SIGNAL(clicked(bool)), this, SLOT(handlePlayPause()));
     connect(m_resetBt,SIGNAL(clicked(bool)), this,SLOT(reset()));
+    connect(m_zoom, SIGNAL(valueChanged(int)), this, SLOT(setSize(int)));
 
 }
 
@@ -108,17 +116,21 @@ void MainWindow::createToolBar(){
     m_timeStep->setFixedWidth(60);
     m_toolBar->setMovable(false);
 
-    QLabel *cellSetterLabel = new QLabel(tr("Cell value"),this);
-    m_cellSetter = new QSpinBox(this);
-    connect(m_cellSetter, SIGNAL(valueChanged(int)),this, SLOT(changeCellValue()));
+    QLabel *cellSetterLabel = new QLabel(tr("Cell value"));
+    //m_cellSetter = new QSpinBox(this);
+    //connect(m_cellSetter, SIGNAL(valueChanged(int)),this, SLOT(changeCellValue()));
+    QLabel *zoomLabel = new QLabel(tr("Zoom"),this);
+    QVBoxLayout* zoomLayout = new QVBoxLayout();
+    zoomLayout->addWidget(zoomLabel, Qt::AlignCenter);
+    zoomLayout->addWidget(m_zoom, Qt::AlignCenter);
 
     QVBoxLayout* tsLayout = new QVBoxLayout();
     tsLayout->addWidget(timeStepLabel, Qt::AlignCenter);
     tsLayout->addWidget(m_timeStep, Qt::AlignCenter);
 
-    QVBoxLayout* csLayout = new QVBoxLayout();
+    /*QVBoxLayout* csLayout = new QVBoxLayout();
     csLayout->addWidget(cellSetterLabel, Qt::AlignCenter);
-    csLayout->addWidget(m_cellSetter, Qt::AlignCenter);
+    csLayout->addWidget(m_cellSetter, Qt::AlignCenter);*/
 
     QHBoxLayout *tbLayout = new QHBoxLayout(this);
     tbLayout->addWidget(m_newAutomatonBt, Qt::AlignCenter);
@@ -130,6 +142,8 @@ void MainWindow::createToolBar(){
     tbLayout->addWidget(m_resetBt, Qt::AlignCenter);
     tbLayout->addLayout(tsLayout);
     //tbLayout->addLayout(csLayout);
+    tbLayout->addLayout(zoomLayout);
+
 
     tbLayout->setAlignment(Qt::AlignCenter);
     QWidget* wrapper = new QWidget(this);
@@ -510,3 +524,22 @@ void MainWindow::handleTabChanged(){
     m_currentCellX = -1;
     m_currentCellY = -1;
 }
+
+
+void MainWindow::setSize(int newCellSize)
+{
+    m_cellSize = newCellSize;
+    if(AutomateHandler::getAutomateHandler().getNumberAutomates()!= 0)
+    {
+        for (unsigned int i = 0; i < m_tabs->count(); i++)
+        {
+            QTableWidget* board = getBoard(i);
+            for (unsigned int row = 0; row < board->rowCount(); row++)
+                board->setRowHeight(row, m_cellSize);
+            for (unsigned int col = 0; col < board->columnCount(); col++)
+                board->setColumnWidth(col, m_cellSize);
+            board->setFixedSize(board->columnCount()*m_cellSize, board->rowCount()*m_cellSize);
+        }
+    }
+}
+

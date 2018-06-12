@@ -59,6 +59,8 @@ class MainWindow : public QMainWindow
     QSpinBox *m_cellSetter; ///Cell state manual modification
     QTimer* m_timer; /// Timer running between simulation steps
 
+    QSlider *m_zoom;
+
     Automate* m_newAutomate;
     bool running;
     QToolBar *m_toolBar; ///Toolbar containing the buttons
@@ -108,6 +110,7 @@ public slots:
     void cellPressed(int i, int j);
     void changeCellValue();
     void handleTabChanged();
+    void setSize(int newCellSize);
 
 };
 
