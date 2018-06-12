@@ -67,7 +67,7 @@ bool Cell::back()
  */
 void Cell::reset()
 {
-    while (m_states.size() > 1)
+    while (m_states.size() > 2)
         m_states.pop();
 }
 
