@@ -60,6 +60,7 @@ bool Cell::back()
     if (m_states.size() <= 1)
         return false;
     m_states.pop();
+    m_nextState = m_states.top();
     return true;
 }
 
@@ -69,6 +70,7 @@ void Cell::reset()
 {
     while (m_states.size() > 2)
         m_states.pop();
+    m_nextState = m_states.top();
 }
 
 /** \fn bool Cell::addNeighbour(const Cell* neighbour)

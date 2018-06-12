@@ -256,6 +256,7 @@ void MainWindow::nextState(unsigned int n){
         msgBox.setFixedSize(500,200);
     }
     else{
+
         AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->run(n);
         updateBoard(m_tabs->currentIndex());
     }
@@ -283,10 +284,8 @@ void MainWindow::updateBoard(int index){
                     if(it.changedDimension() > 0){
                         i = 0;
                         j++;
-                        std::cout << std::endl;
                     }
                     board->item(i,j)->setBackgroundColor(QColor::colorNames().at(it->getState()));
-                    std::cout <<it->getState() <<" ";
                     i++;
             }
         }
@@ -295,7 +294,6 @@ void MainWindow::updateBoard(int index){
                 addEmptyRow(index);
             int i = board->rowCount() -1;
             int j = 0;
-
             for (CellHandler::const_iterator it = cellHandler->begin(); it != cellHandler->end() && it.changedDimension() < 1; ++it){
                     board->item(i,j)->setBackgroundColor(QColor::colorNames().at(it->getState()));
                     j++;
@@ -366,10 +364,8 @@ void MainWindow::closeTab(int n){
 }
 
 void MainWindow::addAutomatonRules(QList<const Rule *> rules){
-    qDebug() << "Ajout de règles : " << rules;
     for(int i =0 ; i < rules.size();i++)
     {
-        qDebug() << rules.at(i)->toJson();
         AutomateHandler::getAutomateHandler().getAutomate(AutomateHandler::getAutomateHandler().getNumberAutomates()-1)->addRule(rules.at(i));
     }
 }
@@ -420,11 +416,8 @@ void MainWindow::reset(){
         QTableWidget *board = getBoard(m_tabs->currentIndex());
         board->setRowCount(1);
         board->setFixedHeight(m_cellSize);
-        //std::cout << "resetting Automaton" << std::endl;
-        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().print(std::cout);
+
         AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().reset();
-        std::cout << std::endl;
-        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().print(std::cout);
         updateBoard(m_tabs->currentIndex());
     }
 }
