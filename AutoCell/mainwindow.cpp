@@ -290,13 +290,19 @@ void MainWindow::updateBoard(int index){
                     i++;
             }
         }
-        else{
-            int i = 0;
+        else{ // dimension = 1
+            if (board->rowCount() != 1)
+                addEmptyRow(index);
+            int i = board->rowCount() -1;
             int j = 0;
+
             for (CellHandler::const_iterator it = cellHandler->begin(); it != cellHandler->end() && it.changedDimension() < 1; ++it){
-                    board->item(i,j)->setText(QString::number(it->getState()));
+                    board->item(i,j)->setBackgroundColor(QColor::colorNames().at(it->getState()));
                     j++;
             }
+            if (board->rowCount() == 1)
+                addEmptyRow(index);
+
         }
 
     }
@@ -325,6 +331,26 @@ void MainWindow::createTabs(){
     m_tabs->setTabsClosable(true);
     setCentralWidget(m_tabs);
     connect(m_tabs, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
+}
+
+/** \brief Add an empty row at the end of the board
+ *
+ * Used only in case of 1 dimension automaton
+ *
+ * \param n Index of the board
+ */
+void MainWindow::addEmptyRow(unsigned int n)
+{
+    QTableWidget *board = getBoard(n);
+    board->setFixedHeight(board->height() + m_cellSize);
+    unsigned int row = board->rowCount();
+    board->insertRow(row);
+    board->setRowHeight(row, m_cellSize);
+    for(unsigned int col = 0; col < board->columnCount(); ++col) {
+        board->setItem(row, col, new QTableWidgetItem(""));
+        board->item(row, col)->setBackgroundColor("white");
+        board->item(row, col)->setTextColor("black");
+    }
 }
 
 /** \fn MainWindow::closeTab(int n)

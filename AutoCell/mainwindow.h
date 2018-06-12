@@ -74,7 +74,7 @@ class MainWindow : public QMainWindow
     QWidget* createTab();
     void createTabs();
 
-
+    void addEmptyRow(unsigned int n);
     void updateBoard(int index);
     void nextState(unsigned int n);
     QTableWidget* getBoard(int n);
