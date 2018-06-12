@@ -58,6 +58,8 @@ class MainWindow : public QMainWindow
     QSpinBox *m_timeStep; ///Simulation time step duration input
     QTimer* m_timer;
 
+    QSlider *m_zoom;
+
     Automate* m_newAutomate;
     bool running;
     QToolBar *m_toolBar; ///Toolbar containing the buttons
@@ -100,6 +102,7 @@ public slots:
     void runAutomaton();
     void handlePlayPause();
     void reset();
+    void setSize(int newCellSize);
 
 };
 

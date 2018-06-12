@@ -80,12 +80,20 @@ void MainWindow::createActions(){
     m_openAutomatonBt->setIconSize(QSize(30,30));
     m_resetBt->setIconSize(QSize(30,30));
 
+
+    m_zoom = new QSlider(Qt::Horizontal);
+    m_zoom->setValue(m_cellSize);
+    m_zoom->setMinimum(4);
+    m_zoom->setMaximum(100);
+    m_zoom->setFixedWidth(100);
+
     connect(m_openAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(openFile()));
     connect(m_newAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(openCreationWindow()));
     connect(m_saveAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(saveToFile()));
     connect(m_fastForwardBt, SIGNAL(clicked(bool)), this, SLOT(forward()));
     connect(m_playPauseBt, SIGNAL(clicked(bool)), this, SLOT(handlePlayPause()));
     connect(m_resetBt,SIGNAL(clicked(bool)), this,SLOT(reset()));
+    connect(m_zoom, SIGNAL(valueChanged(int)), this, SLOT(setSize(int)));
 
 }
 
@@ -103,6 +111,12 @@ void MainWindow::createToolBar(){
     m_timeStep->setFixedWidth(60);
     m_toolBar->setMovable(false);
 
+    QLabel *zoomLabel = new QLabel(tr("Zoom"),this);
+    QVBoxLayout* zoomLayout = new QVBoxLayout();
+    zoomLayout->addWidget(zoomLabel, Qt::AlignCenter);
+    zoomLayout->addWidget(m_zoom, Qt::AlignCenter);
+
+
     QVBoxLayout* tsLayout = new QVBoxLayout();
     tsLayout->addWidget(timeStepLabel, Qt::AlignCenter);
     tsLayout->addWidget(m_timeStep, Qt::AlignCenter);
@@ -115,6 +129,7 @@ void MainWindow::createToolBar(){
     tbLayout->addWidget(m_playPauseBt, Qt::AlignCenter);
     tbLayout->addWidget(m_fastForwardBt, Qt::AlignCenter);
     tbLayout->addLayout(tsLayout);
+    tbLayout->addLayout(zoomLayout);
 
 
 
@@ -419,5 +434,22 @@ void MainWindow::reset(){
 
         AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().reset();
         updateBoard(m_tabs->currentIndex());
+    }
+}
+
+void MainWindow::setSize(int newCellSize)
+{
+    m_cellSize = newCellSize;
+    if(AutomateHandler::getAutomateHandler().getNumberAutomates()!= 0)
+    {
+        for (unsigned int i = 0; i < m_tabs->count(); i++)
+        {
+            QTableWidget* board = getBoard(i);
+            for (unsigned int row = 0; row < board->rowCount(); row++)
+                board->setRowHeight(row, m_cellSize);
+            for (unsigned int col = 0; col < board->columnCount(); col++)
+                board->setColumnWidth(col, m_cellSize);
+            board->setFixedSize(board->columnCount()*m_cellSize, board->rowCount()*m_cellSize);
+        }
     }
 }
