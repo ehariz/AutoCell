@@ -95,7 +95,8 @@ CellHandler::CellHandler(const QJsonObject& json)
  * \param stateMax Generate states between 0 and stateMax
  * \param density Average (%) of non-zeros
  */
-CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes type, unsigned int stateMax, unsigned int density)
+CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes type, unsigned int stateMax, unsigned int density) :
+    m_maxState(stateMax)
 {
     m_dimensions = dimensions;
     QVector<unsigned int> position;
@@ -140,6 +141,13 @@ CellHandler::~CellHandler()
 Cell *CellHandler::getCell(const QVector<unsigned int> position) const
 {
     return m_cells.value(position);
+}
+
+/** \brief Return the max state of the CellHandler
+ */
+unsigned int CellHandler::getMaxState() const
+{
+    return m_maxState;
 }
 
 /** \brief Accessor of m_dimensions
@@ -213,6 +221,8 @@ bool CellHandler::save(QString filename) const
         cells.append(QJsonValue((int)it->getState()));
     }
     json["cells"] = cells;
+
+    json["maxState"] = QJsonValue((int)m_maxState);
 
 
     QJsonDocument saveDoc(json);
@@ -407,6 +417,10 @@ bool CellHandler::load(const QJsonObject &json)
 
         positionIncrement(position);
     }
+
+    if (!json.contains("maxState") || !json["maxState"].isDouble())
+        return false;
+    m_maxState = json["maxState"].toInt();
 
     return true;
 
