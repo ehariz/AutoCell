@@ -5,16 +5,16 @@
  * \param state Cell state, dead state by default
  */
 Cell::Cell(unsigned int state):
-    m_state(state), m_nextState(state)
+    m_nextState(state)
 {
-
+    m_states.push(state);
 }
 
 /** \brief Set temporary state
  *
  * To change current cell state, use setState(unsigned int state) then
  * validState().
- *
+ *(
  * \param state New state
  */
 void Cell::setState(unsigned int state)
@@ -29,7 +29,7 @@ void Cell::setState(unsigned int state)
  */
 void Cell::validState()
 {
-    m_state = m_nextState;
+    m_states.push(m_nextState);
 }
 
 /** \brief Force the state change.
@@ -40,14 +40,35 @@ void Cell::validState()
  */
 void Cell::forceState(unsigned int state)
 {
-    m_state = m_nextState = state;
+    m_nextState = state;
+    m_states.push(m_nextState);
 }
 
 /** \brief Access current cell state
  */
 unsigned int Cell::getState() const
 {
-    return m_state;
+    return m_states.top();
+}
+
+/** \brief Set the previous state
+ *
+ * \return Return false if we are already at the first state
+ */
+bool Cell::back()
+{
+    if (m_states.size() <= 1)
+        return false;
+    m_states.pop();
+    return true;
+}
+
+/** \brief Reset the cell to the 1st state
+ */
+void Cell::reset()
+{
+    while (m_states.size() > 1)
+        m_states.pop();
 }
 
 /** \fn bool Cell::addNeighbour(const Cell* neighbour)

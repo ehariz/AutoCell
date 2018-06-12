@@ -159,6 +159,28 @@ void CellHandler::nextStates() const
     }
 }
 
+/** \brief Get all the cells to their previous states
+ */
+bool CellHandler::previousStates() const
+{
+    for (QMap<QVector<unsigned int>, Cell* >::const_iterator it = m_cells.begin(); it != m_cells.end(); ++it)
+    {
+        if (!it.value()->back())
+            return false;
+    }
+    return true;
+}
+
+/** \brief Reset all the cells to the 1st state
+ */
+void CellHandler::reset() const
+{
+    for (QMap<QVector<unsigned int>, Cell* >::const_iterator it = m_cells.begin(); it != m_cells.end(); ++it)
+    {
+        it.value()->reset();
+    }
+}
+
 /** \brief Save the CellHandler current configuration in the file given
  *
  * \param filename Path to the file
@@ -545,6 +567,7 @@ CellHandler::iteratorT<CellHandler_T,Cell_T>::iteratorT(CellHandler_T *handler):
     }
     m_zero = m_position;
 }
+<<<<<<< HEAD
 
 
 
@@ -596,3 +619,5 @@ Cell_T *CellHandler::iteratorT<CellHandler_T,Cell_T>::operator*() const
 */
 
 
+=======
+>>>>>>> Previous states management

@@ -43,7 +43,7 @@ class CellHandler
         friend class CellHandler;
     public:
         iteratorT(CellHandler_T* handler);
-
+        /** \brief Increment the current position and handle dimension changes */
         iteratorT& operator++(){
             m_position.replace(0, m_position.at(0) + 1); // adding the value to the first digit
 
@@ -67,9 +67,11 @@ class CellHandler
             return *this;
 
         }
+        /** \brief Get the current cell */
         Cell_T* operator->() const{
             return m_handler->m_cells.value(m_position);
         }
+        /** \brief Get the current cell */
         Cell_T* operator*() const{
             return m_handler->m_cells.value(m_position);
         }
@@ -108,7 +110,8 @@ public:
     Cell* getCell(const QVector<unsigned int> position) const;
     QVector<unsigned int> getDimensions() const;
     void nextStates() const;
-    void reset();
+    bool previousStates() const;
+    void reset() const;
 
     bool save(QString filename) const;
 
