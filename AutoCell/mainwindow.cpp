@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include <iostream>
+#include "math.h"
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     createIcons();
@@ -50,7 +51,6 @@ void MainWindow::createIcons(){
  */
 
 void MainWindow::createActions(){
-    m_fastBackward = new QAction(m_fastBackwardIcon, tr("&fast backward"), this);
     m_fastForward = new QAction(m_fastForwardIcon, tr("&fast forward"), this);
     m_playPause = new QAction(m_playIcon, tr("Play"), this);
     m_saveAutomaton = new QAction(m_saveIcon, tr("Save automaton"), this);
@@ -59,8 +59,6 @@ void MainWindow::createActions(){
     m_resetAutomaton = new QAction(m_resetIcon, tr("Reset automaton"), this);
 
 
-
-    m_fastBackwardBt = new QToolButton(this);
     m_fastForwardBt = new QToolButton(this);
     m_playPauseBt = new QToolButton(this);
     m_saveAutomatonBt = new QToolButton(this);
@@ -68,7 +66,6 @@ void MainWindow::createActions(){
     m_openAutomatonBt = new QToolButton(this);
     m_resetBt = new QToolButton(this);
 
-    m_fastBackwardBt->setDefaultAction(m_fastBackward);
     m_fastForwardBt->setDefaultAction(m_fastForward);
     m_playPauseBt->setDefaultAction(m_playPause);
     m_saveAutomatonBt->setDefaultAction(m_saveAutomaton);
@@ -76,7 +73,6 @@ void MainWindow::createActions(){
     m_openAutomatonBt->setDefaultAction(m_openAutomaton);
     m_resetBt->setDefaultAction(m_resetAutomaton);
 
-    m_fastBackwardBt->setIconSize(QSize(30,30));
     m_fastForwardBt->setIconSize(QSize(30,30));
     m_playPauseBt->setIconSize(QSize(30,30));
     m_saveAutomatonBt->setIconSize(QSize(30,30));
@@ -88,6 +84,8 @@ void MainWindow::createActions(){
     connect(m_newAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(openCreationWindow()));
     connect(m_saveAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(saveToFile()));
     connect(m_fastForwardBt, SIGNAL(clicked(bool)), this, SLOT(forward()));
+    connect(m_playPauseBt, SIGNAL(clicked(bool)), this, SLOT(handlePlayPause()));
+    connect(m_resetBt,SIGNAL(clicked(bool)), this,SLOT(reset()));
 
 }
 
@@ -97,23 +95,27 @@ void MainWindow::createActions(){
 
 void MainWindow::createToolBar(){
     m_toolBar = new QToolBar(this);
-    QLabel *m_speedLabel = new QLabel(tr("Speed : "),this);
-    m_jumpSpeed = new QSpinBox(this);
-    m_jumpSpeed->setValue(1);
-    m_speedLabel->setFixedWidth(50);
-    m_jumpSpeed->setFixedWidth(40);
+    QLabel *timeStepLabel = new QLabel(tr("Timestep(ms)"),this);
+    m_timeStep = new QSpinBox(this);
+    m_timeStep->setMaximum(10000);
+    m_timeStep->setValue(500);
+    timeStepLabel->setFixedWidth(90);
+    m_timeStep->setFixedWidth(60);
     m_toolBar->setMovable(false);
+
+    QVBoxLayout* tsLayout = new QVBoxLayout();
+    tsLayout->addWidget(timeStepLabel, Qt::AlignCenter);
+    tsLayout->addWidget(m_timeStep, Qt::AlignCenter);
 
     QHBoxLayout *tbLayout = new QHBoxLayout(this);
     tbLayout->addWidget(m_newAutomatonBt, Qt::AlignCenter);
     tbLayout->addWidget(m_openAutomatonBt, Qt::AlignCenter);
     tbLayout->addWidget(m_saveAutomatonBt, Qt::AlignCenter);
-    tbLayout->addWidget(m_fastBackwardBt, Qt::AlignCenter);
+    tbLayout->addWidget(m_resetBt, Qt::AlignCenter);
     tbLayout->addWidget(m_playPauseBt, Qt::AlignCenter);
     tbLayout->addWidget(m_fastForwardBt, Qt::AlignCenter);
-    tbLayout->addWidget(m_speedLabel, Qt::AlignCenter);
-    tbLayout->addWidget(m_jumpSpeed, Qt::AlignCenter);
-    tbLayout->addWidget(m_resetBt, Qt::AlignCenter);
+    tbLayout->addLayout(tsLayout);
+
 
 
 
@@ -186,7 +188,7 @@ void MainWindow::openFile(){
         RuleEditor* ruleEditor = new RuleEditor();
         connect(ruleEditor, SIGNAL(fileImported(QString)),this,SLOT(addAutomatonRuleFile(QString)));
         connect(ruleEditor, SIGNAL(rulesFilled(QList<const NeighbourRule*>)), this, SLOT(addAutomatonRules(QList<const NeighbourRule*>)));
-
+        ruleEditor->show();
     }
 }
 
@@ -283,7 +285,7 @@ void MainWindow::updateBoard(int index){
                         j++;
                         std::cout << std::endl;
                     }
-                    board->item(i,j)->setText(QString::number(it->getState()));
+                    board->item(i,j)->setBackgroundColor(QColor::colorNames().at(it->getState()));
                     std::cout <<it->getState() <<" ";
                     i++;
             }
@@ -306,7 +308,7 @@ void MainWindow::updateBoard(int index){
  */
 
 void MainWindow::forward(){
-    nextState(m_jumpSpeed->value());
+    nextState(m_timeStep->value());
 }
 
 QTableWidget* MainWindow::getBoard(int n){
@@ -346,4 +348,49 @@ void MainWindow::addAutomatonRules(QList<const Rule *> rules){
 
 void MainWindow::addAutomatonRuleFile(QString path){
     AutomateHandler::getAutomateHandler().getAutomate(AutomateHandler::getAutomateHandler().getNumberAutomates()-1)->addRuleFile(path);
+}
+
+void MainWindow::handlePlayPause(){
+    if(AutomateHandler::getAutomateHandler().getNumberAutomates()== 0){
+        QMessageBox msgBox;
+        msgBox.critical(0,"Error","Please create or import an Automaton first !");
+        msgBox.setFixedSize(500,200);
+    }
+    else{
+        if(running){
+            m_playPauseBt->setIcon(m_playIcon);
+            delete m_timer;
+        }
+        else {
+            m_playPauseBt->setIcon(m_pauseIcon);
+            m_timer = new QTimer(this);
+            connect(m_timer, SIGNAL(timeout()), this, SLOT(runAutomaton()));
+            m_timer->start(m_timeStep->value());
+        }
+        running = !running;
+    }
+
+
+}
+
+void MainWindow::runAutomaton(){
+    if(running){
+        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->run();
+        QCoreApplication::processEvents();
+        updateBoard(m_tabs->currentIndex());
+        QCoreApplication::processEvents();
+    }
+}
+
+void MainWindow::reset(){
+    if(AutomateHandler::getAutomateHandler().getNumberAutomates()== 0){
+        QMessageBox msgBox;
+        msgBox.critical(0,"Error","Please create or import an Automaton first !");
+        msgBox.setFixedSize(500,200);
+    }
+    else{
+        /*std::cout << "resetting Automaton" << std::endl;
+        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->resetCellHandler();
+        updateBoard(m_tabs->currentIndex());*/
+    }
 }

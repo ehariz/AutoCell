@@ -373,6 +373,7 @@ bool CellHandler::load(const QJsonObject &json)
         position.push_back(0);
     }
 
+
     // Creation of cells
     for (int j = 0; j < cells.size(); j++)
     {
@@ -544,6 +545,8 @@ CellHandler::iteratorT<CellHandler_T,Cell_T>::iteratorT(CellHandler_T *handler):
     }
     m_zero = m_position;
 }
+
+
 
 /*
 /** \brief Increment the current position and handle dimension changes

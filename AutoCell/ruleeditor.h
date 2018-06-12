@@ -24,6 +24,7 @@ class RuleEditor : public QDialog
 
     unsigned int selectedRule;
 
+
 public:
     explicit RuleEditor(QWidget *parent = nullptr);
 

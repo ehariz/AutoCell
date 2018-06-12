@@ -108,6 +108,7 @@ public:
     Cell* getCell(const QVector<unsigned int> position) const;
     QVector<unsigned int> getDimensions() const;
     void nextStates() const;
+    void reset();
 
     bool save(QString filename) const;
 

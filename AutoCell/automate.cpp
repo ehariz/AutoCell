@@ -311,3 +311,4 @@ void Automate::addRuleFile(QString filename){
 
     loadRules(loadDoc.array());
 }
+

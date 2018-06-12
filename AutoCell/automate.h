@@ -40,7 +40,6 @@ public:
 public:
     bool run(unsigned int nbSteps = 1);
     const CellHandler& getCellHandler() const;
-
 };
 
 #endif // AUTOMATE_H
