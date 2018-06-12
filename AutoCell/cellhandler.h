@@ -108,6 +108,7 @@ public:
     virtual ~CellHandler();
 
     Cell* getCell(const QVector<unsigned int> position) const;
+    unsigned int getMaxState() const;
     QVector<unsigned int> getDimensions() const;
     void nextStates() const;
     bool previousStates() const;
@@ -121,6 +122,7 @@ public:
     const_iterator begin() const;
     iterator begin();
     bool end() const;
+
 
 private:
     bool load(const QJsonObject &json);

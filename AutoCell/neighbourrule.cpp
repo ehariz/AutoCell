@@ -115,7 +115,7 @@ NeighbourRule::~NeighbourRule()
 bool NeighbourRule::matchCell(const Cell *c)const
 {
     unsigned int matchingNeighbours = 0;
-
+    qDebug() << "Test " << c->getState();
     if (!m_currentCellPossibleValues.contains(c->getState()))
         return false;
 

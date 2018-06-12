@@ -314,7 +314,8 @@ void MainWindow::updateBoard(int index){
  */
 
 void MainWindow::forward(){
-    nextState(m_timeStep->value());
+    //nextState(m_timeStep->value());
+    nextState(1);
 }
 
 QTableWidget* MainWindow::getBoard(int n){
@@ -416,8 +417,14 @@ void MainWindow::reset(){
         msgBox.setFixedSize(500,200);
     }
     else{
-        /*std::cout << "resetting Automaton" << std::endl;
-        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->resetCellHandler();
-        updateBoard(m_tabs->currentIndex());*/
+        QTableWidget *board = getBoard(m_tabs->currentIndex());
+        board->setRowCount(1);
+        board->setFixedHeight(m_cellSize);
+        //std::cout << "resetting Automaton" << std::endl;
+        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().print(std::cout);
+        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().reset();
+        std::cout << std::endl;
+        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().print(std::cout);
+        updateBoard(m_tabs->currentIndex());
     }
 }
