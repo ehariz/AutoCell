@@ -198,9 +198,9 @@ void MainWindow::openFile(){
  */
 void MainWindow::saveToFile(){
     if(AutomateHandler::getAutomateHandler().getNumberAutomates() > 0){
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Save Automaton"),
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Save Automaton cell configuration"),
                                                         ".", tr("Automaton Cells file (*.atc"));
-        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().save(fileName+".atc");
+        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->saveCells(fileName+".atc");
 
     }
     else{
