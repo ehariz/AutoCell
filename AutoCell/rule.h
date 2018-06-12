@@ -6,6 +6,7 @@
 #include <QJsonArray>
 #include "cell.h"
 
+
 /** \class Rule
  * \brief
  */
@@ -30,6 +31,7 @@ public:
      */
     virtual bool matchCell(const Cell * c)const = 0;
     unsigned int getCellOutputState() const;
+
 };
 
 #endif // RULE_H

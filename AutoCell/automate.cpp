@@ -312,3 +312,79 @@ void Automate::addRuleFile(QString filename){
     loadRules(loadDoc.array());
 }
 
+QList<const Rule *> generate1DRules(unsigned int automatonNumber)
+{
+    if (automatonNumber > 256) throw QString(QObject::tr("Automaton number not defined"));
+    QList<const Rule*> ruleList;
+    unsigned short int p = 128;
+    int i = 7;
+    while (i >= 0) {
+        if (automatonNumber >= p)
+        {
+            ruleList.push_back((Rule*)getRuleFromNumber(i, 1));
+            //numeroBit.push_back('1');
+            automatonNumber -= p;
+        }
+        else {
+            ruleList.push_back((Rule*)getRuleFromNumber(i, 0));
+        }
+        i--;
+        p = p / 2;
+    }
+
+    return ruleList;
+}
+
+const MatrixRule* getRuleFromNumber(int previousConfiguration, int nextState)
+{
+    if (previousConfiguration > 7 || previousConfiguration < 0)
+        throw QString(QObject::tr("Configuration not possible"));
+
+    MatrixRule* newRule;
+    switch(previousConfiguration)
+    {
+        case 0:
+            newRule = new MatrixRule(nextState, {0});
+            newRule->addNeighbourState(QVector<short>{-1}, 0);
+            newRule->addNeighbourState(QVector<short>{1}, 0);
+        break;
+    case 1:
+        newRule = new MatrixRule(nextState, {0});
+        newRule->addNeighbourState(QVector<short>{-1}, 0);
+        newRule->addNeighbourState(QVector<short>{1}, 1);
+    break;
+    case 2:
+        newRule = new MatrixRule(nextState, {1});
+        newRule->addNeighbourState(QVector<short>{-1}, 0);
+        newRule->addNeighbourState(QVector<short>{1}, 0);
+    break;
+    case 3:
+        newRule = new MatrixRule(nextState, {1});
+        newRule->addNeighbourState(QVector<short>{-1}, 0);
+        newRule->addNeighbourState(QVector<short>{1}, 1);
+    break;
+    case 4:
+        newRule = new MatrixRule(nextState, {0});
+        newRule->addNeighbourState(QVector<short>{-1}, 1);
+        newRule->addNeighbourState(QVector<short>{1}, 0);
+    break;
+    case 5:
+        newRule = new MatrixRule(nextState, {0});
+        newRule->addNeighbourState(QVector<short>{-1}, 1);
+        newRule->addNeighbourState(QVector<short>{1}, 1);
+    break;
+    case 6:
+        newRule = new MatrixRule(nextState, {1});
+        newRule->addNeighbourState(QVector<short>{-1}, 1);
+        newRule->addNeighbourState(QVector<short>{1}, 0);
+    break;
+    case 7:
+        newRule = new MatrixRule(nextState, {1});
+        newRule->addNeighbourState(QVector<short>{-1}, 1);
+        newRule->addNeighbourState(QVector<short>{1}, 1);
+    break;
+    }
+
+    return newRule;
+}
+

@@ -25,6 +25,6 @@ QJsonObject Rule::toJson() const
  */
 unsigned int Rule::getCellOutputState()const
 {
-        return m_cellOutputState;
+    return m_cellOutputState;
 }
 
