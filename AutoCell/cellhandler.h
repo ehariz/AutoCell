@@ -43,7 +43,7 @@ class CellHandler
         friend class CellHandler;
     public:
         iteratorT(CellHandler_T* handler);
-
+        /** \brief Increment the current position and handle dimension changes */
         iteratorT& operator++(){
             m_position.replace(0, m_position.at(0) + 1); // adding the value to the first digit
 
@@ -67,9 +67,11 @@ class CellHandler
             return *this;
 
         }
+        /** \brief Get the current cell */
         Cell_T* operator->() const{
             return m_handler->m_cells.value(m_position);
         }
+        /** \brief Get the current cell */
         Cell_T* operator*() const{
             return m_handler->m_cells.value(m_position);
         }
@@ -106,8 +108,11 @@ public:
     virtual ~CellHandler();
 
     Cell* getCell(const QVector<unsigned int> position) const;
+    unsigned int getMaxState() const;
     QVector<unsigned int> getDimensions() const;
     void nextStates() const;
+    bool previousStates() const;
+    void reset() const;
 
     bool save(QString filename) const;
 
@@ -118,6 +123,7 @@ public:
     iterator begin();
     bool end() const;
 
+
 private:
     bool load(const QJsonObject &json);
     void foundNeighbours();
@@ -127,6 +133,7 @@ private:
 
     QVector<unsigned int> m_dimensions; ///< Vector of x dimensions
     QMap<QVector<unsigned int>, Cell* > m_cells; ///< Map of cells, with a x dimensions vector as key
+    unsigned int m_maxState;
 };
 
 template class CellHandler::iteratorT<CellHandler, Cell>;

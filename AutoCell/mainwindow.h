@@ -55,8 +55,8 @@ class MainWindow : public QMainWindow
     QToolButton *m_resetBt;
 
 
-    QSpinBox *m_jumpSpeed; ///Simulation speed input
-    QLabel *m_speedLabel;
+    QSpinBox *m_timeStep; ///Simulation time step duration input
+    QTimer* m_timer;
 
     Automate* m_newAutomate;
     bool running;
@@ -74,7 +74,7 @@ class MainWindow : public QMainWindow
     QWidget* createTab();
     void createTabs();
 
-
+    void addEmptyRow(unsigned int n);
     void updateBoard(int index);
     void nextState(unsigned int n);
     QTableWidget* getBoard(int n);
@@ -97,7 +97,9 @@ public slots:
     void addAutomatonRuleFile(QString path);
     void forward();
     void closeTab(int n);
-    //void runAutomaton();
+    void runAutomaton();
+    void handlePlayPause();
+    void reset();
 
 };
 

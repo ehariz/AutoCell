@@ -95,7 +95,8 @@ CellHandler::CellHandler(const QJsonObject& json)
  * \param stateMax Generate states between 0 and stateMax
  * \param density Average (%) of non-zeros
  */
-CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes type, unsigned int stateMax, unsigned int density)
+CellHandler::CellHandler(const QVector<unsigned int> dimensions, generationTypes type, unsigned int stateMax, unsigned int density) :
+    m_maxState(stateMax)
 {
     m_dimensions = dimensions;
     QVector<unsigned int> position;
@@ -142,6 +143,13 @@ Cell *CellHandler::getCell(const QVector<unsigned int> position) const
     return m_cells.value(position);
 }
 
+/** \brief Return the max state of the CellHandler
+ */
+unsigned int CellHandler::getMaxState() const
+{
+    return m_maxState;
+}
+
 /** \brief Accessor of m_dimensions
  */
 QVector<unsigned int> CellHandler::getDimensions() const
@@ -156,6 +164,28 @@ void CellHandler::nextStates() const
     for (QMap<QVector<unsigned int>, Cell* >::const_iterator it = m_cells.begin(); it != m_cells.end(); ++it)
     {
         it.value()->validState();
+    }
+}
+
+/** \brief Get all the cells to their previous states
+ */
+bool CellHandler::previousStates() const
+{
+    for (QMap<QVector<unsigned int>, Cell* >::const_iterator it = m_cells.begin(); it != m_cells.end(); ++it)
+    {
+        if (!it.value()->back())
+            return false;
+    }
+    return true;
+}
+
+/** \brief Reset all the cells to the 1st state
+ */
+void CellHandler::reset() const
+{
+    for (QMap<QVector<unsigned int>, Cell* >::const_iterator it = m_cells.begin(); it != m_cells.end(); ++it)
+    {
+        it.value()->reset();
     }
 }
 
@@ -191,6 +221,8 @@ bool CellHandler::save(QString filename) const
         cells.append(QJsonValue((int)it->getState()));
     }
     json["cells"] = cells;
+
+    json["maxState"] = QJsonValue((int)m_maxState);
 
 
     QJsonDocument saveDoc(json);
@@ -373,6 +405,7 @@ bool CellHandler::load(const QJsonObject &json)
         position.push_back(0);
     }
 
+
     // Creation of cells
     for (int j = 0; j < cells.size(); j++)
     {
@@ -384,6 +417,10 @@ bool CellHandler::load(const QJsonObject &json)
 
         positionIncrement(position);
     }
+
+    if (!json.contains("maxState") || !json["maxState"].isDouble())
+        return false;
+    m_maxState = json["maxState"].toInt();
 
     return true;
 
@@ -544,52 +581,3 @@ CellHandler::iteratorT<CellHandler_T,Cell_T>::iteratorT(CellHandler_T *handler):
     }
     m_zero = m_position;
 }
-
-/*
-/** \brief Increment the current position and handle dimension changes
-
-template<typename CellHandler_T, typename Cell_T>
-CellHandler::iteratorT<CellHandler_T,Cell_T> &CellHandler::iteratorT<CellHandler_T,Cell_T>::operator++()
-{
-    m_position.replace(0, m_position.at(0) + 1); // adding the value to the first digit
-
-    m_changedDimension = 0;
-    // Carry management
-    for (unsigned short i = 0; i < m_handler->m_dimensions.size(); i++)
-    {
-        if (m_position.at(i) >= m_handler->m_dimensions.at(i))
-        {
-            m_position.replace(i, 0);
-            m_changedDimension++;
-            if (i + 1 != m_handler->m_dimensions.size())
-                m_position.replace(i+1, m_position.at(i+1)+1);
-        }
-
-    }
-    // If we return to zero, we have finished
-    if (m_position == m_zero)
-        m_finished = true;
-
-    return *this;
-
-}
-
-/** \brief Get the current cell
-
-template<typename CellHandler_T, typename Cell_T>
-Cell_T* CellHandler::iteratorT<CellHandler_T,Cell_T>::operator->() const
-{
-    return m_handler->m_cells.value(m_position);
-}
-
-
-/** \brief Get the current cell
-
-template<typename CellHandler_T, typename Cell_T>
-Cell_T *CellHandler::iteratorT<CellHandler_T,Cell_T>::operator*() const
-{
-    return m_handler->m_cells.value(m_position);
-}
-*/
-
-

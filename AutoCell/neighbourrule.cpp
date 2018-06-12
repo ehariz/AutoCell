@@ -115,7 +115,6 @@ NeighbourRule::~NeighbourRule()
 bool NeighbourRule::matchCell(const Cell *c)const
 {
     unsigned int matchingNeighbours = 0;
-
     if (!m_currentCellPossibleValues.contains(c->getState()))
         return false;
 

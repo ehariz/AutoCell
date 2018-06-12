@@ -40,7 +40,9 @@ public:
 public:
     bool run(unsigned int nbSteps = 1);
     const CellHandler& getCellHandler() const;
-
 };
+
+QList<const Rule*> generate1DRules(unsigned int automatonNumber);
+const MatrixRule *getRuleFromNumber(int previousConfiguration, int nextState);
 
 #endif // AUTOMATE_H
