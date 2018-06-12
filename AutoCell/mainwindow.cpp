@@ -334,6 +334,7 @@ void MainWindow::createTabs(){
 void MainWindow::closeTab(int n){
     m_tabs->setCurrentIndex(n);
     saveToFile();
+    AutomateHandler::getAutomateHandler().deleteAutomate(AutomateHandler::getAutomateHandler().getAutomate(n));
     m_tabs->removeTab(n);
 }
 
