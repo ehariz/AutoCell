@@ -117,8 +117,8 @@ void MainWindow::createToolBar(){
     m_toolBar->setMovable(false);
 
     QLabel *cellSetterLabel = new QLabel(tr("Cell value"));
-    //m_cellSetter = new QSpinBox(this);
-    //connect(m_cellSetter, SIGNAL(valueChanged(int)),this, SLOT(changeCellValue()));
+    m_cellSetter = new QSpinBox(this);
+    connect(m_cellSetter, SIGNAL(valueChanged(int)),this, SLOT(changeCellValue()));
     QLabel *zoomLabel = new QLabel(tr("Zoom"),this);
     QVBoxLayout* zoomLayout = new QVBoxLayout();
     zoomLayout->addWidget(zoomLabel, Qt::AlignCenter);
@@ -128,9 +128,9 @@ void MainWindow::createToolBar(){
     tsLayout->addWidget(timeStepLabel, Qt::AlignCenter);
     tsLayout->addWidget(m_timeStep, Qt::AlignCenter);
 
-    /*QVBoxLayout* csLayout = new QVBoxLayout();
+    QVBoxLayout* csLayout = new QVBoxLayout();
     csLayout->addWidget(cellSetterLabel, Qt::AlignCenter);
-    csLayout->addWidget(m_cellSetter, Qt::AlignCenter);*/
+    csLayout->addWidget(m_cellSetter, Qt::AlignCenter);
 
     QHBoxLayout *tbLayout = new QHBoxLayout(this);
     tbLayout->addWidget(m_newAutomatonBt, Qt::AlignCenter);
@@ -141,7 +141,7 @@ void MainWindow::createToolBar(){
     tbLayout->addWidget(m_fastForwardBt, Qt::AlignCenter);
     tbLayout->addWidget(m_resetBt, Qt::AlignCenter);
     tbLayout->addLayout(tsLayout);
-    //tbLayout->addLayout(csLayout);
+    tbLayout->addLayout(csLayout);
     tbLayout->addLayout(zoomLayout);
 
 
@@ -520,7 +520,10 @@ void MainWindow::changeCellValue(){
  */
 
 void MainWindow::handleTabChanged(){
-    m_cellSetter->setMaximum(AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().getMaxState());
+    //if(AutomateHandler::getAutomateHandler().getNumberAutomates() <= m_tabs->currentIndex())
+    //std::cout << "AutomateHandler size :" << AutomateHandler::getAutomateHandler().getNumberAutomates() <<std::endl <<std::flush;
+    //std::cout << "Current index :" << m_tabs->currentIndex() <<std::endl <<std::flush;
+        m_cellSetter->setMaximum(AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().getMaxState());
     m_currentCellX = -1;
     m_currentCellY = -1;
 }
