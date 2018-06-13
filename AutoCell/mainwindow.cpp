@@ -462,9 +462,9 @@ void MainWindow::reset(){
         msgBox.setFixedSize(500,200);
     }
     else{
-        QTableWidget *board = getBoard(m_tabs->currentIndex());
-        board->setRowCount(1);
-        board->setFixedHeight(m_cellSize);
+        //QTableWidget *board = getBoard(m_tabs->currentIndex());
+        //board->setRowCount(1);
+        //board->setFixedHeight(m_cellSize);
 
         AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().reset();
         updateBoard(m_tabs->currentIndex());
@@ -478,6 +478,7 @@ void MainWindow::reset(){
 
 void MainWindow::backward(){
     AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().previousStates();
+    updateBoard(m_tabs->currentIndex());
 }
 
 /** \fn MainWindow::cellPressed(int i, int j)
@@ -523,10 +524,7 @@ void MainWindow::changeCellValue(){
  */
 
 void MainWindow::handleTabChanged(){
-    //if(AutomateHandler::getAutomateHandler().getNumberAutomates() <= m_tabs->currentIndex())
-    //std::cout << "AutomateHandler size :" << AutomateHandler::getAutomateHandler().getNumberAutomates() <<std::endl <<std::flush;
-    //std::cout << "Current index :" << m_tabs->currentIndex() <<std::endl <<std::flush;
-        m_cellSetter->setMaximum(AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().getMaxState());
+    m_cellSetter->setMaximum(AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().getMaxState());
     m_currentCellX = -1;
     m_currentCellY = -1;
 }
@@ -548,4 +546,3 @@ void MainWindow::setSize(int newCellSize)
         }
     }
 }
-

@@ -57,7 +57,7 @@ unsigned int Cell::getState() const
  */
 bool Cell::back()
 {
-    if (m_states.size() <= 1)
+    if (m_states.size() <= 2)
         return false;
     m_states.pop();
     m_nextState = m_states.top();
