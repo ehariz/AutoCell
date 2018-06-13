@@ -486,11 +486,14 @@ void MainWindow::backward(){
 
 void MainWindow::cellPressed(int i, int j){
     QVector<unsigned int> coord;
-    coord.append(j);
     coord.append(i);
-    m_cellSetter->setValue(AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().getCell(coord)->getState());
+    coord.append(j);
     m_currentCellX = i;
     m_currentCellY = j;
+    m_cellSetter->setValue(AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().getCell(coord)->getState());
+
+    std::cout << "Current cell X" << m_currentCellX << std::endl;
+    std::cout << "Current cell Y" << m_currentCellY << std::endl;
 }
 
 
