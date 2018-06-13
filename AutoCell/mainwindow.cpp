@@ -504,11 +504,19 @@ void MainWindow::backward(){
 
 void MainWindow::cellPressed(int i, int j){
     QVector<unsigned int> coord;
-    coord.append(i);
-    coord.append(j);
+
     m_currentCellX = i;
     m_currentCellY = j;
-    m_cellSetter->setValue(AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().getCell(coord)->getState());
+    const CellHandler* cellHandler = &(AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler());
+    if(cellHandler->getDimensions().size() > 1){
+        coord.append(i);
+        coord.append(j);
+        m_cellSetter->setValue(cellHandler->getCell(coord)->getState());
+    }
+    else{
+        coord.append(j);
+        m_cellSetter->setValue(cellHandler->getCell(coord)->getState());
+    }
 
     std::cout << "Current cell X" << m_currentCellX << std::endl;
     std::cout << "Current cell Y" << m_currentCellY << std::endl;
@@ -527,10 +535,19 @@ void MainWindow::changeCellValue(){
     }
     else{
         if(m_currentCellX > -1 && m_currentCellY > -1){
+            const CellHandler* cellHandler = &(AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler());
             QVector<unsigned int> coord;
-            coord.append(m_currentCellX);
-            coord.append(m_currentCellY);
-            AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().getCell(coord)->forceState(m_cellSetter->value());
+            if(cellHandler->getDimensions().size() > 1){
+                coord.append(m_currentCellX);
+                coord.append(m_currentCellY);
+                cellHandler->getCell(coord)->forceState(m_cellSetter->value());
+            }
+            else{
+                coord.append(m_currentCellY);
+                cellHandler->getCell(coord)->forceState(m_cellSetter->value());
+            }
+
+
             updateBoard(m_tabs->currentIndex());
         }
     }
