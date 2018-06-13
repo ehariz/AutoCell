@@ -558,6 +558,10 @@ void MainWindow::setSize(int newCellSize)
         for (unsigned int i = 0; i < m_tabs->count(); i++)
         {
             QTableWidget* board = getBoard(i);
+            if (m_cellSize < 10)
+                board->setShowGrid(false);
+            else
+                board->setShowGrid(true);
             for (unsigned int row = 0; row < board->rowCount(); row++)
                 board->setRowHeight(row, m_cellSize);
             for (unsigned int col = 0; col < board->columnCount(); col++)
