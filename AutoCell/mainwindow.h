@@ -85,6 +85,8 @@ class MainWindow : public QMainWindow
     void nextState(unsigned int n);
     QTableWidget* getBoard(int n);
 
+    static QColor getColor(unsigned int cellState);
+
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);

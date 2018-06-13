@@ -315,7 +315,7 @@ void MainWindow::updateBoard(int index){
                         i = 0;
                         j++;
                     }
-                    board->item(i,j)->setBackgroundColor(QColor::colorNames().at(it->getState()));
+                    board->item(i,j)->setBackgroundColor(getColor(it->getState()));
                     i++;
             }
         }
@@ -325,7 +325,7 @@ void MainWindow::updateBoard(int index){
             int i = board->rowCount() -1;
             int j = 0;
             for (CellHandler::const_iterator it = cellHandler->begin(); it != cellHandler->end() && it.changedDimension() < 1; ++it){
-                    board->item(i,j)->setBackgroundColor(QColor::colorNames().at(it->getState()));
+                    board->item(i,j)->setBackgroundColor(getColor(it->getState()));
                     j++;
             }
             if (board->rowCount() == 1)
@@ -350,6 +350,18 @@ void MainWindow::forward(){
  */
 QTableWidget* MainWindow::getBoard(int n){
     return m_tabs->widget(n)->findChild<QTableWidget *>();
+}
+
+QColor MainWindow::getColor(unsigned int cellState)
+{
+    if (cellState > QColor::colorNames().size() -2)
+        return Qt::black;
+    if (cellState == 0)
+        return Qt::white;
+    if (cellState == 1)
+        return Qt::black;
+
+    return QColor((Qt::GlobalColor)(cellState +2));
 }
 
 /** \fn MainWindow::createTabs()
