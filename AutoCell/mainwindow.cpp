@@ -133,6 +133,7 @@ void MainWindow::createToolBar(){
     csLayout->addWidget(m_cellSetter, Qt::AlignCenter);
 
     QHBoxLayout *tbLayout = new QHBoxLayout(this);
+    tbLayout->addLayout(zoomLayout);
     tbLayout->addWidget(m_newAutomatonBt, Qt::AlignCenter);
     tbLayout->addWidget(m_openAutomatonBt, Qt::AlignCenter);
     tbLayout->addWidget(m_saveAutomatonBt, Qt::AlignCenter);
@@ -142,7 +143,7 @@ void MainWindow::createToolBar(){
     tbLayout->addWidget(m_resetBt, Qt::AlignCenter);
     tbLayout->addLayout(tsLayout);
     tbLayout->addLayout(csLayout);
-    tbLayout->addLayout(zoomLayout);
+
 
 
     tbLayout->setAlignment(Qt::AlignCenter);
@@ -225,10 +226,12 @@ void MainWindow::openFile(){
  */
 void MainWindow::saveToFile(){
     if(AutomateHandler::getAutomateHandler().getNumberAutomates() > 0){
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Save Automaton cell configuration"),
+        QString automatonFileName = QFileDialog::getSaveFileName(this, tr("Save Automaton cell configuration"),
                                                         ".", tr("Automaton Cells file (*.atc"));
-        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->saveCells(fileName+".atc");
-
+        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->saveCells(automatonFileName+".atc");
+        QString ruleFileName = QFileDialog::getSaveFileName(this, tr("Save Automaton rules"),
+                                                        ".", tr("Automaton Rules file (*.atr"));
+        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->saveRules(ruleFileName+".atr");
     }
     else{
         QMessageBox msgBox;
@@ -524,9 +527,12 @@ void MainWindow::changeCellValue(){
  */
 
 void MainWindow::handleTabChanged(){
-    m_cellSetter->setMaximum(AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().getMaxState());
-    m_currentCellX = -1;
-    m_currentCellY = -1;
+    if(m_tabs->currentIndex() >= 0){
+        m_cellSetter->setMaximum(AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().getMaxState());
+        m_currentCellX = -1;
+        m_currentCellY = -1;
+    }
+
 }
 
 
