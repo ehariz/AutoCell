@@ -352,6 +352,8 @@ QTableWidget* MainWindow::getBoard(int n){
     return m_tabs->widget(n)->findChild<QTableWidget *>();
 }
 
+/** \brief Return the color wich correspond to the cellState
+ */
 QColor MainWindow::getColor(unsigned int cellState)
 {
     if (cellState > QColor::colorNames().size() -2)
