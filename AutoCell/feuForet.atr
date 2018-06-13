@@ -1,0 +1,28 @@
+[
+    {
+        "currentStates": [
+            0
+        ],
+        "finalState": 1,
+        "neighbourNumberMax": 8,
+        "neighbourNumberMin": 1,
+        "neighbourStates": [
+            1
+        ],
+        "type": "neighbour"
+    },
+    {
+        "currentStates": [
+            1
+        ],
+        "finalState": 2,
+        "neighbourNumberMax": 8,
+        "neighbourNumberMin": 0,
+        "neighbourStates": [
+            1,
+            0,
+            2
+        ],
+        "type": "neighbour"
+    }
+]
