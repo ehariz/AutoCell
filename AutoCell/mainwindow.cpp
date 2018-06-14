@@ -413,15 +413,42 @@ QColor MainWindow::getColor(unsigned int cellState)
     case 4:
         return Qt::blue;
     case 5:
-        return QColor::colorNames().at(11); // brown
+        return Qt::yellow;
     case 6:
-        return QColor::colorNames().at(60); // indigo
+        return QColor(170, 110, 40); // brown
+    case 7:
+        return QColor(145,30, 180); // purple
+    case 8:
+        return QColor(245,130,48); // orange
+    case 9:
+        return Qt::cyan;
+    case 10:
+        return Qt::magenta;
+    case 11:
+        return QColor(210, 245, 60); // Lime
+    case 12:
+        return QColor(250, 190, 190); // pink
+    case 13:
+        return QColor(0,128,128); // Teal
+    case 14:
+        return QColor(230, 190, 255); // Lavender
+    case 15:
+        return QColor(255, 250, 200); // beige
+    case 16:
+        return QColor(128, 0,0); // Maroon
+    case 17:
+        return QColor(170, 255, 195); // Mint
+    case 18:
+        return QColor(128, 128, 0); // Olive
+    case 19:
+        return QColor(255, 215, 180); // Coral
+    case 20:
+        return QColor(0,0,128); // Navy
+    case 21:
+        return Qt::gray;
+
 
     }
-    if (cellState == 0)
-        return Qt::white;
-    if (cellState == 1)
-        return Qt::black;
 
     return QColor((Qt::GlobalColor)(cellState +2));
 }
