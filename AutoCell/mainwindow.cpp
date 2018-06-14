@@ -19,11 +19,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     for (unsigned int i = 0; i < nbAutomate; i++)
     {
         QString fileName = QString(".automate"+QString::number(i));
-        AutomateHandler::getAutomateHandler().addAutomate(new Automate(QString(fileName+".atc"), QString(fileName+".atr")));
+        try{
+            AutomateHandler::getAutomateHandler().addAutomate(new Automate(QString(fileName+".atc"), QString(fileName+".atr")));
         if(m_tabs == NULL)
             createTabs();
         m_tabs->addTab(createTab(), "Automaton "+ QString::number(AutomateHandler::getAutomateHandler().getNumberAutomates()));
         updateBoard(AutomateHandler::getAutomateHandler().getNumberAutomates()-1);
+        }
+        catch (QString &s)
+        {
+            QMessageBox msgBox;
+            msgBox.warning(0,"Error",s);
+            msgBox.setFixedSize(500,200);
+        }
         QFile fichier(QString(fileName + ".atc"));
         fichier.remove();
         fichier.close();
@@ -392,6 +400,24 @@ QColor MainWindow::getColor(unsigned int cellState)
 {
     if (cellState > QColor::colorNames().size() -2)
         return Qt::black;
+    switch (cellState)
+    {
+    case 0:
+        return Qt::white;
+    case 1:
+        return Qt::black;
+    case 2:
+        return Qt::red;
+    case 3:
+        return Qt::green;
+    case 4:
+        return Qt::blue;
+    case 5:
+        return QColor::colorNames().at(11); // brown
+    case 6:
+        return QColor::colorNames().at(60); // indigo
+
+    }
     if (cellState == 0)
         return Qt::white;
     if (cellState == 1)
