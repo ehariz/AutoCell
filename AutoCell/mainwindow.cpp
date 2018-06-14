@@ -13,6 +13,40 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     m_tabs = NULL;
     running = false;
+
+    QSettings settings;
+    int nbAutomate = settings.value("nbAutomate").toInt();
+    for (unsigned int i = 0; i < nbAutomate; i++)
+    {
+        QString fileName = QString(".automate"+QString::number(i));
+        AutomateHandler::getAutomateHandler().addAutomate(new Automate(QString(fileName+".atc"), QString(fileName+".atr")));
+        if(m_tabs == NULL)
+            createTabs();
+        m_tabs->addTab(createTab(), "Automaton "+ QString::number(AutomateHandler::getAutomateHandler().getNumberAutomates()));
+        updateBoard(AutomateHandler::getAutomateHandler().getNumberAutomates()-1);
+        QFile fichier(QString(fileName + ".atc"));
+        fichier.remove();
+        fichier.close();
+        QFile fichier2(QString(fileName + ".atr"));
+        fichier2.remove();
+    }
+    m_zoom->setValue(settings.value("zoom").toInt());
+    m_timeStep->setValue(settings.value("timestamp").toInt());
+}
+
+MainWindow::~MainWindow()
+{
+    // Saving settings for further sessions
+    QSettings settings;
+    settings.setValue("nbAutomate", AutomateHandler::getAutomateHandler().getNumberAutomates());
+    settings.setValue("zoom", m_zoom->value());
+    settings.setValue("timestamp", m_timeStep->value());
+
+    for (unsigned int i = 0; i < AutomateHandler::getAutomateHandler().getNumberAutomates(); i++)
+    {
+        AutomateHandler::getAutomateHandler().getAutomate(i)->saveAll(QString(".automate"+QString::number(i)+".atc"), QString(".automate"+QString::number(i)+".atr"));
+    }
+
 }
 
 /** \fn MainWindow::createIcons()

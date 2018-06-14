@@ -417,8 +417,8 @@ bool CellHandler::load(const QJsonObject &json)
         positionIncrement(position);
     }
 
-    if (!json.contains("maxState") || !json["maxState"].isDouble())
-        return false;
+    //if (!json.contains("maxState") || !json["maxState"].isDouble())
+    //    return false;
     //m_maxState = json["maxState"].toInt();
 
     return true;
