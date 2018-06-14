@@ -559,7 +559,7 @@ void MainWindow::changeCellValue(){
 
 void MainWindow::handleTabChanged(){
     if(m_tabs->currentIndex() >= 0){
-        m_cellSetter->setMaximum(AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().getMaxState());
+        m_cellSetter->setMaximum(CellHandler::getMaxState());
         m_currentCellX = -1;
         m_currentCellY = -1;
     }
