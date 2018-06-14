@@ -12,7 +12,7 @@
  */
 class NeighbourRule : public Rule
 {
-private:
+protected:
     QPair<unsigned int , unsigned int> m_neighbourInterval; ///< Stores the rule condition regarding the number of neighbours
     //ATTENTION check that first is lower than second
     QSet<unsigned int> m_neighbourPossibleValues; ///< Stores the possible values of the neighbours to fit with the rule
@@ -23,7 +23,7 @@ public:
     ~NeighbourRule();
     bool matchCell(const Cell * c)const;
 
-    virtual QJsonObject toJson() const;
+    QJsonObject toJson() const;
 };
 
 #endif // NEIGHBOURRULE_H
