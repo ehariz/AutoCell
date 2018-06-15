@@ -3,8 +3,7 @@
 #include "math.h"
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    createIcons();
-    createActions();
+    createButtons();
     createToolBar();
 
 
@@ -57,12 +56,13 @@ MainWindow::~MainWindow()
 
 }
 
-/** \fn MainWindow::createIcons()
- * \brief Creates Icons for the MainWindow
+
+/** \fn MainWindow::createButtons()
+ * \brief Creates and connects buttons for the MainWindow
  */
 
+void MainWindow::createButtons(){
 
-void MainWindow::createIcons(){
     QPixmap fastBackwardPm(":/icons/icons/fast-backward.svg");
     QPixmap fastBackwardHoveredPm(":/icons/icons/fast-backward-full.svg");
     QPixmap fastForwardPm(":/icons/icons/fast-forward.svg");
@@ -75,31 +75,32 @@ void MainWindow::createIcons(){
     QPixmap pausePm(":/icons/icons/pause.svg");
     QPixmap resetPm(":/icons/icons/reset.svg");
 
-    m_fastBackwardIcon.addPixmap(fastBackwardPm, QIcon::Normal, QIcon::Off);
-    m_fastBackwardIcon.addPixmap(fastBackwardHoveredPm, QIcon::Active, QIcon::Off);
-    m_fastForwardIcon.addPixmap(fastForwardPm, QIcon::Normal, QIcon::Off);
-    m_fastForwardIcon.addPixmap(fastForwardHoveredPm, QIcon::Active, QIcon::Off);
+    QIcon fastBackwardIcon;
+    QIcon fastForwardIcon;
+    QIcon newIcon;
+    QIcon saveIcon;
+    QIcon openIcon;
+    QIcon resetIcon;
+
+    fastBackwardIcon.addPixmap(fastBackwardPm, QIcon::Normal, QIcon::Off);
+    fastBackwardIcon.addPixmap(fastBackwardHoveredPm, QIcon::Active, QIcon::Off);
+    fastForwardIcon.addPixmap(fastForwardPm, QIcon::Normal, QIcon::Off);
+    fastForwardIcon.addPixmap(fastForwardHoveredPm, QIcon::Active, QIcon::Off);
     m_playIcon.addPixmap(playPm, QIcon::Normal, QIcon::Off);
     m_playIcon.addPixmap(playHoveredPm, QIcon::Active, QIcon::Off);
     m_pauseIcon.addPixmap(pausePm, QIcon::Normal, QIcon::Off);
-    m_newIcon.addPixmap(newPm, QIcon::Normal, QIcon::Off);
-    m_saveIcon.addPixmap(savePm, QIcon::Normal, QIcon::Off);
-    m_openIcon.addPixmap(openPm, QIcon::Normal, QIcon::Off);
-    m_resetIcon.addPixmap(resetPm, QIcon::Normal, QIcon::Off);
-}
+    newIcon.addPixmap(newPm, QIcon::Normal, QIcon::Off);
+    saveIcon.addPixmap(savePm, QIcon::Normal, QIcon::Off);
+    openIcon.addPixmap(openPm, QIcon::Normal, QIcon::Off);
+    resetIcon.addPixmap(resetPm, QIcon::Normal, QIcon::Off);
 
-/** \fn MainWindow::createActions()
- * \brief Creates and connects QActions and associated buttons for the MainWindow
- */
-
-void MainWindow::createActions(){
-    m_fastBackward = new QAction(m_fastBackwardIcon, tr("&Previous state"), this);
-    m_fastForward = new QAction(m_fastForwardIcon, tr("&Next state"), this);
-    m_playPause = new QAction(m_playIcon, tr("Play"), this);
-    m_saveAutomaton = new QAction(m_saveIcon, tr("Save automaton"), this);
-    m_newAutomaton = new QAction(m_newIcon, tr("New automaton"), this);
-    m_openAutomaton = new QAction(m_openIcon, tr("Open automaton"), this);
-    m_resetAutomaton = new QAction(m_resetIcon, tr("Reset automaton"), this);
+    QAction *playPause = new QAction(m_playIcon, tr("Play"), this);
+    QAction *fastForward = new QAction(fastForwardIcon, tr("&Next state"), this);
+    QAction *fastBackward = new QAction(fastBackwardIcon, tr("&Previous state"), this);
+    QAction *openAutomaton = new QAction(openIcon, tr("Open automaton"), this);
+    QAction *saveAutomaton = new QAction(saveIcon, tr("Save automaton"), this);
+    QAction *newAutomaton = new QAction(newIcon, tr("New automaton"), this);
+    QAction *resetAutomaton = new QAction(resetIcon, tr("Reset automaton"), this);
 
     m_fastBackwardBt = new QToolButton(this);
     m_fastForwardBt = new QToolButton(this);
@@ -109,13 +110,13 @@ void MainWindow::createActions(){
     m_openAutomatonBt = new QToolButton(this);
     m_resetBt = new QToolButton(this);
 
-    m_fastBackwardBt->setDefaultAction(m_fastBackward);
-    m_fastForwardBt->setDefaultAction(m_fastForward);
-    m_playPauseBt->setDefaultAction(m_playPause);
-    m_saveAutomatonBt->setDefaultAction(m_saveAutomaton);
-    m_newAutomatonBt->setDefaultAction(m_newAutomaton);
-    m_openAutomatonBt->setDefaultAction(m_openAutomaton);
-    m_resetBt->setDefaultAction(m_resetAutomaton);
+    m_fastBackwardBt->setDefaultAction(fastBackward);
+    m_fastForwardBt->setDefaultAction(fastForward);
+    m_playPauseBt->setDefaultAction(playPause);
+    m_saveAutomatonBt->setDefaultAction(saveAutomaton);
+    m_newAutomatonBt->setDefaultAction(newAutomaton);
+    m_openAutomatonBt->setDefaultAction(openAutomaton);
+    m_resetBt->setDefaultAction(resetAutomaton);
 
     m_fastBackwardBt->setIconSize(QSize(30,30));
     m_fastForwardBt->setIconSize(QSize(30,30));

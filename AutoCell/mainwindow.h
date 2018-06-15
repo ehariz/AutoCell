@@ -19,29 +19,11 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    QTabWidget *m_tabs; //Tabs for the main window
-    //QVector<Automate *> m_automatons; //QVector containing a pointer to each tab's Automaton
+    QTabWidget *m_tabs; ///Tabs for the main window
 
-    ///Icons
-    QIcon m_fastBackwardIcon;
-    QIcon m_fastForwardIcon;
+    ///Icons saved for reuse
     QIcon m_playIcon;
     QIcon m_pauseIcon;
-    QIcon m_newIcon;
-    QIcon m_saveIcon;
-    QIcon m_openIcon;
-    QIcon m_resetIcon;
-
-    ///Actions
-    QAction *m_playPause;
-    QAction *m_nextState;
-    QAction *m_previousState;
-    QAction *m_fastForward;
-    QAction *m_fastBackward;
-    QAction *m_openAutomaton;
-    QAction *m_saveAutomaton;
-    QAction *m_newAutomaton;
-    QAction *m_resetAutomaton;
 
     ///Buttons
     QToolButton *m_playPauseBt;
@@ -73,8 +55,7 @@ class MainWindow : public QMainWindow
     unsigned int m_boardVSize = 25;
     unsigned int m_cellSize = 30;
 
-    void createIcons();
-    void createActions();
+    void createButtons();
     void createToolBar();
     void createBoard();
     QWidget* createTab();
