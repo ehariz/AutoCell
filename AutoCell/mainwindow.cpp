@@ -616,9 +616,6 @@ void MainWindow::cellPressed(int i, int j){
         coord.append(j);
         m_cellSetter->setValue(cellHandler->getCell(coord)->getState());
     }
-
-    std::cout << "Current cell X" << m_currentCellX << std::endl;
-    std::cout << "Current cell Y" << m_currentCellY << std::endl;
 }
 
 
