@@ -1,63 +1,82 @@
 #include "ruleeditor.h"
 
-RuleEditor::RuleEditor(QWidget *parent)
+RuleEditor::RuleEditor(unsigned int dimensions, QWidget *parent) : QDialog(parent), m_dimensions(dimensions)
 {
-    selectedRule = -1;
-    QHBoxLayout *hlayout = new QHBoxLayout();
-    m_rulesListWidget = new QListWidget(this);
-    QLabel *rulesLabel = new QLabel("Rules ",this);
-    QVBoxLayout *rulesListLayout = new QVBoxLayout();
-    rulesListLayout->addWidget(rulesLabel);
-    rulesListLayout->addWidget(m_rulesListWidget);
-    hlayout->addLayout(rulesListLayout);
-
     QGridLayout *rulesInputLayout = new QGridLayout();
+    QHBoxLayout *hlayout = new QHBoxLayout();
+    if (m_dimensions > 1)
+    {
+        m_selectedRule = -1;
 
-    rulesInputLayout->addWidget(new QLabel("Current cell values :",this),0,0);
-    m_currentStatesEdit = new QLineEdit(this);
-    QRegExp rgx("([0-9]+,)*");
-    QRegExpValidator *v = new QRegExpValidator(rgx, this);
-    m_currentStatesEdit->setValidator(v);
-    rulesInputLayout->addWidget(m_currentStatesEdit,0,1);
+        m_rulesListWidget = new QListWidget(this);
+        QLabel *rulesLabel = new QLabel("Rules ",this);
+        QVBoxLayout *rulesListLayout = new QVBoxLayout();
+        rulesListLayout->addWidget(rulesLabel);
+        rulesListLayout->addWidget(m_rulesListWidget);
+        hlayout->addLayout(rulesListLayout);
 
-    rulesInputLayout->addWidget(new QLabel("Neighbour number lower bound :",this),1,0);
-    m_lowerNeighbourBox = new QSpinBox(this);
-    rulesInputLayout->addWidget(m_lowerNeighbourBox,1,1);
+        rulesInputLayout->addWidget(new QLabel("Current cell values :",this),0,0);
+        m_currentStatesEdit = new QLineEdit(this);
+        QRegExp rgx("([0-9]+,)*");
+        QRegExpValidator *v = new QRegExpValidator(rgx, this);
+        m_currentStatesEdit->setValidator(v);
+        rulesInputLayout->addWidget(m_currentStatesEdit,0,1);
 
-    rulesInputLayout->addWidget(new QLabel("Neighbour number upper bound :",this),2,0);
-    m_upperNeighbourBox = new QSpinBox(this);
-    rulesInputLayout->addWidget(m_upperNeighbourBox,2,1);
+        rulesInputLayout->addWidget(new QLabel("Neighbour number lower bound :",this),1,0);
+        m_lowerNeighbourBox = new QSpinBox(this);
+        rulesInputLayout->addWidget(m_lowerNeighbourBox,1,1);
 
-    rulesInputLayout->addWidget(new QLabel("Neighbour values :",this),3,0);
-    m_neighbourStatesEdit = new QLineEdit(this);
-    m_neighbourStatesEdit->setValidator(v);
-    rulesInputLayout->addWidget(m_neighbourStatesEdit,3,1);
+        rulesInputLayout->addWidget(new QLabel("Neighbour number upper bound :",this),2,0);
+        m_upperNeighbourBox = new QSpinBox(this);
+        rulesInputLayout->addWidget(m_upperNeighbourBox,2,1);
 
-    rulesInputLayout->addWidget(new QLabel("Output state :",this),4,0);
-    m_outputStateBox = new QSpinBox(this);
-    rulesInputLayout->addWidget(m_outputStateBox,4,1);
+        rulesInputLayout->addWidget(new QLabel("Neighbour values :",this),3,0);
+        m_neighbourStatesEdit = new QLineEdit(this);
+        m_neighbourStatesEdit->setValidator(v);
+        rulesInputLayout->addWidget(m_neighbourStatesEdit,3,1);
+
+        rulesInputLayout->addWidget(new QLabel("Output state :",this),4,0);
+        m_outputStateBox = new QSpinBox(this);
+        rulesInputLayout->addWidget(m_outputStateBox,4,1);
+    }
+    else
+    {
+        rulesInputLayout->addWidget(new QLabel("Automaton number :",this),0,0);
+        m_automatonNumber = new QSpinBox(this);
+        m_automatonNumber->setMaximum(255);
+        m_automatonNumber->setMinimum(0);
+        rulesInputLayout->addWidget(m_automatonNumber,0,1);
+    }
 
     hlayout->addLayout(rulesInputLayout);
     QVBoxLayout* mainLayout = new QVBoxLayout();
     QHBoxLayout* buttonLayout = new QHBoxLayout();
 
-    m_addBt = new QPushButton("Add Rule",this);
-    m_importBt = new QPushButton("Import Rule file",this);
+    if (dimensions > 1)
+    {
+        m_addBt = new QPushButton("Add Rule",this);
+        m_importBt = new QPushButton("Import Rule file",this);
+        m_removeBt = new QPushButton("Remove Rule",this);
+        buttonLayout->addWidget(m_importBt);
+        buttonLayout->addWidget(m_addBt);
+        buttonLayout->addWidget(m_removeBt);
+    }
     m_doneBt = new QPushButton("Done !",this);
-    m_removeBt = new QPushButton("Remove Rule",this);
-    buttonLayout->addWidget(m_importBt);
-    buttonLayout->addWidget(m_addBt);
-    buttonLayout->addWidget(m_removeBt);
+
+
     buttonLayout->addWidget(m_doneBt);
 
     mainLayout->addLayout(hlayout);
     mainLayout->addLayout(buttonLayout);
     setLayout(mainLayout);
 
-    connect(m_addBt, SIGNAL(clicked(bool)), this, SLOT(addRule()));
-    connect(m_importBt, SIGNAL(clicked(bool)), this, SLOT(importFile()));
+    if (dimensions > 1)
+    {
+        connect(m_addBt, SIGNAL(clicked(bool)), this, SLOT(addRule()));
+        connect(m_importBt, SIGNAL(clicked(bool)), this, SLOT(importFile()));
+        connect(m_removeBt, SIGNAL(clicked(bool)), this, SLOT(removeRule()));
+    }
     connect(m_doneBt, SIGNAL(clicked(bool)), this, SLOT(sendRules()));
-    connect(m_removeBt, SIGNAL(clicked(bool)), this, SLOT(removeRule()));
 
 }
 
@@ -92,6 +111,15 @@ void RuleEditor::removeRule(){
 }
 
 void RuleEditor::sendRules(){
+    if (m_dimensions == 1)
+    {
+        QList<const Rule*> ruleList = generate1DRules(m_automatonNumber->value());
+        for (const Rule* rule : ruleList) // C++11
+        {
+            m_rules.append(rule);
+        }
+
+    }
     emit rulesFilled(m_rules);
     this->close();
 }

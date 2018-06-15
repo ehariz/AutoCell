@@ -255,7 +255,7 @@ void MainWindow::openFile(){
         m_tabs->addTab(createTab(), "Automaton "+ QString::number(AutomateHandler::getAutomateHandler().getNumberAutomates()+1));
         updateBoard(AutomateHandler::getAutomateHandler().getNumberAutomates()-1);
 
-        RuleEditor* ruleEditor = new RuleEditor();
+        RuleEditor* ruleEditor = new RuleEditor(AutomateHandler::getAutomateHandler().getAutomate(AutomateHandler::getAutomateHandler().getNumberAutomates()-1)->getCellHandler().getDimensions().size(), this);
         connect(ruleEditor, SIGNAL(fileImported(QString)),this,SLOT(addAutomatonRuleFile(QString)));
         connect(ruleEditor, SIGNAL(rulesFilled(QList<const NeighbourRule*>)), this, SLOT(addAutomatonRules(QList<const NeighbourRule*>)));
         ruleEditor->show();
@@ -310,7 +310,7 @@ void MainWindow::receiveCellHandler(const QVector<unsigned int> dimensions,
     m_tabs->setCurrentWidget(newTab);
     updateBoard(AutomateHandler::getAutomateHandler().getNumberAutomates()-1);
 
-    RuleEditor* ruleEditor = new RuleEditor();
+    RuleEditor* ruleEditor = new RuleEditor(AutomateHandler::getAutomateHandler().getAutomate(AutomateHandler::getAutomateHandler().getNumberAutomates()-1)->getCellHandler().getDimensions().size(), this);
     connect(ruleEditor, SIGNAL(fileImported(QString)),this,SLOT(addAutomatonRuleFile(QString)));
     connect(ruleEditor, SIGNAL(rulesFilled(QList<const Rule*>)), this, SLOT(addAutomatonRules(QList<const Rule*>)));
     ruleEditor->show();
