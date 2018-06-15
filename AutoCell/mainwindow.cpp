@@ -571,6 +571,12 @@ void MainWindow::reset(){
         //board->setFixedHeight(m_cellSize);
 
         AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().reset();
+        if (AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().getDimensions().size() == 1)
+        {
+            QTableWidget *board  = getBoard(m_tabs->currentIndex());
+            board->setRowCount(0);
+            board->setFixedHeight(0);
+        }
         updateBoard(m_tabs->currentIndex());
     }
 }
