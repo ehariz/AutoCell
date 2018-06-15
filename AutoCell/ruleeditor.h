@@ -2,7 +2,7 @@
 #define RULEEDITOR_H
 #include <QtWidgets>
 #include "neighbourrule.h"
-
+#include "automate.h"
 
 class RuleEditor : public QDialog
 {
@@ -16,17 +16,19 @@ class RuleEditor : public QDialog
     QLineEdit* m_neighbourStatesEdit;
     QSpinBox* m_upperNeighbourBox;
     QSpinBox* m_lowerNeighbourBox;
+    QSpinBox* m_automatonNumber;
 
     QPushButton* m_addBt;
     QPushButton* m_doneBt;
     QPushButton* m_removeBt;
     QPushButton* m_importBt;
 
-    unsigned int selectedRule;
+    unsigned int m_selectedRule;
+    unsigned int m_dimensions;
 
 
 public:
-    explicit RuleEditor(QWidget *parent = nullptr);
+    explicit RuleEditor(unsigned int dimensions, QWidget *parent = nullptr);
 
 signals:
     void rulesFilled(QList<const Rule*> rules);

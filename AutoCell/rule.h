@@ -19,7 +19,7 @@ public:
     Rule(QVector<unsigned int> currentCellValues, unsigned int outputState);
 
     virtual QJsonObject toJson() const = 0;
-
+    virtual ~Rule(){}
     /** \brief Verify if the cell match the rule
      *
      * Using :

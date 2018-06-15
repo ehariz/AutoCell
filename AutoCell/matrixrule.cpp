@@ -40,16 +40,23 @@ bool MatrixRule::matchCell(const Cell *cell) const
     // Rappel : QMap<relativePosition, possibleStates>
     for (QMap<QVector<short>,  QVector<unsigned int> >::const_iterator it = m_matrix.begin() ; it != m_matrix.end(); ++it)
     {
-        if (cell->getNeighbour(it.key()) == nullptr) // Border management
+        if (cell->getNeighbour(it.key()) != nullptr) // Border management
         {
-            matched = false;
-            break;
+            if (! it.value().contains(cell->getNeighbour(it.key())->getState()))
+            {
+                matched = false;
+                break;
+            }
         }
-        if (! it.value().contains(cell->getNeighbour(it.key())->getState()))
+        else
         {
-            matched = false;
-            break;
+            if (!it.value().contains(0))
+            {
+                matched = false;
+                break;
+            }
         }
+
     }
 
     return matched;

@@ -108,7 +108,7 @@ public:
     virtual ~CellHandler();
 
     Cell* getCell(const QVector<unsigned int> position) const;
-    unsigned int getMaxState() const;
+    static unsigned int getMaxState();
     QVector<unsigned int> getDimensions() const;
     void nextStates() const;
     bool previousStates() const;
@@ -133,7 +133,6 @@ private:
 
     QVector<unsigned int> m_dimensions; ///< Vector of x dimensions
     QMap<QVector<unsigned int>, Cell* > m_cells; ///< Map of cells, with a x dimensions vector as key
-    unsigned int m_maxState;
 };
 
 template class CellHandler::iteratorT<CellHandler, Cell>;

@@ -17,13 +17,13 @@ class MatrixRule : public Rule
 
 
         virtual bool matchCell(const Cell* cell) const;
-        void addNeighbourState(QVector<short> relativePosition, unsigned int matchState);
-        void addNeighbourState(QVector<short> relativePosition, QVector<unsigned int> matchStates);
+        virtual void addNeighbourState(QVector<short> relativePosition, unsigned int matchState);
+        virtual void addNeighbourState(QVector<short> relativePosition, QVector<unsigned int> matchStates);
 
         QJsonObject toJson() const;
 
 
-private:
+protected:
 
         QMap<QVector<short>,  QVector<unsigned int> > m_matrix; ///< Key correspond to relative position and the value to matchable states
 };

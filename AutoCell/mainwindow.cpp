@@ -13,6 +13,48 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     m_tabs = NULL;
     running = false;
+
+    QSettings settings;
+    int nbAutomate = settings.value("nbAutomate").toInt();
+    for (unsigned int i = 0; i < nbAutomate; i++)
+    {
+        QString fileName = QString(".automate"+QString::number(i));
+        try{
+            AutomateHandler::getAutomateHandler().addAutomate(new Automate(QString(fileName+".atc"), QString(fileName+".atr")));
+        if(m_tabs == NULL)
+            createTabs();
+        m_tabs->addTab(createTab(), "Automaton "+ QString::number(AutomateHandler::getAutomateHandler().getNumberAutomates()));
+        updateBoard(AutomateHandler::getAutomateHandler().getNumberAutomates()-1);
+        }
+        catch (QString &s)
+        {
+            QMessageBox msgBox;
+            msgBox.warning(0,"Error",s);
+            msgBox.setFixedSize(500,200);
+        }
+        QFile fichier(QString(fileName + ".atc"));
+        fichier.remove();
+        fichier.close();
+        QFile fichier2(QString(fileName + ".atr"));
+        fichier2.remove();
+    }
+    m_zoom->setValue(settings.value("zoom").toInt());
+    m_timeStep->setValue(settings.value("timestamp").toInt());
+}
+
+MainWindow::~MainWindow()
+{
+    // Saving settings for further sessions
+    QSettings settings;
+    settings.setValue("nbAutomate", AutomateHandler::getAutomateHandler().getNumberAutomates());
+    settings.setValue("zoom", m_zoom->value());
+    settings.setValue("timestamp", m_timeStep->value());
+
+    for (unsigned int i = 0; i < AutomateHandler::getAutomateHandler().getNumberAutomates(); i++)
+    {
+        AutomateHandler::getAutomateHandler().getAutomate(i)->saveAll(QString(".automate"+QString::number(i)+".atc"), QString(".automate"+QString::number(i)+".atr"));
+    }
+
 }
 
 /** \fn MainWindow::createIcons()
@@ -51,14 +93,15 @@ void MainWindow::createIcons(){
  */
 
 void MainWindow::createActions(){
-    m_fastForward = new QAction(m_fastForwardIcon, tr("&fast forward"), this);
+    m_fastBackward = new QAction(m_fastBackwardIcon, tr("&Previous state"), this);
+    m_fastForward = new QAction(m_fastForwardIcon, tr("&Next state"), this);
     m_playPause = new QAction(m_playIcon, tr("Play"), this);
     m_saveAutomaton = new QAction(m_saveIcon, tr("Save automaton"), this);
     m_newAutomaton = new QAction(m_newIcon, tr("New automaton"), this);
     m_openAutomaton = new QAction(m_openIcon, tr("Open automaton"), this);
     m_resetAutomaton = new QAction(m_resetIcon, tr("Reset automaton"), this);
 
-
+    m_fastBackwardBt = new QToolButton(this);
     m_fastForwardBt = new QToolButton(this);
     m_playPauseBt = new QToolButton(this);
     m_saveAutomatonBt = new QToolButton(this);
@@ -66,6 +109,7 @@ void MainWindow::createActions(){
     m_openAutomatonBt = new QToolButton(this);
     m_resetBt = new QToolButton(this);
 
+    m_fastBackwardBt->setDefaultAction(m_fastBackward);
     m_fastForwardBt->setDefaultAction(m_fastForward);
     m_playPauseBt->setDefaultAction(m_playPause);
     m_saveAutomatonBt->setDefaultAction(m_saveAutomaton);
@@ -73,6 +117,7 @@ void MainWindow::createActions(){
     m_openAutomatonBt->setDefaultAction(m_openAutomaton);
     m_resetBt->setDefaultAction(m_resetAutomaton);
 
+    m_fastBackwardBt->setIconSize(QSize(30,30));
     m_fastForwardBt->setIconSize(QSize(30,30));
     m_playPauseBt->setIconSize(QSize(30,30));
     m_saveAutomatonBt->setIconSize(QSize(30,30));
@@ -80,12 +125,22 @@ void MainWindow::createActions(){
     m_openAutomatonBt->setIconSize(QSize(30,30));
     m_resetBt->setIconSize(QSize(30,30));
 
+
+    m_zoom = new QSlider(Qt::Horizontal);
+    m_zoom->setValue(m_cellSize);
+    m_zoom->setMinimum(4);
+    m_zoom->setMaximum(100);
+    m_zoom->setFixedWidth(100);
+
+
     connect(m_openAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(openFile()));
     connect(m_newAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(openCreationWindow()));
     connect(m_saveAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(saveToFile()));
     connect(m_fastForwardBt, SIGNAL(clicked(bool)), this, SLOT(forward()));
+    connect(m_fastBackwardBt, SIGNAL(clicked(bool)), this, SLOT(backward()));
     connect(m_playPauseBt, SIGNAL(clicked(bool)), this, SLOT(handlePlayPause()));
     connect(m_resetBt,SIGNAL(clicked(bool)), this,SLOT(reset()));
+    connect(m_zoom, SIGNAL(valueChanged(int)), this, SLOT(setSize(int)));
 
 }
 
@@ -103,19 +158,33 @@ void MainWindow::createToolBar(){
     m_timeStep->setFixedWidth(60);
     m_toolBar->setMovable(false);
 
+    QLabel *cellSetterLabel = new QLabel(tr("Cell value"));
+    m_cellSetter = new QSpinBox(this);
+    connect(m_cellSetter, SIGNAL(valueChanged(int)),this, SLOT(changeCellValue()));
+    QLabel *zoomLabel = new QLabel(tr("Zoom"),this);
+    QVBoxLayout* zoomLayout = new QVBoxLayout();
+    zoomLayout->addWidget(zoomLabel, Qt::AlignCenter);
+    zoomLayout->addWidget(m_zoom, Qt::AlignCenter);
+
     QVBoxLayout* tsLayout = new QVBoxLayout();
     tsLayout->addWidget(timeStepLabel, Qt::AlignCenter);
     tsLayout->addWidget(m_timeStep, Qt::AlignCenter);
 
+    QVBoxLayout* csLayout = new QVBoxLayout();
+    csLayout->addWidget(cellSetterLabel, Qt::AlignCenter);
+    csLayout->addWidget(m_cellSetter, Qt::AlignCenter);
+
     QHBoxLayout *tbLayout = new QHBoxLayout(this);
+    tbLayout->addLayout(zoomLayout);
     tbLayout->addWidget(m_newAutomatonBt, Qt::AlignCenter);
     tbLayout->addWidget(m_openAutomatonBt, Qt::AlignCenter);
     tbLayout->addWidget(m_saveAutomatonBt, Qt::AlignCenter);
-    tbLayout->addWidget(m_resetBt, Qt::AlignCenter);
+    tbLayout->addWidget(m_fastBackwardBt, Qt::AlignCenter);
     tbLayout->addWidget(m_playPauseBt, Qt::AlignCenter);
     tbLayout->addWidget(m_fastForwardBt, Qt::AlignCenter);
+    tbLayout->addWidget(m_resetBt, Qt::AlignCenter);
     tbLayout->addLayout(tsLayout);
-
+    tbLayout->addLayout(csLayout);
 
 
 
@@ -167,9 +236,11 @@ QWidget* MainWindow::createTab(){
         }
      QScrollArea *scrollArea = new QScrollArea(this);
      scrollArea->setWidget(board);
+
      layout->setContentsMargins(0,0,0,0);
      layout->addWidget(scrollArea);
      tab->setLayout(layout);
+     connect(board, SIGNAL(cellClicked(int,int)), this, SLOT(cellPressed(int,int)));
      return tab;
 }
 
@@ -185,7 +256,7 @@ void MainWindow::openFile(){
         m_tabs->addTab(createTab(), "Automaton "+ QString::number(AutomateHandler::getAutomateHandler().getNumberAutomates()+1));
         updateBoard(AutomateHandler::getAutomateHandler().getNumberAutomates()-1);
 
-        RuleEditor* ruleEditor = new RuleEditor();
+        RuleEditor* ruleEditor = new RuleEditor(AutomateHandler::getAutomateHandler().getAutomate(AutomateHandler::getAutomateHandler().getNumberAutomates()-1)->getCellHandler().getDimensions().size(), this);
         connect(ruleEditor, SIGNAL(fileImported(QString)),this,SLOT(addAutomatonRuleFile(QString)));
         connect(ruleEditor, SIGNAL(rulesFilled(QList<const NeighbourRule*>)), this, SLOT(addAutomatonRules(QList<const NeighbourRule*>)));
         ruleEditor->show();
@@ -198,10 +269,12 @@ void MainWindow::openFile(){
  */
 void MainWindow::saveToFile(){
     if(AutomateHandler::getAutomateHandler().getNumberAutomates() > 0){
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Save Automaton cell configuration"),
+        QString automatonFileName = QFileDialog::getSaveFileName(this, tr("Save Automaton cell configuration"),
                                                         ".", tr("Automaton Cells file (*.atc"));
-        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->saveCells(fileName+".atc");
-
+        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->saveCells(automatonFileName+".atc");
+        QString ruleFileName = QFileDialog::getSaveFileName(this, tr("Save Automaton rules"),
+                                                        ".", tr("Automaton Rules file (*.atr"));
+        AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->saveRules(ruleFileName+".atr");
     }
     else{
         QMessageBox msgBox;
@@ -238,7 +311,7 @@ void MainWindow::receiveCellHandler(const QVector<unsigned int> dimensions,
     m_tabs->setCurrentWidget(newTab);
     updateBoard(AutomateHandler::getAutomateHandler().getNumberAutomates()-1);
 
-    RuleEditor* ruleEditor = new RuleEditor();
+    RuleEditor* ruleEditor = new RuleEditor(AutomateHandler::getAutomateHandler().getAutomate(AutomateHandler::getAutomateHandler().getNumberAutomates()-1)->getCellHandler().getDimensions().size(), this);
     connect(ruleEditor, SIGNAL(fileImported(QString)),this,SLOT(addAutomatonRuleFile(QString)));
     connect(ruleEditor, SIGNAL(rulesFilled(QList<const Rule*>)), this, SLOT(addAutomatonRules(QList<const Rule*>)));
     ruleEditor->show();
@@ -285,7 +358,7 @@ void MainWindow::updateBoard(int index){
                         i = 0;
                         j++;
                     }
-                    board->item(i,j)->setBackgroundColor(QColor::colorNames().at(it->getState()));
+                    board->item(i,j)->setBackgroundColor(getColor(it->getState()));
                     i++;
             }
         }
@@ -295,11 +368,16 @@ void MainWindow::updateBoard(int index){
             int i = board->rowCount() -1;
             int j = 0;
             for (CellHandler::const_iterator it = cellHandler->begin(); it != cellHandler->end() && it.changedDimension() < 1; ++it){
-                    board->item(i,j)->setBackgroundColor(QColor::colorNames().at(it->getState()));
+                    board->item(i,j)->setBackgroundColor(getColor(it->getState()));
                     j++;
             }
             if (board->rowCount() == 1)
                 addEmptyRow(index);
+
+            // Go to bottom
+            QScrollArea *scrool = static_cast<QScrollArea*>(m_tabs->currentWidget()->layout()->itemAt(0)->widget());
+
+            scrool->verticalScrollBar()->setSliderPosition(scrool->verticalScrollBar()->maximum());
 
         }
 
@@ -308,16 +386,77 @@ void MainWindow::updateBoard(int index){
 }
 
 /** \fn MainWindow::forward()
- * \brief Skips the number of steps chosen by the user and sets the automaton on the last one
+ * \brief Show the Automaton's next state
  */
 
 void MainWindow::forward(){
-    //nextState(m_timeStep->value());
     nextState(1);
 }
 
+/** \fn MainWindow::getBoard()
+ * \brief Returns the board of the n-th tab
+ */
 QTableWidget* MainWindow::getBoard(int n){
     return m_tabs->widget(n)->findChild<QTableWidget *>();
+}
+
+/** \brief Return the color wich correspond to the cellState
+ */
+QColor MainWindow::getColor(unsigned int cellState)
+{
+    if (cellState > QColor::colorNames().size() -2)
+        return Qt::black;
+    switch (cellState)
+    {
+    case 0:
+        return Qt::white;
+    case 1:
+        return Qt::black;
+    case 2:
+        return Qt::red;
+    case 3:
+        return Qt::green;
+    case 4:
+        return Qt::blue;
+    case 5:
+        return Qt::yellow;
+    case 6:
+        return QColor(170, 110, 40); // brown
+    case 7:
+        return QColor(145,30, 180); // purple
+    case 8:
+        return QColor(245,130,48); // orange
+    case 9:
+        return Qt::cyan;
+    case 10:
+        return Qt::magenta;
+    case 11:
+        return QColor(210, 245, 60); // Lime
+    case 12:
+        return QColor(250, 190, 190); // pink
+    case 13:
+        return QColor(0,128,128); // Teal
+    case 14:
+        return QColor(230, 190, 255); // Lavender
+    case 15:
+        return QColor(255, 250, 200); // beige
+    case 16:
+        return QColor(128, 0,0); // Maroon
+    case 17:
+        return QColor(170, 255, 195); // Mint
+    case 18:
+        return QColor(128, 128, 0); // Olive
+    case 19:
+        return QColor(255, 215, 180); // Coral
+    case 20:
+        return QColor(0,0,128); // Navy
+    case 21:
+        return Qt::gray;
+
+
+    }
+
+    return QColor((Qt::GlobalColor)(cellState +2));
 }
 
 /** \fn MainWindow::createTabs()
@@ -330,6 +469,7 @@ void MainWindow::createTabs(){
     m_tabs->setTabsClosable(true);
     setCentralWidget(m_tabs);
     connect(m_tabs, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
+    connect(m_tabs, SIGNAL(currentChanged(int)), this, SLOT(handleTabChanged()));
 }
 
 /** \brief Add an empty row at the end of the board
@@ -363,6 +503,10 @@ void MainWindow::closeTab(int n){
     m_tabs->removeTab(n);
 }
 
+/** \fn MainWindow::addAutomatonRules(QList<const Rule *> rules)
+ * \brief Adds a list of rules to the last Automaton
+ */
+
 void MainWindow::addAutomatonRules(QList<const Rule *> rules){
     for(int i =0 ; i < rules.size();i++)
     {
@@ -370,9 +514,17 @@ void MainWindow::addAutomatonRules(QList<const Rule *> rules){
     }
 }
 
+/** \fn MainWindow::addAutomatonRuleFile(QString path)
+ * \brief Adds a list of rules to the last Automaton from a given file
+ */
+
 void MainWindow::addAutomatonRuleFile(QString path){
     AutomateHandler::getAutomateHandler().getAutomate(AutomateHandler::getAutomateHandler().getNumberAutomates()-1)->addRuleFile(path);
 }
+
+/** \fn MainWindow::handlePlayPause()
+ * \brief Handles the press event of the play/pause button
+ */
 
 void MainWindow::handlePlayPause(){
     if(AutomateHandler::getAutomateHandler().getNumberAutomates()== 0){
@@ -397,6 +549,10 @@ void MainWindow::handlePlayPause(){
 
 }
 
+/** \fn MainWindow::runAutomaton()
+ * \brief Runs the automaton simulation. Displays a new state on the board at regular intervals, set by the user in the interface.
+ */
+
 void MainWindow::runAutomaton(){
     if(running){
         AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->run();
@@ -406,6 +562,9 @@ void MainWindow::runAutomaton(){
     }
 }
 
+/** \fn MainWindow::reset()
+ * \brief Resets the current Automaton, by setting its cells to their initial state.
+ */
 void MainWindow::reset(){
     if(AutomateHandler::getAutomateHandler().getNumberAutomates()== 0){
         QMessageBox msgBox;
@@ -413,11 +572,120 @@ void MainWindow::reset(){
         msgBox.setFixedSize(500,200);
     }
     else{
-        QTableWidget *board = getBoard(m_tabs->currentIndex());
-        board->setRowCount(1);
-        board->setFixedHeight(m_cellSize);
+        //QTableWidget *board = getBoard(m_tabs->currentIndex());
+        //board->setRowCount(1);
+        //board->setFixedHeight(m_cellSize);
 
         AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().reset();
+        if (AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().getDimensions().size() == 1)
+        {
+            QTableWidget *board  = getBoard(m_tabs->currentIndex());
+            board->setRowCount(0);
+            board->setFixedHeight(0);
+        }
         updateBoard(m_tabs->currentIndex());
+    }
+}
+
+
+/** \fn MainWindow::backward()
+ * \brief Show the Automaton's previous state
+ */
+
+void MainWindow::backward(){
+    AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler().previousStates();
+    updateBoard(m_tabs->currentIndex());
+}
+
+/** \fn MainWindow::cellPressed(int i, int j)
+ * \brief Handles board cell press event
+ */
+
+void MainWindow::cellPressed(int i, int j){
+    QVector<unsigned int> coord;
+
+    m_currentCellX = i;
+    m_currentCellY = j;
+    const CellHandler* cellHandler = &(AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler());
+    if(cellHandler->getDimensions().size() > 1){
+        coord.append(i);
+        coord.append(j);
+        m_cellSetter->setValue(cellHandler->getCell(coord)->getState());
+    }
+    else{
+        coord.append(j);
+        m_cellSetter->setValue(cellHandler->getCell(coord)->getState());
+    }
+}
+
+
+/** \fn MainWindow::changeCellValue()
+ * \brief Sets the selected cell's value to the one set by the user.
+ */
+
+void MainWindow::changeCellValue(){
+    if(AutomateHandler::getAutomateHandler().getNumberAutomates()== 0){
+        QMessageBox msgBox;
+        msgBox.critical(0,"Error","Please create or import an Automaton first !");
+        msgBox.setFixedSize(500,200);
+    }
+    else{
+        if(m_currentCellX > -1 && m_currentCellY > -1){
+            const CellHandler* cellHandler = &(AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->getCellHandler());
+            QVector<unsigned int> coord;
+            if(cellHandler->getDimensions().size() > 1){
+                coord.append(m_currentCellX);
+                coord.append(m_currentCellY);
+                cellHandler->getCell(coord)->forceState(m_cellSetter->value());
+                updateBoard(m_tabs->currentIndex());
+            }
+            else{
+                coord.append(m_currentCellY);
+                cellHandler->getCell(coord)->forceState(m_cellSetter->value());
+                QTableWidget *board = getBoard(m_tabs->currentIndex());
+                int i = 0;
+                int j = 0;
+                for (CellHandler::const_iterator it = cellHandler->begin(); it != cellHandler->end() && it.changedDimension() < 1; ++it){
+                        board->item(i,j)->setBackgroundColor(getColor(it->getState()));
+                        j++;
+                }
+            }
+
+        }
+    }
+}
+
+/** \fn MainWindow::handleTabChanged()
+ * \brief Handles tab change
+ */
+
+void MainWindow::handleTabChanged(){
+    if(m_tabs->currentIndex() >= 0){
+        m_cellSetter->setMaximum(CellHandler::getMaxState());
+        m_currentCellX = -1;
+        m_currentCellY = -1;
+    }
+
+}
+
+
+void MainWindow::setSize(int newCellSize)
+{
+    m_cellSize = newCellSize;
+    if(AutomateHandler::getAutomateHandler().getNumberAutomates()!= 0)
+    {
+        for (unsigned int i = 0; i < m_tabs->count(); i++)
+        {
+            QTableWidget* board = getBoard(i);
+            if (m_cellSize < 10)
+                board->setShowGrid(false);
+            else
+                board->setShowGrid(true);
+            for (unsigned int row = 0; row < board->rowCount(); row++)
+                board->setRowHeight(row, m_cellSize);
+            for (unsigned int col = 0; col < board->columnCount(); col++)
+                board->setColumnWidth(col, m_cellSize);
+            board->setFixedSize(board->columnCount()*m_cellSize, board->rowCount()*m_cellSize);
+        }
     }
 }

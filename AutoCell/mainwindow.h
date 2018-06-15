@@ -56,11 +56,17 @@ class MainWindow : public QMainWindow
 
 
     QSpinBox *m_timeStep; ///Simulation time step duration input
-    QTimer* m_timer;
+    QSpinBox *m_cellSetter; ///Cell state manual modification
+    QTimer* m_timer; /// Timer running between simulation steps
+
+    QSlider *m_zoom;
 
     Automate* m_newAutomate;
     bool running;
     QToolBar *m_toolBar; ///Toolbar containing the buttons
+
+    int m_currentCellX;
+    int m_currentCellY;
 
     ///Board size settings
     unsigned int m_boardHSize = 25;
@@ -79,10 +85,12 @@ class MainWindow : public QMainWindow
     void nextState(unsigned int n);
     QTableWidget* getBoard(int n);
 
+    static QColor getColor(unsigned int cellState);
+
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-
+    virtual ~MainWindow();
 
 signals:
 
@@ -96,10 +104,15 @@ public slots:
     void addAutomatonRules(QList<const Rule *> rules);
     void addAutomatonRuleFile(QString path);
     void forward();
+    void backward();
     void closeTab(int n);
     void runAutomaton();
     void handlePlayPause();
     void reset();
+    void cellPressed(int i, int j);
+    void changeCellValue();
+    void handleTabChanged();
+    void setSize(int newCellSize);
 
 };
 

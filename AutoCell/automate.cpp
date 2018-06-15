@@ -181,6 +181,7 @@ Automate::~Automate()
     delete m_cellHandler;
     for (QList<const Rule*>::iterator it = m_rules.begin(); it != m_rules.end(); ++it)
     {
+
         delete *it;
     }
 }

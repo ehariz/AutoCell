@@ -41,6 +41,7 @@ void Cell::validState()
 void Cell::forceState(unsigned int state)
 {
     m_nextState = state;
+    m_states.pop();
     m_states.push(m_nextState);
 }
 
@@ -68,7 +69,7 @@ bool Cell::back()
  */
 void Cell::reset()
 {
-    while (m_states.size() > 2)
+    while (m_states.size() > 1)
         m_states.pop();
     m_nextState = m_states.top();
 }
