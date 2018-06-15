@@ -236,6 +236,7 @@ QWidget* MainWindow::createTab(){
         }
      QScrollArea *scrollArea = new QScrollArea(this);
      scrollArea->setWidget(board);
+
      layout->setContentsMargins(0,0,0,0);
      layout->addWidget(scrollArea);
      tab->setLayout(layout);
@@ -372,6 +373,11 @@ void MainWindow::updateBoard(int index){
             }
             if (board->rowCount() == 1)
                 addEmptyRow(index);
+
+            // Go to bottom
+            QScrollArea *scrool = static_cast<QScrollArea*>(m_tabs->currentWidget()->layout()->itemAt(0)->widget());
+
+            scrool->verticalScrollBar()->setSliderPosition(scrool->verticalScrollBar()->maximum());
 
         }
 
