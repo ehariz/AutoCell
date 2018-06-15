@@ -63,10 +63,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::createButtons(){
 
-    QPixmap fastBackwardPm(":/icons/icons/fast-backward.svg");
-    QPixmap fastBackwardHoveredPm(":/icons/icons/fast-backward-full.svg");
-    QPixmap fastForwardPm(":/icons/icons/fast-forward.svg");
-    QPixmap fastForwardHoveredPm(":/icons/icons/fast-forward-full.svg");
+    QPixmap previousStatePm(":/icons/icons/fast-backward.svg");
+    QPixmap previousStateHoveredPm(":/icons/icons/fast-backward-full.svg");
+    QPixmap nextStatePm(":/icons/icons/fast-forward.svg");
+    QPixmap nextStateHoveredPm(":/icons/icons/fast-forward-full.svg");
     QPixmap playPm(":/icons/icons/play.svg");
     QPixmap playHoveredPm(":/icons/icons/play-full.svg");
     QPixmap newPm(":/icons/icons/new.svg");
@@ -75,17 +75,17 @@ void MainWindow::createButtons(){
     QPixmap pausePm(":/icons/icons/pause.svg");
     QPixmap resetPm(":/icons/icons/reset.svg");
 
-    QIcon fastBackwardIcon;
-    QIcon fastForwardIcon;
+    QIcon previousStateIcon;
+    QIcon nextStateIcon;
     QIcon newIcon;
     QIcon saveIcon;
     QIcon openIcon;
     QIcon resetIcon;
 
-    fastBackwardIcon.addPixmap(fastBackwardPm, QIcon::Normal, QIcon::Off);
-    fastBackwardIcon.addPixmap(fastBackwardHoveredPm, QIcon::Active, QIcon::Off);
-    fastForwardIcon.addPixmap(fastForwardPm, QIcon::Normal, QIcon::Off);
-    fastForwardIcon.addPixmap(fastForwardHoveredPm, QIcon::Active, QIcon::Off);
+    previousStateIcon.addPixmap(previousStatePm, QIcon::Normal, QIcon::Off);
+    previousStateIcon.addPixmap(previousStateHoveredPm, QIcon::Active, QIcon::Off);
+    nextStateIcon.addPixmap(nextStatePm, QIcon::Normal, QIcon::Off);
+    nextStateIcon.addPixmap(nextStateHoveredPm, QIcon::Active, QIcon::Off);
     m_playIcon.addPixmap(playPm, QIcon::Normal, QIcon::Off);
     m_playIcon.addPixmap(playHoveredPm, QIcon::Active, QIcon::Off);
     m_pauseIcon.addPixmap(pausePm, QIcon::Normal, QIcon::Off);
@@ -95,31 +95,31 @@ void MainWindow::createButtons(){
     resetIcon.addPixmap(resetPm, QIcon::Normal, QIcon::Off);
 
     QAction *playPause = new QAction(m_playIcon, tr("Play"), this);
-    QAction *fastForward = new QAction(fastForwardIcon, tr("&Next state"), this);
-    QAction *fastBackward = new QAction(fastBackwardIcon, tr("&Previous state"), this);
+    QAction *nextState = new QAction(nextStateIcon, tr("&Next state"), this);
+    QAction *previousState = new QAction(previousStateIcon, tr("&Previous state"), this);
     QAction *openAutomaton = new QAction(openIcon, tr("Open automaton"), this);
     QAction *saveAutomaton = new QAction(saveIcon, tr("Save automaton"), this);
     QAction *newAutomaton = new QAction(newIcon, tr("New automaton"), this);
     QAction *resetAutomaton = new QAction(resetIcon, tr("Reset automaton"), this);
 
-    m_fastBackwardBt = new QToolButton(this);
-    m_fastForwardBt = new QToolButton(this);
+    m_previousStateBt = new QToolButton(this);
+    m_nextStateBt = new QToolButton(this);
     m_playPauseBt = new QToolButton(this);
     m_saveAutomatonBt = new QToolButton(this);
     m_newAutomatonBt = new QToolButton(this);
     m_openAutomatonBt = new QToolButton(this);
     m_resetBt = new QToolButton(this);
 
-    m_fastBackwardBt->setDefaultAction(fastBackward);
-    m_fastForwardBt->setDefaultAction(fastForward);
+    m_previousStateBt->setDefaultAction(previousState);
+    m_nextStateBt->setDefaultAction(nextState);
     m_playPauseBt->setDefaultAction(playPause);
     m_saveAutomatonBt->setDefaultAction(saveAutomaton);
     m_newAutomatonBt->setDefaultAction(newAutomaton);
     m_openAutomatonBt->setDefaultAction(openAutomaton);
     m_resetBt->setDefaultAction(resetAutomaton);
 
-    m_fastBackwardBt->setIconSize(QSize(30,30));
-    m_fastForwardBt->setIconSize(QSize(30,30));
+    m_previousStateBt->setIconSize(QSize(30,30));
+    m_nextStateBt->setIconSize(QSize(30,30));
     m_playPauseBt->setIconSize(QSize(30,30));
     m_saveAutomatonBt->setIconSize(QSize(30,30));
     m_newAutomatonBt->setIconSize(QSize(30,30));
@@ -137,8 +137,8 @@ void MainWindow::createButtons(){
     connect(m_openAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(openFile()));
     connect(m_newAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(openCreationWindow()));
     connect(m_saveAutomatonBt, SIGNAL(clicked(bool)), this, SLOT(saveToFile()));
-    connect(m_fastForwardBt, SIGNAL(clicked(bool)), this, SLOT(forward()));
-    connect(m_fastBackwardBt, SIGNAL(clicked(bool)), this, SLOT(backward()));
+    connect(m_nextStateBt, SIGNAL(clicked(bool)), this, SLOT(forward()));
+    connect(m_previousStateBt, SIGNAL(clicked(bool)), this, SLOT(backward()));
     connect(m_playPauseBt, SIGNAL(clicked(bool)), this, SLOT(handlePlayPause()));
     connect(m_resetBt,SIGNAL(clicked(bool)), this,SLOT(reset()));
     connect(m_zoom, SIGNAL(valueChanged(int)), this, SLOT(setSize(int)));
@@ -180,9 +180,9 @@ void MainWindow::createToolBar(){
     tbLayout->addWidget(m_newAutomatonBt, Qt::AlignCenter);
     tbLayout->addWidget(m_openAutomatonBt, Qt::AlignCenter);
     tbLayout->addWidget(m_saveAutomatonBt, Qt::AlignCenter);
-    tbLayout->addWidget(m_fastBackwardBt, Qt::AlignCenter);
+    tbLayout->addWidget(m_previousStateBt, Qt::AlignCenter);
     tbLayout->addWidget(m_playPauseBt, Qt::AlignCenter);
-    tbLayout->addWidget(m_fastForwardBt, Qt::AlignCenter);
+    tbLayout->addWidget(m_nextStateBt, Qt::AlignCenter);
     tbLayout->addWidget(m_resetBt, Qt::AlignCenter);
     tbLayout->addLayout(tsLayout);
     tbLayout->addLayout(csLayout);
@@ -665,6 +665,11 @@ void MainWindow::handleTabChanged(){
         m_cellSetter->setMaximum(CellHandler::getMaxState());
         m_currentCellX = -1;
         m_currentCellY = -1;
+        if(running){
+            m_playPauseBt->setIcon(m_playIcon);
+            delete m_timer;
+            running = !running;
+        }
     }
 
 }

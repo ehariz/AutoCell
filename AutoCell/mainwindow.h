@@ -29,8 +29,6 @@ class MainWindow : public QMainWindow
     QToolButton *m_playPauseBt;
     QToolButton *m_nextStateBt;
     QToolButton *m_previousStateBt;
-    QToolButton *m_fastForwardBt;
-    QToolButton *m_fastBackwardBt;
     QToolButton *m_openAutomatonBt;
     QToolButton *m_saveAutomatonBt;
     QToolButton *m_newAutomatonBt;
@@ -43,7 +41,6 @@ class MainWindow : public QMainWindow
 
     QSlider *m_zoom;
 
-    Automate* m_newAutomate;
     bool running;
     QToolBar *m_toolBar; ///Toolbar containing the buttons
 
