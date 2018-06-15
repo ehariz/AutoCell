@@ -628,14 +628,20 @@ void MainWindow::changeCellValue(){
                 coord.append(m_currentCellX);
                 coord.append(m_currentCellY);
                 cellHandler->getCell(coord)->forceState(m_cellSetter->value());
+                updateBoard(m_tabs->currentIndex());
             }
             else{
                 coord.append(m_currentCellY);
                 cellHandler->getCell(coord)->forceState(m_cellSetter->value());
+                QTableWidget *board = getBoard(m_tabs->currentIndex());
+                int i = 0;
+                int j = 0;
+                for (CellHandler::const_iterator it = cellHandler->begin(); it != cellHandler->end() && it.changedDimension() < 1; ++it){
+                        board->item(i,j)->setBackgroundColor(getColor(it->getState()));
+                        j++;
+                }
             }
 
-
-            updateBoard(m_tabs->currentIndex());
         }
     }
 }
