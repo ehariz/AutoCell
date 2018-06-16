@@ -45,21 +45,7 @@ class CellHandler
         iteratorT(CellHandler_T* handler);
         /** \brief Increment the current position and handle dimension changes */
         iteratorT& operator++(){
-            m_position.replace(0, m_position.at(0) + 1); // adding the value to the first digit
-
-            m_changedDimension = 0;
-            // Carry management
-            for (unsigned short i = 0; i < m_handler->m_dimensions.size(); i++)
-            {
-                if (m_position.at(i) >= m_handler->m_dimensions.at(i))
-                {
-                    m_position.replace(i, 0);
-                    m_changedDimension++;
-                    if (i + 1 != m_handler->m_dimensions.size())
-                        m_position.replace(i+1, m_position.at(i+1)+1);
-                }
-
-            }
+            m_changedDimension = m_handler->positionIncrement(m_position);
             // If we return to zero, we have finished
             if (m_position == m_zero)
                 m_finished = true;
@@ -114,10 +100,10 @@ public:
     bool previousStates() const;
     void reset() const;
 
-    bool save(QString filename) const;
+    virtual bool save(QString filename) const;
 
     virtual void generate(generationTypes type, unsigned int stateMax = 1, unsigned short density = 50);
-    void print(std::ostream &stream) const;
+    virtual void print(std::ostream &stream) const;
 
     const_iterator begin() const;
     iterator begin();
@@ -125,10 +111,10 @@ public:
 
 
 protected:
-    bool load(const QJsonObject &json);
-    void foundNeighbours();
-    void positionIncrement(QVector<unsigned int> &pos, unsigned int value = 1) const;
-    QVector<QVector<unsigned int> > *getListNeighboursPositionsRecursive(const QVector<unsigned int> position, unsigned int dimension, QVector<unsigned int> lastAdd) const;
+    virtual bool load(const QJsonObject &json);
+    virtual void foundNeighbours();
+    virtual int positionIncrement(QVector<unsigned int> &pos) const;
+    virtual QVector<QVector<unsigned int> > *getListNeighboursPositionsRecursive(const QVector<unsigned int> position, unsigned int dimension, QVector<unsigned int> lastAdd) const;
     QVector<QVector<unsigned int> > &getListNeighboursPositions(const QVector<unsigned int> position) const;
 
     QVector<unsigned int> m_dimensions; ///< Vector of x dimensions
