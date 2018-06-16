@@ -458,30 +458,26 @@ void CellHandler::foundNeighbours()
  * Careful, when the position reach the maximum, it goes to zero without leaving the function
  *
  * \param pos Position to increment
- * \param value Value to add, 1 by default
+ * \return Number of jumped dimensions
  */
-void CellHandler::positionIncrement(QVector<unsigned int> &pos, unsigned int value) const
+int CellHandler::positionIncrement(QVector<unsigned int> &pos) const
 {
-    pos.replace(0, pos.at(0) + value); // adding the value to the first digit
-
+    int changedDimension = 0;
+    pos.replace(0, pos.at(0) + 1);
     // Carry management
     for (unsigned short i = 0; i < m_dimensions.size(); i++)
     {
-        if (pos.at(i) >= m_dimensions.at(i) && pos.at(i) < m_dimensions.at(i)*2)
+        if (pos.at(i) >= m_dimensions.at(i))
         {
             pos.replace(i, 0);
+            changedDimension++;
             if (i + 1 != m_dimensions.size())
                 pos.replace(i+1, pos.at(i+1)+1);
-        }
-        else if (pos.at(i) >= m_dimensions.at(i))
-        {
-            pos.replace(i, pos.at(i) - m_dimensions.at(i));
-            if (i + 1 != m_dimensions.size())
-                pos.replace(i+1, pos.at(i+1)+1);
-            i--;
         }
 
     }
+
+    return changedDimension;
 }
 
 /** \brief Prepare the call of the recursive version of itself

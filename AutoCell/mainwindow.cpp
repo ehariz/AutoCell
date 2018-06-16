@@ -409,6 +409,8 @@ QTableWidget* MainWindow::getBoard(int n){
 }
 
 /** \brief Return the color wich correspond to the cellState
+ *
+ * The maximal state supported is 21. Use hookMoreColor to add more.
  */
 QColor MainWindow::getColor(int cellState)
 {
@@ -464,7 +466,7 @@ QColor MainWindow::getColor(int cellState)
 
     }
 
-    return QColor((Qt::GlobalColor)(cellState +2));
+    return hookMoreColor(cellState);
 }
 
 /** \fn MainWindow::createTabs()

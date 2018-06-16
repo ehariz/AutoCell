@@ -63,7 +63,10 @@ class MainWindow : public QMainWindow
     void nextState(unsigned int n);
     QTableWidget* getBoard(int n);
 
-    static QColor getColor(int cellState);
+    static virtual QColor getColor(int cellState);
+    /** \brief Allow the user to create more colors
+     */
+    static virtual QColor hookMoreColor(int cellState) { return QColor((Qt::GlobalColor)(cellState +2))};
 
 
 public:
