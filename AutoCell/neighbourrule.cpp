@@ -1,6 +1,7 @@
 #include "neighbourrule.h"
 
-/** \brief
+/** \page Game of life
+ * \brief
  *
  * According to the requirements :
  * a and b values are chosen by the user.

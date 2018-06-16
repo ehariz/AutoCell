@@ -1,5 +1,8 @@
 #include "ruleeditor.h"
 
+/** \brief Constructor of the dialog for rule creation
+ * \param dimensions Dimensions of the created automaton
+ */
 RuleEditor::RuleEditor(unsigned int dimensions, QWidget *parent) : QDialog(parent), m_dimensions(dimensions)
 {
     QGridLayout *rulesInputLayout = new QGridLayout();
@@ -81,7 +84,8 @@ RuleEditor::RuleEditor(unsigned int dimensions, QWidget *parent) : QDialog(paren
 }
 
 
-
+/** \brief Add the rule contained in the fields
+ */
 void RuleEditor::addRule(){
     unsigned int outputState = m_outputStateBox->value();
     QVector<unsigned int> currentCellValues;
@@ -105,11 +109,15 @@ void RuleEditor::addRule(){
     m_rulesListWidget->addItem(listLabel);
 }
 
+/** \brief Remove the selected rule
+ */
 void RuleEditor::removeRule(){
     m_rules.removeAt(m_rulesListWidget->currentRow());
     delete m_rulesListWidget->takeItem(m_rulesListWidget->currentRow());
 }
 
+/** \brief Action when we click sur "Done"
+ */
 void RuleEditor::sendRules(){
     if (m_dimensions == 1)
     {
@@ -124,6 +132,8 @@ void RuleEditor::sendRules(){
     this->close();
 }
 
+/** \brief Import a rule file
+ */
 void RuleEditor::importFile(){
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Rule file"), ".",
                                                     tr("Automaton rule files (*.atr)"));

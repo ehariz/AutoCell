@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include <iostream>
 #include "math.h"
+
+/** \brief Constructor of the main window
+ */
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     createButtons();
@@ -11,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setWindowTitle("AutoCell");
 
     m_tabs = NULL;
-    running = false;
+    m_running = false;
 
     QSettings settings;
     int nbAutomate = settings.value("nbAutomate").toInt();
@@ -41,6 +44,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_timeStep->setValue(settings.value("timestamp").toInt());
 }
 
+/** \brief Destructor of the main window
+ *
+ * It is here that the settings are saved
+ */
 MainWindow::~MainWindow()
 {
     // Saving settings for further sessions
@@ -534,7 +541,7 @@ void MainWindow::handlePlayPause(){
         msgBox.setFixedSize(500,200);
     }
     else{
-        if(running){
+        if(m_running){
             m_playPauseBt->setIcon(m_playIcon);
             delete m_timer;
         }
@@ -544,7 +551,7 @@ void MainWindow::handlePlayPause(){
             connect(m_timer, SIGNAL(timeout()), this, SLOT(runAutomaton()));
             m_timer->start(m_timeStep->value());
         }
-        running = !running;
+        m_running = !m_running;
     }
 
 
@@ -555,7 +562,7 @@ void MainWindow::handlePlayPause(){
  */
 
 void MainWindow::runAutomaton(){
-    if(running){
+    if(m_running){
         AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->run();
         QCoreApplication::processEvents();
         updateBoard(m_tabs->currentIndex());
@@ -665,16 +672,18 @@ void MainWindow::handleTabChanged(){
         m_cellSetter->setMaximum(CellHandler::getMaxState());
         m_currentCellX = -1;
         m_currentCellY = -1;
-        if(running){
+        if(m_running){
             m_playPauseBt->setIcon(m_playIcon);
             delete m_timer;
-            running = !running;
+            m_running = !m_running;
         }
     }
 
 }
 
-
+/** \brief Change the size of the board
+ * \param newCellSize New Cell size
+ */
 void MainWindow::setSize(int newCellSize)
 {
     m_cellSize = newCellSize;

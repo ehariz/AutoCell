@@ -19,13 +19,13 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    QTabWidget *m_tabs; ///Tabs for the main window
+    QTabWidget *m_tabs; ///< Tabs for the main window
 
-    ///Icons saved for reuse
+    //Icons saved for reuse
     QIcon m_playIcon;
     QIcon m_pauseIcon;
 
-    ///Buttons
+    //Buttons
     QToolButton *m_playPauseBt;
     QToolButton *m_nextStateBt;
     QToolButton *m_previousStateBt;
@@ -35,19 +35,19 @@ class MainWindow : public QMainWindow
     QToolButton *m_resetBt;
 
 
-    QSpinBox *m_timeStep; ///Simulation time step duration input
-    QSpinBox *m_cellSetter; ///Cell state manual modification
-    QTimer* m_timer; /// Timer running between simulation steps
+    QSpinBox *m_timeStep; ///< Simulation time step duration input
+    QSpinBox *m_cellSetter; ///< Cell state manual modification
+    QTimer* m_timer; ///< Timer running between simulation steps
 
-    QSlider *m_zoom;
+    QSlider *m_zoom; ///< Slider for the zoom
 
-    bool running;
-    QToolBar *m_toolBar; ///Toolbar containing the buttons
+    bool m_running; ///< If the automaton is running
+    QToolBar *m_toolBar; ///< Toolbar containing the buttons
 
     int m_currentCellX;
     int m_currentCellY;
 
-    ///Board size settings
+    // Board size settings
     unsigned int m_boardHSize = 25;
     unsigned int m_boardVSize = 25;
     unsigned int m_cellSize = 30;

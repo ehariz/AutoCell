@@ -4,6 +4,8 @@
 #include "neighbourrule.h"
 #include "automate.h"
 
+/** \brief Dialog for editing the rules
+ */
 class RuleEditor : public QDialog
 {
     Q_OBJECT
@@ -24,7 +26,7 @@ class RuleEditor : public QDialog
     QPushButton* m_importBt;
 
     unsigned int m_selectedRule;
-    unsigned int m_dimensions;
+    unsigned int m_dimensions; ///< Dimensions of the automaton, to manage 1D dimensions
 
 
 public:

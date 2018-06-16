@@ -5,7 +5,7 @@
 
 
 /** \class AutomateHandler
- * \brief Implementation of singleton design pattern
+ * \brief Implementation of singleton design pattern to manage the Automates
  */
 class AutomateHandler
 {
