@@ -116,7 +116,7 @@ public:
 
     bool save(QString filename) const;
 
-    void generate(generationTypes type, unsigned int stateMax = 1, unsigned short density = 50);
+    virtual void generate(generationTypes type, unsigned int stateMax = 1, unsigned short density = 50);
     void print(std::ostream &stream) const;
 
     const_iterator begin() const;
@@ -124,7 +124,7 @@ public:
     bool end() const;
 
 
-private:
+protected:
     bool load(const QJsonObject &json);
     void foundNeighbours();
     void positionIncrement(QVector<unsigned int> &pos, unsigned int value = 1) const;
