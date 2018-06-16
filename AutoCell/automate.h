@@ -10,7 +10,7 @@
 
 
 /** \class Automate
- * \brief
+ * \brief Manage the application of rules on the cells
  */
 class Automate
 {

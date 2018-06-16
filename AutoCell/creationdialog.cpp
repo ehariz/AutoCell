@@ -1,8 +1,9 @@
 #include "creationdialog.h"
 #include <iostream>
 
-
-CreationDialog::CreationDialog(QWidget *parent)
+/** \brief Constructor of the cellHandler creation dialog
+ */
+CreationDialog::CreationDialog(QWidget *parent) : QDialog(parent)
 {
     QLabel *m_dimLabel= new QLabel(tr("Write your dimensions and their size, separated by a comma.\n"
                            "For instance, '25,25 ' will create a 2-dimensional 25x25 Automaton. "));

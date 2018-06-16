@@ -1,6 +1,6 @@
 #include "neighbourrule.h"
 
-/** \brief
+/** \page page_1 Game of life
  *
  * According to the requirements :
  * a and b values are chosen by the user.
@@ -21,7 +21,7 @@
  * 0 : cell is dead
  *
  * \code
- * Rule 1: dead cell (state 0) starts living (state 1) if it has exactly 3 living neighbours (in state 1)
+ * // Rule 1: dead cell (state 0) starts living (state 1) if it has exactly 3 living neighbours (in state 1)
  *
  * unsigned int rule1OutputState = 1; // output state is alive state
  *
@@ -39,7 +39,7 @@
  *
  *
  *
- * Rule 2: alive cell (state 1) dies (goes to state 0) if it has 0 to 1 living neighbours (in state 1)
+ * // Rule 2: alive cell (state 1) dies (goes to state 0) if it has 0 to 1 living neighbours (in state 1)
  *
  * unsigned int rule2OutputState = 0; // output state is dead state
  *
@@ -57,7 +57,7 @@
  *
  *
  *
- * Rule 3: alive cell (state 1) dies (goes to state 0) if it has 4 to 8 living neighbours (in state 1)
+ * // Rule 3: alive cell (state 1) dies (goes to state 0) if it has 4 to 8 living neighbours (in state 1)
  *
  * unsigned int rule3OutputState = 0; // output state is dead state
  *

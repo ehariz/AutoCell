@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include <iostream>
 #include "math.h"
+
+/** \brief Constructor of the main window
+ */
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     createButtons();
@@ -11,11 +14,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setWindowTitle("AutoCell");
 
     m_tabs = NULL;
-    running = false;
+    m_running = false;
 
     QSettings settings;
     int nbAutomate = settings.value("nbAutomate").toInt();
-    for (unsigned int i = 0; i < nbAutomate; i++)
+    for (int i = 0; i < nbAutomate; i++)
     {
         QString fileName = QString(".automate"+QString::number(i));
         try{
@@ -41,6 +44,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_timeStep->setValue(settings.value("timestamp").toInt());
 }
 
+/** \brief Destructor of the main window
+ *
+ * It is here that the settings are saved
+ */
 MainWindow::~MainWindow()
 {
     // Saving settings for further sessions
@@ -225,11 +232,11 @@ QWidget* MainWindow::createTab(){
         board->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         board->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         board->setEditTriggers(QAbstractItemView::NoEditTriggers);
-        for(unsigned int col = 0; col < boardHSize; ++col)
+        for(int col = 0; col < boardHSize; ++col)
             board->setColumnWidth(col, m_cellSize);
-        for(unsigned int row = 0; row < boardVSize; ++row) {
+        for(int row = 0; row < boardVSize; ++row) {
             board->setRowHeight(row, m_cellSize);
-            for(unsigned int col = 0; col < boardHSize; ++col) {
+            for(int col = 0; col < boardHSize; ++col) {
                 board->setItem(row, col, new QTableWidgetItem(""));
                 board->item(row, col)->setBackgroundColor("white");
                 board->item(row, col)->setTextColor("black");
@@ -403,7 +410,7 @@ QTableWidget* MainWindow::getBoard(int n){
 
 /** \brief Return the color wich correspond to the cellState
  */
-QColor MainWindow::getColor(unsigned int cellState)
+QColor MainWindow::getColor(int cellState)
 {
     if (cellState > QColor::colorNames().size() -2)
         return Qt::black;
@@ -486,7 +493,7 @@ void MainWindow::addEmptyRow(unsigned int n)
     unsigned int row = board->rowCount();
     board->insertRow(row);
     board->setRowHeight(row, m_cellSize);
-    for(unsigned int col = 0; col < board->columnCount(); ++col) {
+    for(int col = 0; col < board->columnCount(); ++col) {
         board->setItem(row, col, new QTableWidgetItem(""));
         board->item(row, col)->setBackgroundColor("white");
         board->item(row, col)->setTextColor("black");
@@ -534,7 +541,7 @@ void MainWindow::handlePlayPause(){
         msgBox.setFixedSize(500,200);
     }
     else{
-        if(running){
+        if(m_running){
             m_playPauseBt->setIcon(m_playIcon);
             delete m_timer;
         }
@@ -544,7 +551,7 @@ void MainWindow::handlePlayPause(){
             connect(m_timer, SIGNAL(timeout()), this, SLOT(runAutomaton()));
             m_timer->start(m_timeStep->value());
         }
-        running = !running;
+        m_running = !m_running;
     }
 
 
@@ -555,7 +562,7 @@ void MainWindow::handlePlayPause(){
  */
 
 void MainWindow::runAutomaton(){
-    if(running){
+    if(m_running){
         AutomateHandler::getAutomateHandler().getAutomate(m_tabs->currentIndex())->run();
         QCoreApplication::processEvents();
         updateBoard(m_tabs->currentIndex());
@@ -665,31 +672,33 @@ void MainWindow::handleTabChanged(){
         m_cellSetter->setMaximum(CellHandler::getMaxState());
         m_currentCellX = -1;
         m_currentCellY = -1;
-        if(running){
+        if(m_running){
             m_playPauseBt->setIcon(m_playIcon);
             delete m_timer;
-            running = !running;
+            m_running = !m_running;
         }
     }
 
 }
 
-
+/** \brief Change the size of the board
+ * \param newCellSize New Cell size
+ */
 void MainWindow::setSize(int newCellSize)
 {
     m_cellSize = newCellSize;
     if(AutomateHandler::getAutomateHandler().getNumberAutomates()!= 0)
     {
-        for (unsigned int i = 0; i < m_tabs->count(); i++)
+        for (int i = 0; i < m_tabs->count(); i++)
         {
             QTableWidget* board = getBoard(i);
             if (m_cellSize < 10)
                 board->setShowGrid(false);
             else
                 board->setShowGrid(true);
-            for (unsigned int row = 0; row < board->rowCount(); row++)
+            for (int row = 0; row < board->rowCount(); row++)
                 board->setRowHeight(row, m_cellSize);
-            for (unsigned int col = 0; col < board->columnCount(); col++)
+            for (int col = 0; col < board->columnCount(); col++)
                 board->setColumnWidth(col, m_cellSize);
             board->setFixedSize(board->columnCount()*m_cellSize, board->rowCount()*m_cellSize);
         }

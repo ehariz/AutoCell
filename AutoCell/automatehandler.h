@@ -5,7 +5,7 @@
 
 
 /** \class AutomateHandler
- * \brief Implementation of singleton design pattern
+ * \brief Implementation of singleton design pattern to manage the Automates
  */
 class AutomateHandler
 {
@@ -22,7 +22,7 @@ public:
     static AutomateHandler & getAutomateHandler();
     static void deleteAutomateHandler();
 
-    Automate * getAutomate(unsigned int indexAutomate);
+    Automate * getAutomate(int indexAutomate);
     unsigned int getNumberAutomates()const;
 
     void addAutomate(Automate * automate);
