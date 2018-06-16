@@ -52,7 +52,7 @@ void AutomateHandler::deleteAutomateHandler()
  * \return Pointer on the requested automated if the parameter index fits with the list size
  *
  */
-Automate * AutomateHandler::getAutomate(unsigned int indexAutomate){
+Automate * AutomateHandler::getAutomate(int indexAutomate){
     if(indexAutomate > m_ActiveAutomates.size())
         return nullptr;
     return m_ActiveAutomates.at(indexAutomate);

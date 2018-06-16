@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     QSettings settings;
     int nbAutomate = settings.value("nbAutomate").toInt();
-    for (unsigned int i = 0; i < nbAutomate; i++)
+    for (int i = 0; i < nbAutomate; i++)
     {
         QString fileName = QString(".automate"+QString::number(i));
         try{
@@ -232,11 +232,11 @@ QWidget* MainWindow::createTab(){
         board->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         board->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         board->setEditTriggers(QAbstractItemView::NoEditTriggers);
-        for(unsigned int col = 0; col < boardHSize; ++col)
+        for(int col = 0; col < boardHSize; ++col)
             board->setColumnWidth(col, m_cellSize);
-        for(unsigned int row = 0; row < boardVSize; ++row) {
+        for(int row = 0; row < boardVSize; ++row) {
             board->setRowHeight(row, m_cellSize);
-            for(unsigned int col = 0; col < boardHSize; ++col) {
+            for(int col = 0; col < boardHSize; ++col) {
                 board->setItem(row, col, new QTableWidgetItem(""));
                 board->item(row, col)->setBackgroundColor("white");
                 board->item(row, col)->setTextColor("black");
@@ -410,7 +410,7 @@ QTableWidget* MainWindow::getBoard(int n){
 
 /** \brief Return the color wich correspond to the cellState
  */
-QColor MainWindow::getColor(unsigned int cellState)
+QColor MainWindow::getColor(int cellState)
 {
     if (cellState > QColor::colorNames().size() -2)
         return Qt::black;
@@ -493,7 +493,7 @@ void MainWindow::addEmptyRow(unsigned int n)
     unsigned int row = board->rowCount();
     board->insertRow(row);
     board->setRowHeight(row, m_cellSize);
-    for(unsigned int col = 0; col < board->columnCount(); ++col) {
+    for(int col = 0; col < board->columnCount(); ++col) {
         board->setItem(row, col, new QTableWidgetItem(""));
         board->item(row, col)->setBackgroundColor("white");
         board->item(row, col)->setTextColor("black");
@@ -689,16 +689,16 @@ void MainWindow::setSize(int newCellSize)
     m_cellSize = newCellSize;
     if(AutomateHandler::getAutomateHandler().getNumberAutomates()!= 0)
     {
-        for (unsigned int i = 0; i < m_tabs->count(); i++)
+        for (int i = 0; i < m_tabs->count(); i++)
         {
             QTableWidget* board = getBoard(i);
             if (m_cellSize < 10)
                 board->setShowGrid(false);
             else
                 board->setShowGrid(true);
-            for (unsigned int row = 0; row < board->rowCount(); row++)
+            for (int row = 0; row < board->rowCount(); row++)
                 board->setRowHeight(row, m_cellSize);
-            for (unsigned int col = 0; col < board->columnCount(); col++)
+            for (int col = 0; col < board->columnCount(); col++)
                 board->setColumnWidth(col, m_cellSize);
             board->setFixedSize(board->columnCount()*m_cellSize, board->rowCount()*m_cellSize);
         }

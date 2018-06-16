@@ -22,7 +22,7 @@ public:
     static AutomateHandler & getAutomateHandler();
     static void deleteAutomateHandler();
 
-    Automate * getAutomate(unsigned int indexAutomate);
+    Automate * getAutomate(int indexAutomate);
     unsigned int getNumberAutomates()const;
 
     void addAutomate(Automate * automate);

@@ -22,7 +22,7 @@ bool Automate::loadRules(const QJsonArray &json)
 
         QVector<unsigned int> currentStates;
         QJsonArray statesJson = ruleJson["currentStates"].toArray();
-        for (unsigned int i = 0; i < statesJson.size(); i++)
+        for (int i = 0; i < statesJson.size(); i++)
         {
             if (!statesJson.at(i).isDouble())
                 return false;
@@ -47,7 +47,7 @@ bool Automate::loadRules(const QJsonArray &json)
                 QSet<unsigned int> neighbourStates;
 
                 QJsonArray statesJson = ruleJson["neighbourStates"].toArray();
-                for (unsigned int i = 0; i < statesJson.size(); i++)
+                for (int i = 0; i < statesJson.size(); i++)
                 {
                     if (!statesJson.at(i).isDouble())
                         return false;
@@ -67,7 +67,7 @@ bool Automate::loadRules(const QJsonArray &json)
                 if (!ruleJson["neighbours"].isArray())
                     return false;
                 QJsonArray neighboursJson = ruleJson["neighbours"].toArray();
-                for (unsigned int i = 0; i < neighboursJson.size(); i++)
+                for (int i = 0; i < neighboursJson.size(); i++)
                 {
                     if (!neighboursJson.at(i).isObject())
                         return false;
@@ -81,7 +81,7 @@ bool Automate::loadRules(const QJsonArray &json)
 
 
                     QJsonArray statesJson = neighboursJson.at(i).toObject()["neighbourStates"].toArray();
-                    for (unsigned int j = 0; j < statesJson.size(); j++)
+                    for (int j = 0; j < statesJson.size(); j++)
                     {
                         if (!statesJson.at(j).isDouble())
                             return false;
@@ -90,7 +90,7 @@ bool Automate::loadRules(const QJsonArray &json)
 
                     QVector<short> relativePosition;
                     QJsonArray positionJson = neighboursJson.at(i).toObject()["relativePosition"].toArray();
-                    for (unsigned int j = 0; j < positionJson.size(); j++)
+                    for (int j = 0; j < positionJson.size(); j++)
                     {
                         if (!positionJson.at(j).isDouble())
                             return false;

@@ -18,7 +18,7 @@ QJsonObject Rule::toJson() const
     object.insert("finalState", QJsonValue((int)m_cellOutputState));
 
     QJsonArray currentStates;
-    for (unsigned int i = 0; i < m_currentCellPossibleValues.size(); i++)
+    for (int i = 0; i < m_currentCellPossibleValues.size(); i++)
     {
         currentStates.append(QJsonValue((int)m_currentCellPossibleValues.at(i)));
     }
